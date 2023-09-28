@@ -1,0 +1,14 @@
+prefix=/opt/apollo/sysroot
+exec_prefix=${prefix}
+libdir=/opt/apollo/sysroot/lib
+includedir=/opt/apollo/sysroot/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 56.51.100
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil 
+Libs.private: -pthread -lm
+Cflags: -I${includedir}

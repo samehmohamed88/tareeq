@@ -1,0 +1,14 @@
+prefix=/opt/apollo/sysroot
+exec_prefix=${prefix}
+libdir=/opt/apollo/sysroot/lib
+includedir=/opt/apollo/sysroot/include
+
+Name: libswscale
+Description: FFmpeg image rescaling library
+Version: 5.7.100
+Requires: 
+Requires.private: libavutil >= 56.51.100
+Conflicts:
+Libs: -L${libdir}  -lswscale 
+Libs.private: -lm
+Cflags: -I${includedir}
