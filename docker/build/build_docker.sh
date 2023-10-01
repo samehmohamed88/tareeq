@@ -128,7 +128,7 @@ function determine_cuda_versions() {
         if [[ "${dist}" == "stable" ]]; then
             CUDA_LITE=11.1
             CUDNN_VERSION="8.0.5.39"
-            TENSORRT_VERSION="8.0.0"
+            TENSORRT_VERSION="7.2.1"
         else # testing
             CUDA_LITE=11.1
             CUDNN_VERSION="8.0.4.30"
@@ -219,7 +219,7 @@ function determine_images_in_out_x86_64() {
         fi
     elif [[ "${stage}" == "dev" ]]; then
         if [[ "${dist}" == "stable" ]]; then
-            IMAGE_IN="${APOLLO_REPO}:cyber-${arch}-${UBUNTU_LTS}-20230927_1821"
+            IMAGE_IN="${APOLLO_REPO}:cyber-${arch}-${UBUNTU_LTS}-20230929_1237"
             IMAGE_OUT="${APOLLO_REPO}:dev-${arch}-${UBUNTU_LTS}-${timestamp}"
         else
             IMAGE_IN="${APOLLO_REPO}:cyber-${arch}-${UBUNTU_LTS}-testing-${PREV_IMAGE_TIMESTAMP}"

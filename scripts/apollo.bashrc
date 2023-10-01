@@ -22,7 +22,7 @@ APOLLO_IN_DOCKER=false
 # If inside docker container
 if [ -f /.dockerenv ]; then
   APOLLO_IN_DOCKER=true
-  APOLLO_ROOT_DIR="/apollo_workspace"
+  APOLLO_ROOT_DIR="/apollo"
 fi
 
 export APOLLO_CONFIG_HOME="${APOLLO_CONFIG_HOME:=$HOME/.apollo}"

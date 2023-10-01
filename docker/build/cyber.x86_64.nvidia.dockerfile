@@ -22,6 +22,23 @@ RUN bash /opt/apollo/installers/install_llvm_clang.sh
 RUN bash /opt/apollo/installers/install_qa_tools.sh
 RUN bash /opt/apollo/installers/install_visualizer_deps.sh
 RUN bash /opt/apollo/installers/install_bazel.sh
+RUN bash /opt/apollo/installers/install_modules_base.sh
+RUN bash /opt/apollo/installers/install_gpu_support.sh
+RUN bash /opt/apollo/installers/install_dreamview_deps.sh ${GEOLOC}
 RUN bash /opt/apollo/installers/post_install.sh cyber
+
+ENV DEBIAN_FRONTEND=noninteractive
+ARG USERNAME=sameh.mohamed
+ARG USERID=1001
+
+RUN groupadd --gid $USERID $USERNAME \
+  && useradd -s /bin/bash --uid $USERID --gid $USERID -m $USERNAME \
+  && apt-get update \
+  && apt-get install -y sudo  \
+  && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
+  && chmod 0440 /etc/sudoers.d/$USERNAME \
+  && sudo usermod -a -G root,dialout,adm,cdrom,sudo,audio,dip,video,plugdev $USERNAME \
+  && rm -rf /var/lib/apt/lists/* \
+  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc
 
 WORKDIR /apollo
