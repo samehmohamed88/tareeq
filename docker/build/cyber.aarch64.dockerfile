@@ -14,8 +14,6 @@ ENV PATH /opt/apollo/sysroot/bin:$PATH
 COPY installers /opt/apollo/installers
 COPY rcfiles /opt/apollo/rcfiles
 
-RUN apt-get -y update && apt-get -y install python-dev python3-dev python3-pip python3-venv
-
 RUN bash /opt/apollo/installers/install_minimal_environment.sh ${GEOLOC}
 RUN bash /opt/apollo/installers/install_bazel.sh
 RUN bash /opt/apollo/installers/install_cmake.sh ${INSTALL_MODE}
