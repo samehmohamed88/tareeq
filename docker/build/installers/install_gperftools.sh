@@ -25,26 +25,30 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 apt_get_update_and_install \
     libunwind8 \
     libunwind-dev \
-    graphviz
+    graphviz \
+    libgoogle-perftools4 \
+    libgoogle-perftools-dev \
+    google-perftools
 
-VERSION="2.8"
-PKG_NAME="gperftools-${VERSION}.tar.gz"
-CHECKSUM="b09193adedcc679df2387042324d0d54b93d35d062ea9bff0340f342a709e860"
-DOWNLOAD_LINK="https://github.com/gperftools/gperftools/archive/${PKG_NAME}"
+# VERSION="2.8"
+# PKG_NAME="gperftools-${VERSION}.tar.gz"
+# CHECKSUM="b09193adedcc679df2387042324d0d54b93d35d062ea9bff0340f342a709e860"
+# DOWNLOAD_LINK="https://github.com/gperftools/gperftools/archive/${PKG_NAME}"
 
-download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+# download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
 
-tar xzf ${PKG_NAME}
+# tar xzf ${PKG_NAME}
 
-pushd "gperftools-gperftools-${VERSION}" >/dev/null
-    ./autogen.sh || sleep 1 && ./autogen.sh
-    ./configure --prefix=/usr
-    # shared lib only options: --enable-static=no --with-pic=yes
-    make -j$(nproc)
-    make install
-popd >/dev/null
+# pushd "gperftools-gperftools-${VERSION}" >/dev/null
+#     ./autogen.sh
+#     libtoolize
+#     ./configure --prefix=/usr
+#     # shared lib only options: --enable-static=no --with-pic=yes
+#     make -j$(nproc)
+#     make install
+# popd >/dev/null
 
-ldconfig
+# ldconfig
 
 ok "Successfully installed gperftools-${VERSION}."
 

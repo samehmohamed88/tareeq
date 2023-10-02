@@ -41,8 +41,6 @@ function geo_specific_config() {
 
 DOCKER_RUN_CMD="docker run"
 USE_GPU_HOST=0
-USE_AMD_GPU=0
-USE_NVIDIA_GPU=0
 
 function determine_gpu_use_host() {
     if [[ "${HOST_ARCH}" == "aarch64" ]]; then
@@ -51,24 +49,11 @@ function determine_gpu_use_host() {
         fi
     elif [[ "${HOST_ARCH}" == "x86_64" ]]; then
         if [[ ! -x "$(command -v nvidia-smi)" ]]; then
-            warning "No nvidia-smi found."
+            warning "No nvidia-smi found. CPU will be used"
         elif [[ -z "$(nvidia-smi)" ]]; then
-            warning "No NVIDIA GPU device found."
+            warning "No GPU device found. CPU will be used."
         else
-            USE_NVIDIA_GPU=1
-        fi
-        if [[ ! -x "$(command -v rocm-smi)" ]]; then
-            warning "No rocm-smi found."
-        elif [[ -z "$(rocm-smi)" ]]; then
-            warning "No AMD GPU device found."
-        else
-            USE_AMD_GPU=1
-        fi
-        if (( $USE_NVIDIA_GPU == 1 )) || (( $USE_AMD_GPU == 1 )); then
             USE_GPU_HOST=1
-        else
-            USE_GPU_HOST=0
-            warning "No any GPU device found. CPU will be used instead."
         fi
     else
         error "Unsupported CPU architecture: ${HOST_ARCH}"
@@ -76,12 +61,16 @@ function determine_gpu_use_host() {
     fi
 
     local nv_docker_doc="https://github.com/NVIDIA/nvidia-docker/blob/master/README.md"
-    if (( $USE_NVIDIA_GPU == 1 )); then
-        if [[ -x "$(which nvidia-container-toolkit)" ]]; then
+    if [[ "${USE_GPU_HOST}" -eq 1 ]]; then
+        if [[ -x "$(which nvidia-container-toolkit)" || -x "$(which nvidia-container-runtime)" ]]; then
             local docker_version
             docker_version="$(docker version --format '{{.Server.Version}}')"
             if dpkg --compare-versions "${docker_version}" "ge" "19.03"; then
-                DOCKER_RUN_CMD="docker run --gpus all"
+                if [[ "${HOST_ARCH}" == "aarch64" ]]; then
+                    DOCKER_RUN_CMD="docker run --runtime nvidia"
+                else
+                    DOCKER_RUN_CMD="docker run --gpus all"
+                fi
             else
                 warning "Please upgrade to docker-ce 19.03+ to access GPU from container."
                 USE_GPU_HOST=0
@@ -94,8 +83,6 @@ function determine_gpu_use_host() {
                 "and NVIDIA Container Toolkit as described by: "
             warning "  ${nv_docker_doc}"
         fi
-    elif (( $USE_AMD_GPU == 1 )); then
-        DOCKER_RUN_CMD="docker run --device=/dev/kfd --device=/dev/dri --security-opt seccomp=unconfined --group-add video"
     fi
 }
 
@@ -110,25 +97,44 @@ function remove_container_if_exists() {
 
 function postrun_start_user() {
     local container="$1"
-    if [ "${USER}" != "root" ]; then
+    if [ "${CUSTOM_USER-$USER}" != "root" ]; then
         docker exec -u root "${container}" \
             bash -c '/apollo/scripts/docker_start_user.sh'
     fi
 }
 
+function postrun_cross_platfrom_download() {
+    local container="$1"
+    local flag="$2"
+    if [[ "$flag" -eq 1 ]]; then
+        download_tegra_lib "${container}"
+    fi
+}
+
+function download_tegra_lib() {
+    local container="$1"
+    local tegra_lib_url="https://apollo-pkg-beta.cdn.bcebos.com/archive/tegra.tar.gz"
+    info "download external library for cross-compilation..."
+    docker exec -u root "${container}" \
+        bash -c "cd ~ && wget -nv ${tegra_lib_url} && tar -xzvf ~/tegra.tar.gz -C /usr/lib/aarch64-linux-gnu/ > /dev/null"
+}
+
 function stop_all_apollo_containers() {
     local force="$1"
     local running_containers
-    running_containers="$(docker ps -a --format '{{.Names}}')"
+    # add a special field `...` as a separator
+    running_containers=($(docker inspect \
+      $(docker ps -q) \
+      --format '{{or .Config.Labels.owner "-"}}...{{.Name}}'))
     for container in ${running_containers[*]}; do
-        if [[ "${container}" =~ apollo_.*_${USER} ]]; then
-            #printf %-*s 70 "Now stop container: ${container} ..."
-            #printf "\033[32m[DONE]\033[0m\n"
-            #printf "\033[31m[FAILED]\033[0m\n"
-            info "Now stop container ${container} ..."
-            if docker stop "${container}" >/dev/null; then
+        owner="${container%%...*}"
+        name="${container##*...}"
+        # only stop containers created by current user
+        if [[ ("${owner}" == "${USER}") && ("${name}" =~ apollo_.*) ]]; then
+            info "Now stop container ${name} ..."
+            if docker stop "${name}" >/dev/null; then
                 if [[ "${force}" == "-f" || "${force}" == "--force" ]]; then
-                    docker rm -f "${container}" 2>/dev/null
+                    docker rm -f "${name}" 2>/dev/null
                 fi
                 info "Done."
             else
