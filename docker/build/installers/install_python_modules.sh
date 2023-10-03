@@ -45,11 +45,11 @@ python3 setup.py install --user
 popd >/dev/null
 rm -rf pypcd
 
-if [[ -n "${CLEAN_DEPS}" ]]; then
-    apt_get_remove libhdf5-dev
-    apt_get_update_and_install \
-        libhdf5-100
-fi
+# if [[ -n "${CLEAN_DEPS}" ]]; then
+#     apt_get_remove libhdf5-dev
+#     apt_get_update_and_install \
+#         libhdf5-103
+# fi
 
 # Clean up cache to reduce layer size.
 apt-get clean && \

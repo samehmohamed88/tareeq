@@ -17,7 +17,7 @@
 ###############################################################################
 
 # Fail on first error.
-set -e
+set -xe
 
 cd $( dirname "${BASH_SOURCE[0]}")
 . ./installer_base.sh
@@ -85,33 +85,33 @@ ldconfig
 
 rm -fr ${PKG_NAME} ffmpeg-${VERSION}
 
-if [[ -n "${CLEAN_DEPS}" ]]; then
-    apt_get_remove \
-        nasm \
-        yasm \
-        libx265-dev \
-        libass-dev \
-        libfdk-aac-dev \
-        libmp3lame-dev \
-        libopus-dev \
-        libtheora-dev \
-        libvorbis-dev \
-        libvpx-dev \
-        libx264-dev
+# if [[ -n "${CLEAN_DEPS}" ]]; then
+#     apt_get_remove \
+#         nasm \
+#         yasm \
+#         libx265-dev \
+#         libass-dev \
+#         libfdk-aac-dev \
+#         libmp3lame-dev \
+#         libopus-dev \
+#         libtheora-dev \
+#         libvorbis-dev \
+#         libvpx-dev \
+#         libx264-dev
 
-    # Don't remove libnuma-dev as it is required by coinor-libipopt1v5
+#     # Don't remove libnuma-dev as it is required by coinor-libipopt1v5
 
-    # install runtime-dependencies of ffmpeg
-    apt_get_update_and_install \
-        libvpx5 \
-        libx264-152 \
-        libx265-146 \
-        libopus0   \
-        libmp3lame0 \
-        libvorbis0a \
-        libvorbisenc2 \
-        libfdk-aac1 \
-        libass9     \
-        libtheora0
-fi
+#     # install runtime-dependencies of ffmpeg
+#     apt_get_update_and_install \
+#         libvpx5 \
+#         libx264-152 \
+#         libx265-146 \
+#         libopus0   \
+#         libmp3lame0 \
+#         libvorbis0a \
+#         libvorbisenc2 \
+#         libfdk-aac1 \
+#         libass9     \
+#         libtheora0
+# fi
 

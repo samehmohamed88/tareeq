@@ -17,7 +17,7 @@
 ###############################################################################
 
 # Fail on first error.
-set -e
+set -xe
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 . ./installer_base.sh
@@ -64,14 +64,14 @@ ok "Successfully built proj = ${VERSION}"
 
 rm -fr "${PKG_NAME}" "proj-${VERSION}"
 
-if [[ -n "${CLEAN_DEPS}" ]]; then
-    # Remove build-deps for proj
-    apt_get_remove \
-        libsqlite3-dev \
-        sqlite3 \
-        libtiff-dev \
-        libcurl4-openssl-dev
-fi
+# if [[ -n "${CLEAN_DEPS}" ]]; then
+#     # Remove build-deps for proj
+#     apt_get_remove \
+#         libsqlite3-dev \
+#         sqlite3 \
+#         libtiff-dev \
+#         libcurl4-openssl-dev
+# fi
 
 # Clean up cache to reduce layer size.
 apt-get clean &&

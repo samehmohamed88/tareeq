@@ -67,7 +67,7 @@ fi
 download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
 
 tar xzf "${PKG_NAME}"
-mv libtorch_cpu /usr/local/libtorch_cpu
+mv libtorch_cpu-${VERSION}-linux-${TARGET_ARCH} /usr/local/libtorch_cpu
 rm -f "${PKG_NAME}"
 ok "Successfully installed libtorch_cpu ${VERSION}"
 
@@ -89,7 +89,7 @@ fi
 download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
 
 tar xzf "${PKG_NAME}"
-mv libtorch_gpu /usr/local/libtorch_gpu
+mv libtorch_gpu-${VERSION}-cu111-linux-x86_64 /usr/local/libtorch_gpu
 
 # Cleanup
 rm -f "${PKG_NAME}"

@@ -25,7 +25,7 @@ CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 #     exit 0
 # fi
 
-: ${INSTALL_MODE:=build}
+# : ${INSTALL_MODE:=build}
 # : ${APOLLO_DIST:=stable} # re-enable this if differentiation is needed.
 
 GPU_ARCHS=
@@ -50,7 +50,7 @@ apt_get_update_and_install \
 TARGET_ARCH="$(uname -m)"
 VERSION="2.5.4"
 
-if [[ "${INSTALL_MODE}" == "download" ]]; then
+# if [[ "${INSTALL_MODE}" == "download" ]]; then
     if [[ "${TARGET_ARCH}" == "x86_64" ]]; then
         CHECKSUM="546f7739109ba6cf93696882d8b18c0e35e68e0c8531ce9f9ca8fa345a1f227c"
         PKG_NAME="magma-${VERSION}-cu111-x86_64.tar.gz"
@@ -69,32 +69,32 @@ if [[ "${INSTALL_MODE}" == "download" ]]; then
     popd
     rm -rf ${PKG_NAME%.tar.gz} ${PKG_NAME}
     ok "Successfully installed magma-${VERSION} in download mode"
-else
-    PKG_NAME="magma-${VERSION}.tar.gz"
-    DOWNLOAD_LINK="http://icl.utk.edu/projectsfiles/magma/downloads/${PKG_NAME}"
-    CHECKSUM="7734fb417ae0c367b418dea15096aef2e278a423e527c615aab47f0683683b67"
+# else
+#     PKG_NAME="magma-${VERSION}.tar.gz"
+#     DOWNLOAD_LINK="http://icl.utk.edu/projectsfiles/magma/downloads/${PKG_NAME}"
+#     CHECKSUM="7734fb417ae0c367b418dea15096aef2e278a423e527c615aab47f0683683b67"
 
-    download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
+#     download_if_not_cached "${PKG_NAME}" "${CHECKSUM}" "${DOWNLOAD_LINK}"
 
-    tar xzf ${PKG_NAME}
+#     tar xzf ${PKG_NAME}
 
-    pushd magma-${VERSION}
-        mkdir build && cd build
-        cmake .. \
-            -DBUILD_SHARED_LIBS=ON \
-            -DCMAKE_INSTALL_PREFIX="${SYSROOT_DIR}" \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DGPU_TARGET="${GPU_ARCHS}"
-        # E.g., sm_52 sm_60 sm_61 sm_70 sm_75
-        make -j$(nproc)
-        make install
-    popd
-    rm -rf magma-${VERSION} ${PKG_NAME}
-fi
+#     pushd magma-${VERSION}
+#         mkdir build && cd build
+#         cmake .. \
+#             -DBUILD_SHARED_LIBS=ON \
+#             -DCMAKE_INSTALL_PREFIX="${SYSROOT_DIR}" \
+#             -DCMAKE_BUILD_TYPE=Release \
+#             -DGPU_TARGET="${GPU_ARCHS}"
+#         # E.g., sm_52 sm_60 sm_61 sm_70 sm_75
+#         make -j$(nproc)
+#         make install
+#     popd
+#     rm -rf magma-${VERSION} ${PKG_NAME}
+# fi
 
-info "Successfully built Magma for CUDA SMs=${GPU_ARCHS}"
-ldconfig
+# info "Successfully built Magma for CUDA SMs=${GPU_ARCHS}"
+# ldconfig
 
-if [[ -n "${CLEAN_DEPS}" ]]; then
-    apt_get_remove gfortran
-fi
+# if [[ -n "${CLEAN_DEPS}" ]]; then
+#     apt_get_remove gfortran
+# fi

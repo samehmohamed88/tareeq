@@ -21,16 +21,16 @@ RUN M="${CUDNN_VERSION%%.*}" \
 
 ENV CUDNN_VERSION ${CUDNN_VERSION}
 
-COPY nv-tensorrt-repo-ubuntu1804-cuda11.1-trt7.2.1.6-ga-20201007_1-1_amd64.deb /opt
+COPY nv-tensorrt-repo-ubuntu2004-cuda11.3-trt8.0.1.6-ga-20210626_1-1_amd64.deb /opt
 
-RUN dpkg -i /opt/nv-tensorrt-repo-ubuntu1804-cuda11.1-trt7.2.1.6-ga-20201007_1-1_amd64.deb \
-    && apt-key add /var/nv-tensorrt-repo-cuda11.1-trt7.2.1.6-ga-20201007/7fa2af80.pub \
+RUN dpkg -i /opt/nv-tensorrt-repo-ubuntu2004-cuda11.3-trt8.0.1.6-ga-20210626_1-1_amd64.deb \
+    && apt-key add /var/nv-tensorrt-repo-ubuntu2004-cuda11.3-trt8.0.1.6-ga-20210626/7fa2af80.pub \
     && apt-get -y update \
     && apt-get install -y --no-install-recommends \
-    libnvinfer7 \
-    libnvonnxparsers7 \
-    libnvparsers7 \
-    libnvinfer-plugin7  \    
+    libnvinfer8=8.0.0-1+cuda11.3 \
+    libnvonnxparsers8=8.0.0-1+cuda11.3 \
+    libnvparsers8=8.0.0-1+cuda11.3 \
+    libnvinfer-plugin8=8.0.0-1+cuda11.3  \    
     && apt-get -y clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /etc/apt/sources.list.d/nvidia-ml.list \

@@ -16,7 +16,7 @@
 ###############################################################################
 
 # Fail on first error.
-set -e
+set -xe
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 . ./installer_base.sh
@@ -105,31 +105,31 @@ info "Ok. Done installing VTK-${VERSION}"
 # clean up
 rm -rf ${PKG_NAME} VTK-${VERSION}
 
-if [[ -n "${CLEAN_DEPS}" ]]; then
-    apt_get_remove \
-        libjpeg-dev \
-        libpng-dev \
-        libtiff-dev \
-        libeigen3-dev \
-        liblzma-dev \
-        libxml2-dev \
-        liblz4-dev \
-        libdouble-conversion-dev \
-        libsqlite3-dev \
-        libglew-dev \
-        libtheora-dev \
-        libogg-dev \
-        libxt-dev \
-        libfreetype6-dev \
-        libjsoncpp-dev \
-        libhdf5-dev
+# if [[ -n "${CLEAN_DEPS}" ]]; then
+#     apt_get_remove \
+#         libjpeg-dev \
+#         libpng-dev \
+#         libtiff-dev \
+#         libeigen3-dev \
+#         liblzma-dev \
+#         libxml2-dev \
+#         liblz4-dev \
+#         libdouble-conversion-dev \
+#         libsqlite3-dev \
+#         libglew-dev \
+#         libtheora-dev \
+#         libogg-dev \
+#         libxt-dev \
+#         libfreetype6-dev \
+#         libjsoncpp-dev \
+#         libhdf5-dev
 
-    # install Runtime-deps for VTK
-    apt_get_update_and_install \
-        libglew2.0 \
-        libdouble-conversion1 \
-        libxml2 \
-        libjsoncpp1 \
-        libhdf5-100
-fi
+#     # install Runtime-deps for VTK
+#     apt_get_update_and_install \
+#         libglew2.0 \
+#         libdouble-conversion1 \
+#         libxml2 \
+#         libjsoncpp1 \
+#         libhdf5-100
+# fi
 

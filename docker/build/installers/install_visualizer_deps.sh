@@ -17,10 +17,10 @@
 ###############################################################################
 
 # Fail on first error.
-set -e
+set -xe
 
-BUILD_TYPE="${1:-download}"; shift
-LSB_RELEASE="${1:-18.04}"; shift
+BUILD_TYPE="${1:-download}";
+LSB_RELEASE="${1:-20.04}";
 
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 . ${CURR_DIR}/installer_base.sh

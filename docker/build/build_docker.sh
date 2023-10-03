@@ -2,7 +2,7 @@
 TAB="    " # 4 Spaces
 
 APOLLO_REPO="apolloauto/apollo"
-UBUNTU_LTS="18.04"
+UBUNTU_LTS="20.04"
 
 SUPPORTED_ARCHS=(
     x86_64
@@ -106,7 +106,7 @@ function determine_cuda_versions() {
     if [[ "${arch}" == "x86_64" ]]; then
         if [[ "${dist}" == "stable" ]]; then
             CUDA_LITE=11.1
-            CUDNN_VERSION="8.0.4.30"
+            CUDNN_VERSION="8.0.5.39"
             TENSORRT_VERSION="7.2.1"
         else # testing
             CUDA_LITE=11.1
@@ -170,7 +170,7 @@ function determine_images_in_out_x86_64() {
 
     local base_image="${APOLLO_REPO}:cuda${CUDA_LITE}-cudnn${cudnn_ver}-trt${trt_ver}-devel-${UBUNTU_LTS}-x86_64"
     if [[ "${stage}" == "base" ]]; then
-        IMAGE_IN="nvidia/cuda:${CUDA_LITE}-devel-ubuntu${UBUNTU_LTS}"
+        IMAGE_IN="nvidia/cuda:${CUDA_LITE}.1-devel-ubuntu${UBUNTU_LTS}"
         IMAGE_OUT="${base_image}"
     elif [[ "${stage}" == "cyber" ]]; then
         IMAGE_IN="${base_image}"
@@ -181,7 +181,7 @@ function determine_images_in_out_x86_64() {
         fi
     elif [[ "${stage}" == "dev" ]]; then
         if [[ "${dist}" == "stable" ]]; then
-            IMAGE_IN="${APOLLO_REPO}:cyber-x86_64-${UBUNTU_LTS}-${PREV_IMAGE_TIMESTAMP}"
+            IMAGE_IN="${APOLLO_REPO}:cyber-x86_64-${UBUNTU_LTS}-20231002_0826"
             IMAGE_OUT="${APOLLO_REPO}:dev-x86_64-${UBUNTU_LTS}-${timestamp}"
         else
             IMAGE_IN="${APOLLO_REPO}:cyber-x86_64-${UBUNTU_LTS}-testing-${PREV_IMAGE_TIMESTAMP}"

@@ -17,7 +17,7 @@
 ###############################################################################
 
 # Fail on first error.
-set -e
+set -xe
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 . ./installer_base.sh
@@ -25,7 +25,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 MY_GEO=$1; shift
 ARCH="$(uname -m)"
 
-LSB_RELEASE=$1; shift
+LSB_RELEASE=20.04;
 
 ##----------------------------##
 ##  APT sources.list settings |
@@ -34,7 +34,7 @@ LSB_RELEASE=$1; shift
 if [[ "${ARCH}" == "x86_64" ]]; then
     if [[ "${LSB_RELEASE}" == "20.04" ]]; then
         echo "currently apollo x86_64 image does not support ubuntu 22.04"
-        exit -1
+        # exit -1
     fi
     if [[ "${MY_GEO}" == "cn" ]]; then
         cp -f "${RCFILES_DIR}/sources.list.cn.x86_64" /etc/apt/sources.list

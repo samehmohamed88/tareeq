@@ -22,9 +22,6 @@ RUN bash /opt/apollo/installers/install_llvm_clang.sh
 RUN bash /opt/apollo/installers/install_qa_tools.sh
 RUN bash /opt/apollo/installers/install_visualizer_deps.sh
 RUN bash /opt/apollo/installers/install_bazel.sh
-RUN bash /opt/apollo/installers/install_modules_base.sh
-RUN bash /opt/apollo/installers/install_gpu_support.sh
-RUN bash /opt/apollo/installers/install_dreamview_deps.sh ${GEOLOC}
 RUN bash /opt/apollo/installers/post_install.sh cyber
 
 ENV DEBIAN_FRONTEND=noninteractive
