@@ -41,7 +41,7 @@ TIMEZONE_CN=(
   "Time zone: Asia/Shanghai (CST, +0800)"
 )
 
-USE_LOCAL_IMAGE=0
+USE_LOCAL_IMAGE=1
 CUSTOM_DIST=
 USER_AGREED="no"
 
@@ -327,7 +327,15 @@ function setup_devices_and_mount_local_volumes() {
                         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
                         -v /etc/localtime:/etc/localtime:ro \
                         -v /usr/src:/usr/src \
-                        -v /lib/modules:/lib/modules"
+                        -v /lib/modules:/lib/modules \
+                        --volume=${HOME}/CLION/clion-2022.3.3:/home/sameh.mohamed/clion \
+                        --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/sameh.mohamed/.java/.userPrefs \
+                        --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/sameh.mohamed/.cache/JetBrains \
+                        --volume=${HOME}/.dockerConfig/jetbrains/share:/home/sameh.mohamed/.local/share/JetBrains \
+                        --volume=${HOME}/.dockerConfig/jetbrains/config:/home/sameh.mohamed/.config/JetBrains \
+                        --volume=${HOME}/.ideavimrc:/home/sameh.mohamed/.ideavimrc \
+                        --volume=/media:/media \
+                        --volume=${HOME}/.fonts:/home/sameh.mohamed/.fonts"
     volumes="$(tr -s " " <<<"${volumes}")"
     eval "${__retval}='${volumes}'"
 }
