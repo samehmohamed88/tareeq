@@ -21,6 +21,7 @@ source "${CURR_DIR}/docker_base.sh"
 CACHE_ROOT_DIR="${APOLLO_ROOT_DIR}/.cache"
 
 DOCKER_REPO="apolloauto/apollo"
+DOCKER_REPO_LITE="sameh4/apollo"
 DEV_CONTAINER_PREFIX='apollo_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${USER}"
 DEV_INSIDE="in-dev-docker"
@@ -246,7 +247,7 @@ function determine_dev_image() {
             exit 3
         fi
     fi
-    DEV_IMAGE="${DOCKER_REPO}:${version}"
+    DEV_IMAGE="${DOCKER_REPO_LITE}:${version}"
 }
 
 function check_host_environment() {
