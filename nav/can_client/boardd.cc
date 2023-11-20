@@ -1,4 +1,4 @@
-#include "selfdrive/boardd/boardd.h"
+#include "panda/boardd.h"
 
 #include <sched.h>
 #include <sys/cdefs.h>

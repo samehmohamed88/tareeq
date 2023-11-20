@@ -118,7 +118,7 @@ PandaSpiHandle::PandaSpiHandle(std::string serial) : PandaCommsHandle(serial) {
 
 fail:
   cleanup();
-  throw std::runtime_error("Error connecting to panda");
+  throw std::runtime_error("Error connecting to can_client");
 }
 
 PandaSpiHandle::~PandaSpiHandle() {
@@ -197,7 +197,7 @@ std::vector<std::string> PandaSpiHandle::list() {
     PandaSpiHandle sh("");
     return {sh.hw_serial};
   } catch (std::exception &e) {
-    // no panda on SPI
+    // no can_client on SPI
   }
   return {};
 }
@@ -236,7 +236,7 @@ int PandaSpiHandle::spi_transfer_retry(uint8_t endpoint, uint8_t *tx_data, uint1
       std::this_thread::yield();
 
       if (ret == SpiError::NACK) {
-        // prevent busy waiting while the panda is NACK'ing
+        // prevent busy waiting while the can_client is NACK'ing
         // due to full TX buffers
         nack_count += 1;
         if (nack_count > 3) {

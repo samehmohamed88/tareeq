@@ -33,7 +33,7 @@ PandaTest::PandaTest(uint32_t bus_offset_, int can_list_size, cereal::PandaState
     test_data[data_len] = bytes;
   }
 
-  // generate can messages for this panda
+  // generate can messages for this can_client
   auto can_list = msg.initEvent().initSendcan(can_list_size);
   for (uint8_t i = 0; i < can_list_size; ++i) {
     auto can = can_list[i];

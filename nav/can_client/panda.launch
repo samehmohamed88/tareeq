@@ -1,0 +1,7 @@
+<cyber>
+    <module>
+        <name>panda</name>
+        <dag_conf>/panda/panda.dag</dag_conf>
+        <process_name>panda</process_name>
+    </module>
+</cyber>

@@ -34,6 +34,7 @@ load("//third_party/qt5:workspace.bzl", qt5 = "repo")
 load("//third_party/sqlite3:workspace.bzl", sqlite3 = "repo")
 load("//third_party/tinyxml2:workspace.bzl", tinyxml2 = "repo")
 load("//third_party/uuid:workspace.bzl", uuid = "repo")
+load("//third_party/units:workspace.bzl", units = "repo")
 load("//third_party/yaml_cpp:workspace.bzl", yaml_cpp = "repo")
 
 # load("//third_party/glew:workspace.bzl", glew = "repo")
@@ -83,6 +84,7 @@ def initialize_third_party():
     sqlite3()
     tinyxml2()
     uuid()
+    units()
     yaml_cpp()
 
 # Define all external repositories required by
