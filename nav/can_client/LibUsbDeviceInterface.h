@@ -21,7 +21,7 @@ public:
     /// Calls the `libusb_control_transfer` function
     /// @param bmRequestType the configuration item.
     /// @param bRequest The request field for the setup packet. This is the actual request to be executed.
-    /// @param wValue The request field for the setup packet. This is the actual request to be executed.
+    /// @param wValue The value field for the setup packet. This is used to pass a parameter to the device, specific to the request.
     /// @param wIndex An offset that is used to provide additional information to the request, commonly 0 but not always.
     /// @param data A pointer to the data buffer. For OUT transfers, this buffer contains the data to send.
     /// For IN transfers, this is where the received data will be stored.
@@ -30,7 +30,7 @@ public:
     /// @param timeout The time, in milliseconds, that the function should wait before giving up on the transfer.
     /// If the transfer times out, the function will return `LIBUSB_ERROR_TIMEOUT`.
     /// @returns libusb_error a status of either success or timeout, etc.
-    virtual libusb_error libUsbControlTransfer(uint8_t bmRequestType,
+    virtual int libUsbControlTransfer(uint8_t bmRequestType,
                                                uint8_t bRequest,
                                                uint16_t wValue,
                                                uint16_t wIndex,
@@ -50,7 +50,7 @@ public:
     /// @param timeout A timeout (in milliseconds) that the function should wait before giving up on the transfer.
     /// If the transfer times out, the function will return `LIBUSB_ERROR_TIMEOUT`.
     /// @returns libusb_error a status of either success or timeout, etc.
-    virtual libusb_error libUsbBulkTransfer(uint8_t endpoint,
+    virtual int libUsbBulkTransfer(uint8_t endpoint,
                                             uint8_t *data,
                                             int length,
                                             int *actual_length,
@@ -58,14 +58,14 @@ public:
 
     /// Calls the underlying `libusb_init` to initialize a `libusb_context` that's maintained internally as a std::unique_ptr.
     /// @returns libusb_error a status of either success or timeout, etc.
-    virtual libusb_error libUsbInitDevice() const = 0;
+    virtual libusb_error libUsbInitDevice() = 0;
 
     /// Calls the underlying `libusb_open_device_with_vid_pid` which initializes the libusb_device_handle that is maintained
     /// internally as a std::unique_ptr.
     /// @param vendorID the vendor ID of the USB device, can be obtained with `dmesg` on most Unix systems.
     /// @param productID the product ID of the USB device, can be obtained with `dmesg` on most Unix systems.
     /// @returns libusb_error a status of either success or timeout, etc.
-    virtual libusb_error libUsbOpenDevice(uint16_t vendorID, uint16_t productID) const = 0;
+    virtual libusb_error libUsbOpenDevice(uint16_t vendorID, uint16_t productID) = 0;
 
     /// Wrapper method for cleaning up resources. It calls `libusb_release_interface`.
     /// @returns libusb_error a status of either success or timeout, etc.

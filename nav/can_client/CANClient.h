@@ -47,21 +47,7 @@ struct CANFrame {
     long src;
 };
 
-/// The Comma AI CAN Device has a specific safety model where it starts in silent mode with No Output to prevent
-/// accidental movements/steering
-/// taken from https://github.com/commaai/cereal/blob/416c3d531c90ce16498d782bf383625a857ee74c/car.capnp#L567C8-L567C19
-enum class SafetyModel {
-    NoOutput = 0,
-    AllOutput = 17
-};
 
-/// @brief Enumerations of the address of the request to the Comma AI CAN Device for reading and writing CAN frames and device
-/// configurations
-enum class DeviceRequests {
-    CommaAIDeviceName = 0xc1,
-    ResetCommunications = 0xc0,
-    SafetyModel = 0xdc
-};
 
 template <class CANAdapter>
 class CANClient {

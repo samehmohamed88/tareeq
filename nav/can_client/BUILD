@@ -18,6 +18,23 @@ cc_binary(
 )
 
 cc_library(
+    name = "device_enum_classes",
+    hdrs = ["DeviceInfo.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    alwayslink = True,
+)
+
+cc_library(
+    name = "comma_ai_can_adapter",
+    hdrs = ["CommaAICANAdapter.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":device_enum_classes",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "panda_component_inner",
     srcs = ["panda_component.cc"],
     hdrs = ["panda_component.h"],
@@ -79,6 +96,7 @@ cc_library(
     hdrs = ["UsbDevice.h"],
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [
+        ":device_enum_classes",
         "//cyber/common:log",
         "@units",
     ],

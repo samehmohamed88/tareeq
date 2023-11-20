@@ -1,5 +1,7 @@
+#pragma once
 
 #include "nav/can_client/LibUsbDeviceInterface.h"
+#include "nav/can_client/DeviceInfo.h"
 #include "cyber/common/log.h"
 
 #include <units.h>
@@ -16,66 +18,59 @@
 namespace nav {
 namespace can {
 
-enum class LibUsbDeviceStatus {
-    SUCCESS = libusb_error::LIBUSB_SUCCESS,
-    FAILED_TO_INITIALIZE = libusb_error::LIBUSB_ERROR_IO,
-    NO_DEVICE = LIBUSB_ERROR_NO_DEVICE,
-    DEVICE_BUSY = LIBUSB_ERROR_BUSY,
-    CONNECTION_TIMEOUT = LIBUSB_ERROR_TIMEOUT,
-    CONNECTION_OVERFLOW = LIBUSB_ERROR_OVERFLOW,
-    UNKNOWN_ERROR = -100
-
-};
 template <class LibUsbInterface>
 class UsbDevice {
 public:
-
+    static constexpr uint8_t WriteRequest =
+            LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
+    static constexpr uint8_t ReadRequest =
+            LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
 public:
     /// @param vendorID The USB device Vendor Id.  Can be found with a simple `dmesg` on Unix Systems.
     /// @param productID The USB device Product Id.  Can be found with a simple `dmesg` on Unix Systems.
     /// @param interfaceNumber Typically in LibUsb this value is almost always `1`.
-    UsbDevice(std::unique_ptr<const LibUsbInterface> libUsbInterface,
+    UsbDevice(std::unique_ptr<LibUsbInterface> libUsbInterface,
               uint16_t vendorID,
               uint16_t productID,
               int interfaceNumber = 1);
 
     /// Initialize the USB Device Context using libusb context init
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus initDevice();
+    /// @returns DeviceStatus
+    DeviceStatus initDevice();
     /// Opens the USB Device using the libusb device handle which accepts a vendor Id and a product Id.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus openDevice();
+    /// @returns DeviceStatus
+    DeviceStatus openDevice();
     /// Sets the default configuration for the USB device using libusb device configuration.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus configure();
+    /// @returns DeviceStatus
+    DeviceStatus configure();
     /// Writes a configuration setting to the USB Device
     /// @param bmRequestType the configuration item.
     /// @param bRequest The request field for the setup packet. This is the actual request to be executed.
-    /// @param wValue The request field for the setup packet. This is the actual request to be executed.
+    /// @param wValue The value field for the setup packet. This is used to pass a parameter to the device, specific to the request.
     /// @param wIndex An offset that is used to provide additional information to the request, commonly 0 but not always.
     /// @param data std::vector character buffer, this is where the received data will be stored.
     /// @param timeout specifies to the libusb the maximum time in milliseconds to wait for the transfer to complete before timing out
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus controlRead(const uint8_t bmRequestType,
+    /// @returns DeviceStatus
+    DeviceStatus controlRead(const uint8_t bmRequestType,
                                    const uint8_t bRequest,
                                    const uint16_t wValue,
                                    const uint16_t wIndex,
                                    std::vector<uint8_t> &data,
-                                   const units::time::millisecond_t timeout,
+                                   const units::time::millisecond_t timeout = units::time::millisecond_t{0},
                                    const units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
     /// Reads a configuration setting from the USB Device
     /// @param bmRequestType the configuration item.
     /// @param bRequest The request field for the setup packet. This is the actual request to be executed.
-    /// @param wValue The request field for the setup packet. This is the actual request to be executed.
+    /// @param wValue The value field for the setup packet. This is used to pass a parameter to the device, specific to the request.
     /// @param wIndex An offset that is used to provide additional information to the request, commonly 0 but not always.
     /// @param data std::vector character buffer. This buffer contains the data to send.
     /// @param timeout specifies to the libusb the maximum time in milliseconds to wait for the transfer to complete before timing out.
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus controlWrite(const uint8_t bmRequestType,
+    /// @returns DeviceStatus
+    DeviceStatus controlWrite(const uint8_t bmRequestType,
                                     const uint8_t bRequest,
                                     const uint16_t wValue,
                                     const uint16_t wIndex,
@@ -89,8 +84,8 @@ public:
     /// @param timeout specifies to the libusb the maximum time in milliseconds to wait for the transfer to complete before timing out.
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus bulkRead(const uint8_t endpoint,
+    /// @returns DeviceStatus
+    DeviceStatus bulkRead(const uint8_t endpoint,
                                 std::vector<uint8_t> &data,
                                 std::shared_ptr<int> transferred,
                                 const units::time::millisecond_t timeout,
@@ -102,8 +97,8 @@ public:
     /// @param timeout specifies to the libusb the maximum time in milliseconds to wait for the transfer to complete before timing out.
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
-    /// @returns LibUsbDeviceStatus
-    LibUsbDeviceStatus bulkWrite(const uint8_t endpoint,
+    /// @returns DeviceStatus
+    DeviceStatus bulkWrite(const uint8_t endpoint,
                                  std::vector<uint8_t> &data,
                                  std::shared_ptr<int> transferred,
                                  const units::time::millisecond_t timeout,
@@ -113,10 +108,10 @@ public:
 
 
 private:
-    LibUsbDeviceStatus logConnectionLostAndReturn();
-    LibUsbDeviceStatus logUsbErrorAndReturn(libusb_error returnCode);
+    DeviceStatus logConnectionLostAndReturn();
+    DeviceStatus logUsbErrorAndReturn(libusb_error returnCode);
 
-    LibUsbDeviceStatus controlTransferWithRetry(const uint8_t bmRequestType,
+    DeviceStatus controlTransferWithRetry(const uint8_t bmRequestType,
                                                 const uint8_t bRequest,
                                                 const uint16_t wValue,
                                                 const uint16_t wIndex,
@@ -124,28 +119,17 @@ private:
                                                 const units::time::millisecond_t timeout,
                                                 const units::time::microsecond_t sleepDuration);
 
-    LibUsbDeviceStatus bulkTransferWithRetry(const uint8_t endpoint,
+    DeviceStatus bulkTransferWithRetry(const uint8_t endpoint,
                                   std::vector<uint8_t> &data,
                                   std::shared_ptr<int> transferred,
                                   const units::time::millisecond_t timeout,
                                   const units::time::microsecond_t sleepDuration);
 
-    std::unique_ptr<const LibUsbInterface> libUsbInterface_;
-
-//    /// the Comma AI Red Panda Vendor ID
-//    static constexpr uint16_t vendorID_ = 0xbbaa;
-//    /// thee Comma AI Red Panda Product ID
-//    static constexpr uint16_t productID_ = 0xddcc;
-//    /// interface number taken from https://github.com/commaai/openpilot/blob/master/selfdrive/boardd/panda_comms.cc#L73
-//    static constexpr int interfaceNumber_ = 0;
+    std::unique_ptr<LibUsbInterface> libUsbInterface_;
 
     uint16_t vendorID_;
     uint16_t productID_;
     int interfaceNumber_;
-    static constexpr uint8_t bmRequestWrite_ =
-            LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
-    static constexpr uint8_t bmRequestRead_ =
-            LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
 
     bool isKernelDriverDetached_ = false;
     std::string hwSerial_;
@@ -158,7 +142,7 @@ private:
 };
 
 template <class LibUsbInterface>
-UsbDevice<LibUsbInterface>::UsbDevice(std::unique_ptr<const LibUsbInterface> libUsbInterface,
+UsbDevice<LibUsbInterface>::UsbDevice(std::unique_ptr<LibUsbInterface> libUsbInterface,
                                       uint16_t vendorID,
                                       uint16_t productID,
                                       int interfaceNumber) :
@@ -169,26 +153,29 @@ UsbDevice<LibUsbInterface>::UsbDevice(std::unique_ptr<const LibUsbInterface> lib
 {}
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::logUsbErrorAndReturn(libusb_error returnCode) {
+DeviceStatus UsbDevice<LibUsbInterface>::logUsbErrorAndReturn(libusb_error returnCode) {
     switch (returnCode) {
+        case LIBUSB_ERROR_NOT_FOUND:
+            AERROR << "Panda Device not found (Incorrect Interface Number)";
+            return DeviceStatus::NO_DEVICE;
         case LIBUSB_ERROR_NO_DEVICE:
             AERROR << "Panda Device not found (it may have been disconnected)";
-            return LibUsbDeviceStatus::NO_DEVICE;
+            return DeviceStatus::NO_DEVICE;
         case LIBUSB_ERROR_BUSY:
             AERROR << "Panda Device returned (Resource busy)";
-            return LibUsbDeviceStatus::DEVICE_BUSY;
+            return DeviceStatus::DEVICE_BUSY;
         case LIBUSB_ERROR_TIMEOUT:
             AERROR << "USB connection overflow";
-            return LibUsbDeviceStatus::CONNECTION_OVERFLOW;
+            return DeviceStatus::CONNECTION_OVERFLOW;
         case LIBUSB_ERROR_OVERFLOW:
             AERROR << "Connection With Panda Device Timed Out";
-            return LibUsbDeviceStatus::CONNECTION_TIMEOUT;
+            return DeviceStatus::CONNECTION_TIMEOUT;
         default:
             AERROR << " >>>>>> >>>> >>> "
                    << "Untracked Error Occurred "
                    << returnCode
                    << " >>>>>> >>>> >>> ";
-            return LibUsbDeviceStatus::UNKNOWN_ERROR;
+            return DeviceStatus::UNKNOWN_ERROR;
     }
 }
 
@@ -196,7 +183,11 @@ template <class LibUsbInterface>
 bool UsbDevice<LibUsbInterface>::attemptReOpenIfConnectionLost() {
     if (!isOpened_) {
         auto returnCode = openDevice();
-        if (returnCode != LibUsbDeviceStatus::SUCCESS) {
+        if (returnCode != DeviceStatus::SUCCESS) {
+            return false;
+        }
+        returnCode = configure();
+        if (returnCode != DeviceStatus::SUCCESS) {
             return false;
         }
     }
@@ -205,34 +196,34 @@ bool UsbDevice<LibUsbInterface>::attemptReOpenIfConnectionLost() {
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::logConnectionLostAndReturn() {
+DeviceStatus UsbDevice<LibUsbInterface>::logConnectionLostAndReturn() {
     AERROR << "Connection lost with Panda USB Device";
-    return LibUsbDeviceStatus::NO_DEVICE;
+    return DeviceStatus::NO_DEVICE;
 }
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::initDevice() {
+DeviceStatus UsbDevice<LibUsbInterface>::initDevice() {
     auto returnCode = libUsbInterface_->libUsbInitDevice();
 
     if (returnCode != libusb_error::LIBUSB_SUCCESS) {
         logUsbErrorAndReturn(returnCode);
-        return LibUsbDeviceStatus::FAILED_TO_INITIALIZE;
+        return DeviceStatus::FAILED_TO_INITIALIZE;
     }
 
     isInitialized_ = true;
-    return LibUsbDeviceStatus::SUCCESS;
+    return DeviceStatus::SUCCESS;
 }
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::openDevice() {
+DeviceStatus UsbDevice<LibUsbInterface>::openDevice() {
     libusb_error returnCode;
-    LibUsbDeviceStatus status;
+    DeviceStatus status;
 
     if (!isInitialized_) {
         status = initDevice();
-        if (status != LibUsbDeviceStatus::SUCCESS) {
+        if (status != DeviceStatus::SUCCESS) {
             return status;
         }
     }
@@ -244,11 +235,11 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::openDevice() {
 
     isOpened_ = true;
     ADEBUG << "Successfully opened Panda (CAN) USB Device";
-    return LibUsbDeviceStatus::SUCCESS;
+    return DeviceStatus::SUCCESS;
 }
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::configure() {
+DeviceStatus UsbDevice<LibUsbInterface>::configure() {
     libusb_error returnCode;
     if (!attemptReOpenIfConnectionLost()) {
         return logConnectionLostAndReturn();
@@ -275,18 +266,18 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::configure() {
     }
 
     isClaimed_ = true;
-    return LibUsbDeviceStatus::SUCCESS;
+    return DeviceStatus::SUCCESS;
 }
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const uint8_t bmRequestType,
+DeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const uint8_t bmRequestType,
                                                                         const uint8_t bRequest,
                                                                         const uint16_t wValue,
                                                                         const uint16_t wIndex,
                                                                         std::vector<uint8_t> &data,
                                                                         const units::time::millisecond_t timeout,
                                                                         const units::time::microsecond_t sleepDuration) {
-    libusb_error returnCode ;
+    int returnCode ;
     if (!attemptReOpenIfConnectionLost()) {
         return logConnectionLostAndReturn();
     }
@@ -302,24 +293,27 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const ui
                 static_cast<unsigned int>(timeout.value()));
 
         if (returnCode != libusb_error::LIBUSB_SUCCESS) {
-            AERROR << "Control Write Error "
-                   << libusb_error((enum libusb_error)returnCode);
             if (returnCode == libusb_error::LIBUSB_ERROR_NO_DEVICE) {
                 isConnected_ = false;
                 return logConnectionLostAndReturn();
             }
         }
-        // Introduce a delay before retrying
-        // chrono microseconds excepts an int value and the units time millisecond is a double value, so we cast
-        std::this_thread::sleep_for(std::chrono::microseconds(int(sleepDuration.value())));
+        if (returnCode < 0) {
+            // Introduce a delay before retrying
+            // chrono microseconds excepts an int value and the units time millisecond is a double value, so we cast
+            std::this_thread::sleep_for(std::chrono::microseconds(int(sleepDuration.value())));
+            AERROR << "Control Write Error "
+                    << libusb_strerror((enum libusb_error)returnCode)
+                   << " . Retrying ...";
+        }
         // TODO: check other errors, or is simply retrying okay?
-    } while (returnCode != libusb_error::LIBUSB_SUCCESS);
-    return LibUsbDeviceStatus::SUCCESS;
+    } while (returnCode < 0 );
+    return DeviceStatus::SUCCESS;
 }
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlWrite(const uint8_t bmRequestType,
+DeviceStatus UsbDevice<LibUsbInterface>::controlWrite(const uint8_t bmRequestType,
                                                             const uint8_t bRequest,
                                                             const uint16_t wValue,
                                                             const uint16_t wIndex,
@@ -337,7 +331,7 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlWrite(const uint8_t bmRequ
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlRead(const uint8_t bmRequestType,
+DeviceStatus UsbDevice<LibUsbInterface>::controlRead(const uint8_t bmRequestType,
                                                            const uint8_t bRequest,
                                                            const uint16_t wValue,
                                                            const uint16_t wIndex,
@@ -355,18 +349,18 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::controlRead(const uint8_t bmReque
 
 
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t endpoint,
+DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t endpoint,
                                                           std::vector<uint8_t> &data,
                                                           std::shared_ptr<int> transferred,
                                                           const units::time::millisecond_t timeout,
                                                           const units::time::microsecond_t sleepDuration) {
-    libusb_error returnCode ;
+    int returnCode ;
     if (!attemptReOpenIfConnectionLost()) {
         // we can only return a uint8_t since
         // it must represent the actual number of bytes transferred
         // so we return 0 and not any negative value
         logConnectionLostAndReturn();
-        return LibUsbDeviceStatus::SUCCESS;
+        return DeviceStatus::SUCCESS;
     }
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -379,32 +373,32 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8
                 static_cast<unsigned int>(timeout.value()));
 
         if (returnCode == libusb_error::LIBUSB_SUCCESS) {
-            return LibUsbDeviceStatus::SUCCESS;
+            return DeviceStatus::SUCCESS;
         }
-        LibUsbDeviceStatus status = logUsbErrorAndReturn(returnCode);
+        DeviceStatus status = logUsbErrorAndReturn(static_cast<libusb_error>(returnCode));
         switch (status) {
-            case LibUsbDeviceStatus::CONNECTION_OVERFLOW:
+            case DeviceStatus::CONNECTION_OVERFLOW:
                 // we try again
                 isCommHealthy_ = false;
-            case LibUsbDeviceStatus::CONNECTION_TIMEOUT:
+            case DeviceStatus::CONNECTION_TIMEOUT:
                 // timeout is okay to exit, the recv still happened
-                return LibUsbDeviceStatus::SUCCESS;
-            case LibUsbDeviceStatus::NO_DEVICE:
-                return LibUsbDeviceStatus::NO_DEVICE;
+                return DeviceStatus::SUCCESS;
+            case DeviceStatus::NO_DEVICE:
+                return DeviceStatus::NO_DEVICE;
             default:
                 // safe to try again
                 ADEBUG << "Retrying bulk transfer due to "
-                       << libusb_error(int(returnCode));
+                       << libusb_strerror((enum libusb_error)returnCode);
         }
         // Introduce a delay before retrying
         // chrono microseconds excepts an int value and the units time millisecond is a double value, so we cast
         std::this_thread::sleep_for(std::chrono::microseconds(int(sleepDuration.value())));
-    } while (returnCode != libusb_error::LIBUSB_SUCCESS);
+    } while (returnCode < 0);
 
-    return LibUsbDeviceStatus::SUCCESS;
+    return DeviceStatus::SUCCESS;
 }
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::bulkRead(const uint8_t endpoint,
+DeviceStatus UsbDevice<LibUsbInterface>::bulkRead(const uint8_t endpoint,
                                              std::vector<uint8_t> &data,
                                              std::shared_ptr<int> transferred,
                                              const units::time::millisecond_t timeout,
@@ -417,7 +411,7 @@ LibUsbDeviceStatus UsbDevice<LibUsbInterface>::bulkRead(const uint8_t endpoint,
 
 }
 template <class LibUsbInterface>
-LibUsbDeviceStatus UsbDevice<LibUsbInterface>::bulkWrite(const uint8_t endpoint,
+DeviceStatus UsbDevice<LibUsbInterface>::bulkWrite(const uint8_t endpoint,
                                               std::vector<uint8_t> &data,
                                               std::shared_ptr<int> transferred,
                                               const units::time::millisecond_t timeout,

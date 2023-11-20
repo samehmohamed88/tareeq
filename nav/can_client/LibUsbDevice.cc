@@ -5,69 +5,74 @@
 
 namespace nav {
 namespace can {
-LibUsbDevice::LibUsbDevice() :
-    context_{nullptr, libusb_exit}
-    , deviceHandle_{nullptr, libusb_close}
-{}
 
-int LibUsbDevice::libUsbInitDevice()
+libusb_error LibUsbDevice::libUsbInitDevice()
 {
     libusb_context *ctx = nullptr;
     int returnCode = libusb_init(&ctx);
+
     context_.reset(ctx);
-    return returnCode;
+
+    return static_cast<libusb_error>(returnCode);
 }
 
-int LibUsbDevice::libUsbOpenDevice(uint16_t vendorID, uint16_t productID)  {
+libusb_error LibUsbDevice::libUsbOpenDevice(uint16_t vendorID, uint16_t productID)  {
     libusb_device_handle *handle = libusb_open_device_with_vid_pid(context_.get(), vendorID, productID);
+
     if (!handle) {
-        return -1;
+        return libusb_error::LIBUSB_ERROR_IO;
     }
+
     deviceHandle_.reset(handle);
-    return 0;
+
+    return libusb_error::LIBUSB_SUCCESS;
 }
 
 void LibUsbDevice::libUsbReleaseDevice() {
     libusb_release_interface(deviceHandle_.get(), 0);
 }
 
-int LibUsbDevice::libUsbSetDefaultConfiguration() {
+libusb_error LibUsbDevice::libUsbSetDefaultConfiguration() const {
     // Set configuration
-    return libusb_set_configuration(deviceHandle_.get(),
-                                              1); // 1 is typically the default configuration
+    return static_cast<libusb_error>(libusb_set_configuration(deviceHandle_.get(),
+                                                              1)); // 1 is typically the default configuration
 }
 
-int LibUsbDevice::libUsbDetachKernelDriver(int interfaceNumber) {
+libusb_error LibUsbDevice::libUsbDetachKernelDriver(int interfaceNumber) const {
     int returnCode = 0;
     // Check if kernel driver is active
     if (libusb_kernel_driver_active(deviceHandle_.get(), interfaceNumber) == 1) {
         returnCode = libusb_detach_kernel_driver(deviceHandle_.get(), interfaceNumber);
     }
-    return returnCode;
+    return static_cast<libusb_error>(returnCode);
 }
 
-int LibUsbDevice::libUsbClaimInterface(int interfaceNumber) {
+libusb_error LibUsbDevice::libUsbClaimInterface(int interfaceNumber) const {
     // Claim interface
-    return libusb_claim_interface(deviceHandle_.get(), interfaceNumber);
+    return static_cast<libusb_error>(libusb_claim_interface(deviceHandle_.get(), interfaceNumber));
 }
 
-int LibUsbDevice::libUsbControlTransfer(const uint8_t bmRequestType,
-        const uint8_t bRequest,
-        const uint16_t wValue,
-        const uint16_t wIndex,
-        unsigned char *data,
-        const uint16_t wLength,
-        const units::time::millisecond_t timeout) {
-    return libusb_control_transfer(deviceHandle_.get(), bmRequestType, bRequest, wValue, wIndex,
-                                   data,
-                                   wLength, timeout.value());
+int LibUsbDevice::libUsbControlTransfer(uint8_t bmRequestType,
+                                        uint8_t bRequest,
+                                        uint16_t wValue,
+                                        uint16_t wIndex,
+                                        uint8_t *data,
+                                        uint16_t wLength,
+                                        unsigned int timeout) const {
+    return libusb_control_transfer(deviceHandle_.get(), bmRequestType, bRequest, wValue,
+                                              wIndex,
+                                              data,
+                                              wLength, timeout);
+
 }
 
-int LibUsbDevice::libUsbBulkTransfer(unsigned char endpoint, unsigned char *data, int length,
-                                     std::shared_ptr<int> transferred,
-                                     const units::time::millisecond_t timeout) {
-    return libusb_bulk_transfer(deviceHandle_.get(), endpoint, data, length, transferred.get(),
-                                timeout.value());
+int LibUsbDevice::libUsbBulkTransfer(uint8_t endpoint,
+                                     uint8_t *data,
+                                     int length,
+                                     int *actual_length,
+                                     unsigned int timeout) const {
+    return libusb_bulk_transfer(deviceHandle_.get(), endpoint, data, length, actual_length,
+                                           timeout);
 }
 
 } // namespace can
