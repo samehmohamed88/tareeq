@@ -85,11 +85,11 @@ public:
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
     /// @returns DeviceStatus
-    DeviceStatus bulkRead(const uint8_t endpoint,
-                                std::vector<uint8_t> &data,
-                                std::shared_ptr<int> transferred,
-                                const units::time::millisecond_t timeout,
-                                const units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
+    DeviceStatus bulkRead(uint8_t endpoint,
+                          std::vector<uint8_t> &data,
+                          std::shared_ptr<int> transferred,
+                          units::time::millisecond_t timeout = units::time::millisecond_t{0},
+                          units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
 
     /// Write data to the USB Device.
     /// @param endpoint This specifies the endpoint to communicate with.  It is a combination of address and OUTPUT.
@@ -98,11 +98,11 @@ public:
     /// Zero value means to return immediately if the transfer cannot be made.
     /// @param sleepDuration number of microseconds to thread sleep in between retry calls to libusb.
     /// @returns DeviceStatus
-    DeviceStatus bulkWrite(const uint8_t endpoint,
-                                 std::vector<uint8_t> &data,
-                                 std::shared_ptr<int> transferred,
-                                 const units::time::millisecond_t timeout,
-                                 const units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
+    DeviceStatus bulkWrite(uint8_t endpoint,
+                           std::vector<uint8_t> &data,
+                           std::shared_ptr<int> transferred,
+                           units::time::millisecond_t timeout = units::time::millisecond_t{0},
+                           units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
 
     bool attemptReOpenIfConnectionLost();
 

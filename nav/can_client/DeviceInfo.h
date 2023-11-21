@@ -30,7 +30,8 @@ enum class DeviceRequests {
     CommaAIDeviceName = 0xc1,
     ResetCommunications = 0xc0,
     SafetyModel = 0xdc,
-    HardwareType = 0xc1
+    HardwareType = 0xc1,
+    READ_CAN_BUS = 0x81
 };
 
 } // namespace can

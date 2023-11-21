@@ -13,8 +13,8 @@
 namespace nav {
 namespace tests {
 
-    static constexpr uint16_t vendorID_ = 0xbbaa;
-    static constexpr uint16_t productID_ = 0xddcc;
+static constexpr uint16_t vendorID_ = 0xbbaa;
+static constexpr uint16_t productID_ = 0xddcc;
 TEST(UsbDeviceTest, TestInitDeviceSucceeds) {
 //    auto libUsbDevice = ;
     auto device = std::make_unique<can::UsbDevice<can::LibUsbDevice>>(

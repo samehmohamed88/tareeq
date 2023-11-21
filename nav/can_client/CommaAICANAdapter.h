@@ -17,9 +17,10 @@ public:
     /// The Comma AI CAN Device has a specific safety model where it starts in silent mode with No Output to prevent
     /// accidental movements/steering
     /// taken from https://github.com/commaai/cereal/blob/416c3d531c90ce16498d782bf383625a857ee74c/car.capnp#L567C8-L567C19
-//    bool setSafetyModel(SafetyModel safety_model, uint16_t safety_param=0U);
+    bool setSafetyModel(SafetyModel safety_model, uint16_t safety_param=0U);
 
     uint8_t getHardwareType();
+    bool getCANMessages();
 
 private:
     std::unique_ptr<Device> device_;
@@ -31,11 +32,11 @@ private:
 //    static constexpr int interfaceNumber_ = 0;
 };
 
-//template <class T>
-//bool CommaAICANAdapter<T>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
-//    DeviceStatus status = device_.controlWrite(DeviceRequests::SafetyModel, (uint16_t)safetyModel, safetyParam);
-//    return status == DeviceStatus::SUCCESS;
-//}
+template <class T>
+bool CommaAICANAdapter<T>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
+    DeviceStatus status = device_.controlWrite(DeviceRequests::SafetyModel, static_cast<uint16_t>(safetyModel), safetyParam);
+    return status == DeviceStatus::SUCCESS;
+}
 
 template <class Device>
 CommaAICANAdapter<Device>::CommaAICANAdapter(std::unique_ptr<Device> device) :
@@ -56,10 +57,47 @@ uint8_t CommaAICANAdapter<Device>::getHardwareType() {
             requestIndex,
             data);
 
+
     if (status == DeviceStatus::SUCCESS) {
         return data[0];
     }
     return 200;
+}
+
+struct __attribute__((packed)) CANHeader {
+    uint8_t reserved : 1;
+    uint8_t bus : 3;
+    uint8_t data_len_code : 4;
+    uint8_t rejected : 1;
+    uint8_t returned : 1;
+    uint8_t extended : 1;
+    uint32_t addr : 29;
+    uint8_t checksum : 8;
+};
+
+struct CANFrame {
+    long address;
+    std::string dat;
+    long busTime;
+    long src;
+};
+
+template <class Device>
+bool CommaAICANAdapter<Device>::getCANMessages() {
+    // holds the value of the actual number of bytes read
+    constexpr auto vectorSize = 0x4000U;
+    std::shared_ptr<int> transferred;
+    std::vector<uint8_t> data;
+    data.reserve(vectorSize);
+    DeviceStatus status = device_->bulkRead(
+            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
+            &data,
+            transferred);
+
+    if (status == DeviceStatus::SUCCESS) {
+        return true;
+    }
+    return false;
 }
 
 } // namespace can
