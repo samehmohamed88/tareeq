@@ -234,7 +234,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::openDevice() {
     }
 
     isOpened_ = true;
-    ADEBUG << "Successfully opened Panda (CAN) USB Device";
+    AINFO << "Successfully opened Panda (CAN) USB Device";
     return DeviceStatus::SUCCESS;
 }
 
@@ -387,7 +387,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t end
                 return DeviceStatus::NO_DEVICE;
             default:
                 // safe to try again
-                ADEBUG << "Retrying bulk transfer due to "
+                AINFO << "Retrying bulk transfer due to "
                        << libusb_strerror((enum libusb_error)returnCode);
         }
         // Introduce a delay before retrying
