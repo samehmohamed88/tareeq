@@ -373,6 +373,9 @@ DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t end
                 static_cast<unsigned int>(timeout.value()));
 
         if (returnCode == libusb_error::LIBUSB_SUCCESS) {
+            AINFO << "Successfully read "
+                  << std::to_string(*transferred)
+                  << " bytes from Device";
             return DeviceStatus::SUCCESS;
         }
         DeviceStatus status = logUsbErrorAndReturn(static_cast<libusb_error>(returnCode));

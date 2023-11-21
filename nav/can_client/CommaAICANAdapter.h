@@ -86,12 +86,12 @@ template <class Device>
 bool CommaAICANAdapter<Device>::getCANMessages() {
     // holds the value of the actual number of bytes read
     constexpr auto vectorSize = 0x4000U;
-    std::shared_ptr<int> transferred;
+    std::shared_ptr<int> transferred = std::make_shared<int>(0);
     std::vector<uint8_t> data;
     data.reserve(vectorSize);
     DeviceStatus status = device_->bulkRead(
             static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-            &data,
+            data,
             transferred);
 
     if (status == DeviceStatus::SUCCESS) {
