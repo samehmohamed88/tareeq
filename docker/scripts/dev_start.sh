@@ -329,14 +329,14 @@ function setup_devices_and_mount_local_volumes() {
                         -v /etc/localtime:/etc/localtime:ro \
                         -v /usr/src:/usr/src \
                         -v /lib/modules:/lib/modules \
-                        --volume=${HOME}/CLION/clion-2022.3.3:/home/sameh.mohamed/clion \
-                        --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/sameh.mohamed/.java/.userPrefs \
-                        --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/sameh.mohamed/.cache/JetBrains \
-                        --volume=${HOME}/.dockerConfig/jetbrains/share:/home/sameh.mohamed/.local/share/JetBrains \
-                        --volume=${HOME}/.dockerConfig/jetbrains/config:/home/sameh.mohamed/.config/JetBrains \
-                        --volume=${HOME}/.ideavimrc:/home/sameh.mohamed/.ideavimrc \
+                        --volume=${HOME}/CLION/clion-2022.3.3:/home/$USER/clion \
+                        --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$USER/.java/.userPrefs \
+                        --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$USER/.cache/JetBrains \
+                        --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$USER/.local/share/JetBrains \
+                        --volume=${HOME}/.dockerConfig/jetbrains/config:/home/$USER/.config/JetBrains \
+                        --volume=${HOME}/.ideavimrc:/home/$USER/.ideavimrc \
                         --volume=/media:/media \
-                        --volume=${HOME}/.fonts:/home/sameh.mohamed/.fonts"
+                        --volume=${HOME}/.fonts:/home/$USER/.fonts"
     volumes="$(tr -s " " <<<"${volumes}")"
     eval "${__retval}='${volumes}'"
 }
