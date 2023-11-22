@@ -168,8 +168,8 @@ DeviceStatus UsbDevice<LibUsbInterface>::logUsbErrorAndReturn(libusb_error retur
             AERROR << "USB connection overflow";
             return DeviceStatus::CONNECTION_OVERFLOW;
         case LIBUSB_ERROR_OVERFLOW:
-            AERROR << "Connection With Panda Device Timed Out";
-            return DeviceStatus::CONNECTION_TIMEOUT;
+//            AERROR << "Connection With Panda Device Timed Out";
+            return DeviceStatus::CONNECTION_OVERFLOW;
         default:
             AERROR << " >>>>>> >>>> >>> "
                    << "Untracked Error Occurred "
@@ -374,7 +374,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t end
 
         if (returnCode == libusb_error::LIBUSB_SUCCESS) {
             AINFO << "Successfully read "
-                  << std::to_string(*transferred)
+                  << std::to_string(*(transferred.get()))
                   << " bytes from Device";
             return DeviceStatus::SUCCESS;
         }
@@ -383,6 +383,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t end
             case DeviceStatus::CONNECTION_OVERFLOW:
                 // we try again
                 isCommHealthy_ = false;
+                break;
             case DeviceStatus::CONNECTION_TIMEOUT:
                 // timeout is okay to exit, the recv still happened
                 return DeviceStatus::SUCCESS;
@@ -396,7 +397,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::bulkTransferWithRetry(const uint8_t end
         // Introduce a delay before retrying
         // chrono microseconds excepts an int value and the units time millisecond is a double value, so we cast
         std::this_thread::sleep_for(std::chrono::microseconds(int(sleepDuration.value())));
-    } while (returnCode < 0);
+    } while (returnCode != 0);
 
     return DeviceStatus::SUCCESS;
 }

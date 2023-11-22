@@ -13,7 +13,7 @@ using namespace nav;
 
 void perform_usb_transfer(const boost::system::error_code& /*e*/, boost::asio::steady_timer* t, int* count, can::CommaAICANAdapter<can::UsbDevice<can::LibUsbDevice>>* canDevice) {
     if (*count < 100) {
-        std::cout << "USB Transfer " << *count << std::endl;
+//        std::cout << "USB Transfer " << *count << std::endl;
         ++(*count);
 
         // Example USB bulk transfer parameters
