@@ -2,13 +2,14 @@ load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools/install:install.bzl", "install")
 load("//tools:cpplint.bzl", "cpplint")
 
-cc_library(
-    name = "panda",
-    srcs = [],
-    deps = [],
-)
-
 package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "subaru_global_can_dbc",
+    srcs = ["data/subaru_global_2017_generated.dbc"],
+    outs = ["SubaruGlobalCANDBC.h"],
+    cmd = "(echo 'constexpr char subaruGlobalCANDBC[] = R\"delimiter(' && cat $(SRCS) && echo ')delimiter\";' ) > $@",
+)
 
 cc_binary(
     name = "libpanda_component.so",
@@ -25,8 +26,19 @@ cc_library(
 )
 
 cc_library(
+    name = "can_database",
+    hdrs = [
+        "CANDBC.h",
+        ":subaru_global_can_dbc",
+    ],
+    alwayslink = True,
+)
+
+cc_library(
     name = "comma_ai_can_adapter",
-    hdrs = ["CommaAICANAdapter.h"],
+    hdrs = [
+        "CommaAICANInterface.h",
+    ],
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [
         ":device_enum_classes",

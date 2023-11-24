@@ -1,6 +1,6 @@
 #include "nav/can_client/UsbDevice.h"
 #include "nav/can_client/LibUsbDevice.h"
-#include "nav/can_client/CommaAICANAdapter.h"
+#include "nav/can_client/CommaAICANInterface.h"
 #include "nav/can_client/DeviceInfo.h"
 
 #include <units.h>
@@ -24,7 +24,7 @@ TEST(UsbDeviceTest, TestInitDeviceSucceeds) {
                     0);
 
 
-    auto canDevice = can::CommaAICANAdapter<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
+    auto canDevice = can::CommaAICANInterface<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
     auto hw = canDevice.getHardwareType();
     EXPECT_EQ(hw, 7);
 

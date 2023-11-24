@@ -7,14 +7,16 @@
 #include <fstream>
 #include <iterator>
 #include <string>
+#include <functional>
 
 namespace nav {
 namespace can {
 
 template <class Device>
-class CommaAICANAdapter {
+class CommaAICANInterface {
 public:
-    CommaAICANAdapter(std::unique_ptr<Device> device);
+    using CANMessageCallback = std::function<void(const CANMessage&)>;
+    CommaAICANInterface(std::unique_ptr<Device> device);
 
     /// Sets the safety model on the CAN Device
     /// The Comma AI CAN Device has a specific safety model where it starts in silent mode with No Output to prevent
@@ -37,13 +39,13 @@ private:
 };
 
 template <class T>
-bool CommaAICANAdapter<T>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
+bool CommaAICANInterface<T>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
     DeviceStatus status = device_.controlWrite(DeviceRequests::SafetyModel, static_cast<uint16_t>(safetyModel), safetyParam);
     return status == DeviceStatus::SUCCESS;
 }
 
 template <class Device>
-CommaAICANAdapter<Device>::CommaAICANAdapter(std::unique_ptr<Device> device) :
+CommaAICANInterface<Device>::CommaAICANInterface(std::unique_ptr<Device> device) :
     device_{std::move(device)}
     , output_file_{"/apollo/can_str.txt"}
     {
@@ -51,7 +53,7 @@ CommaAICANAdapter<Device>::CommaAICANAdapter(std::unique_ptr<Device> device) :
     }
 
 template <class Device>
-uint8_t CommaAICANAdapter<Device>::getHardwareType() {
+uint8_t CommaAICANInterface<Device>::getHardwareType() {
     std::vector<uint8_t> data{0};
     // This is used to pass a parameter to the device, specific to the request, in this case 0
     uint16_t requestValue = 0;
@@ -71,26 +73,9 @@ uint8_t CommaAICANAdapter<Device>::getHardwareType() {
     return 200;
 }
 
-struct __attribute__((packed)) CANHeader {
-    uint8_t reserved : 1;
-    uint8_t bus : 3;
-    uint8_t data_len_code : 4;
-    uint8_t rejected : 1;
-    uint8_t returned : 1;
-    uint8_t extended : 1;
-    uint32_t addr : 29;
-    uint8_t checksum : 8;
-};
-
-struct CANFrame {
-    long address;
-    std::string dat;
-    long busTime;
-    long src;
-};
 
 template <class Device>
-bool CommaAICANAdapter<Device>::getCANMessages() {
+bool CommaAICANInterface<Device>::getCANMessages() {
     // holds the value of the actual number of bytes read
 
     constexpr auto vectorSize = 0x4000U;
@@ -108,7 +93,7 @@ bool CommaAICANAdapter<Device>::getCANMessages() {
     std::cout << "Panda returned " << std::to_string(data[0]) << std::endl;
 //    std::ofstream oufile("/home/sameh/can_example.txt"+std::to_string(*transferred));
 //    oufile.open();
-    std::ostream_iterator<std::string> output_iterator(output_file_, "\n");
+    std::ostream_iterator<std::uint8_t> output_iterator(output_file_, "\n");
     std::copy(std::begin(data), std::end(data), output_iterator);
 //    for (int i = 0; i  < *transferred; i++) {
 //        oufile << data[i];

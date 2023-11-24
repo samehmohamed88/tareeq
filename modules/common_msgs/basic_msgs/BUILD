@@ -6,6 +6,18 @@ load("//tools:python_rules.bzl", "py_proto_library")
 package(default_visibility = ["//visibility:public"])
 
 cc_proto_library(
+    name = "steering_angle_cc_proto",
+    deps = [
+        ":steering_angle_proto",
+    ],
+)
+
+proto_library(
+    name = "steering_angle_proto",
+    srcs = ["steering_angle.proto"],
+)
+
+cc_proto_library(
     name = "header_cc_proto",
     deps = [
         ":header_proto",
@@ -23,8 +35,8 @@ proto_library(
 py_proto_library(
     name = "header_py_pb2",
     deps = [
-        ":header_proto",
         ":error_code_py_pb2",
+        ":header_proto",
     ],
 )
 
@@ -46,6 +58,7 @@ py_proto_library(
         ":vehicle_id_proto",
     ],
 )
+
 cc_proto_library(
     name = "direction_cc_proto",
     deps = [
@@ -64,6 +77,7 @@ py_proto_library(
         ":direction_proto",
     ],
 )
+
 cc_proto_library(
     name = "drive_event_cc_proto",
     deps = [
@@ -107,6 +121,7 @@ py_proto_library(
         ":geometry_proto",
     ],
 )
+
 cc_proto_library(
     name = "vehicle_signal_cc_proto",
     deps = [
@@ -125,6 +140,7 @@ py_proto_library(
         ":vehicle_signal_proto",
     ],
 )
+
 cc_proto_library(
     name = "pnc_point_cc_proto",
     deps = [
@@ -143,6 +159,7 @@ py_proto_library(
         ":pnc_point_proto",
     ],
 )
+
 cc_proto_library(
     name = "drive_state_cc_proto",
     deps = [
@@ -161,6 +178,7 @@ py_proto_library(
         ":drive_state_proto",
     ],
 )
+
 cc_proto_library(
     name = "error_code_cc_proto",
     deps = [

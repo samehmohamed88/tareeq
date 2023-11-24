@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package nav.can;
+
+message SteeringAngle {
+  optional double steering_angle = 1;      // unit:degree
+}

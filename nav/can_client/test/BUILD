@@ -23,6 +23,15 @@ cc_test(
 )
 
 cc_test(
+    name = "test_can_dbc",
+    srcs = ["CANDBCTest.cc"],
+    deps = [
+        "//nav/can_client:can_database",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_test(
     name = "test_comma_ai_device",
     srcs = ["CommaAICANAdapterTest.cc"],
     deps = [

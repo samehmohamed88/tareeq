@@ -80,9 +80,9 @@ build:c++17 --cxxopt=-std=c++1z
 # build:c++17 --cxxopt=-stdlib=libc++
 build:c++1z --config=c++17
 
-# Enable C++14 (aka c++1y) by default
-build --cxxopt="-std=c++14"
-build --host_cxxopt="-std=c++14"
+# Enable C++17 (aka c++1y) by default
+build --cxxopt="-std=c++17"
+build --host_cxxopt="-std=c++17"
 
 # +------------------------------------------------------------+
 # | Test Configurations                                        |

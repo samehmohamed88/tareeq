@@ -1,7 +1,7 @@
 
 #include "nav/can_client/UsbDevice.h"
 #include "nav/can_client/LibUsbDevice.h"
-#include "nav/can_client/CommaAICANAdapter.h"
+#include "nav/can_client/CommaAICANInterface.h"
 
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
@@ -11,7 +11,7 @@
 
 using namespace nav;
 
-void perform_usb_transfer(const boost::system::error_code& /*e*/, boost::asio::steady_timer* t, int* count, can::CommaAICANAdapter<can::UsbDevice<can::LibUsbDevice>>* canDevice) {
+void perform_usb_transfer(const boost::system::error_code& /*e*/, boost::asio::steady_timer* t, int* count, can::CommaAICANInterface<can::UsbDevice<can::LibUsbDevice>>* canDevice) {
     if (*count < 100) {
 //        std::cout << "USB Transfer " << *count << std::endl;
         ++(*count);
@@ -52,7 +52,7 @@ int main() {
                     0);
 
 
-    auto canDevice = can::CommaAICANAdapter<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
+    auto canDevice = can::CommaAICANInterface<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
     auto hw = canDevice.getHardwareType();
     assert(hw == 7);
     std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
