@@ -106,6 +106,10 @@ public:
 
     bool attemptReOpenIfConnectionLost();
 
+    bool isCommHealthy() {
+        return isCommHealthy_;
+    }
+
 
 private:
     DeviceStatus logConnectionLostAndReturn();

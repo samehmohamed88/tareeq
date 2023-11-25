@@ -20,4 +20,3 @@ struct CANFrame {
     long busTime;
     long src;
 };
-

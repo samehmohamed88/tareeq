@@ -8,9 +8,9 @@ namespace tests {
 TEST(CANDBCTest, TestCanDbcConstructor) {
     auto device = nav::can::CANDBC::CreateInstance();
     // should return the steering message
-    auto message = device.getMessageByAddress(2);
-    EXPECT_EQ(message->name, "Steering");
-    EXPECT_EQ(message->signals.size(), 3);
+    auto message = device->getMessageByAddress(2);
+    EXPECT_EQ(message.value().get().name, "Steering");
+    EXPECT_EQ(message.value().get().signals.size(), 3);
 }
 
 }

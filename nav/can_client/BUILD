@@ -27,6 +27,9 @@ cc_library(
 
 cc_library(
     name = "can_database",
+    srcs = [
+        "CANDBC.cc",
+    ],
     hdrs = [
         "CANDBC.h",
         ":subaru_global_can_dbc",
@@ -41,7 +44,9 @@ cc_library(
     ],
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [
+        ":can_database",
         ":device_enum_classes",
+        "@boost",
     ],
     alwayslink = True,
 )
@@ -121,6 +126,20 @@ filegroup(
         ":panda.dag",
         ":panda.launch",
     ],
+)
+
+cc_library(
+    name = "comma_ai_can_interface_simple_deque",
+    hdrs = [
+        "CommaAICANInterfaceWithSimplyDeque.h",
+    ],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":can_database",
+        ":device_enum_classes",
+        "@boost",
+    ],
+    alwayslink = True,
 )
 
 #install(
