@@ -36,8 +36,17 @@ public:
     bool setSafetyModel(SafetyModel safety_model, uint16_t safety_param=0U);
 
     uint8_t getHardwareType();
-    std::vector<CANMessage> getCANMessagesAndClearContainer();
-    bool receiveMessages();
+    std::vector<CANMessage> getCANMessagesAndClearContainer() {
+        std::lock_guard<std::mutex> lock(mtx);
+        // Move the entire vector
+        std::vector<CANMessage> currentMessages = std::move(canMessages);
+
+        // After the move, canMessages is empty
+        // No need to call clear()
+
+        return currentMessages;
+    }
+    bool receiveMessages(const std::vector<uint8_t>& chunk);
 
 private:
     void addCANMessage(const CANMessage& message);
@@ -78,7 +87,7 @@ private:
     std::deque<uint8_t> receiveBuffer_;
     std::vector<CANFrame> canDataFrames_;
     std::vector<CANMessage> canMessages;
-    std::unique_ptr<CANDBC> canDatabase_{CANDBC::CreateInstance()};
+    std::unique_ptr<CANDBC> canDatabase_;
 
 
     static constexpr size_t MAX_BUFFER_SIZE = 0x4000U; // Max buffer size
@@ -94,8 +103,13 @@ bool CommaAICANInterfaceWithSimplyDeque<T>::setSafetyModel(SafetyModel safetyMod
 
 template <class Device>
 CommaAICANInterfaceWithSimplyDeque<Device>::CommaAICANInterfaceWithSimplyDeque(std::unique_ptr<Device> device) :
-        device_{std::move(device)}
-{}
+        mtx{}
+        , device_{std::move(device)}
+        , receiveBuffer_{}
+        , canDataFrames_{}
+        , canMessages{}
+        , canDatabase_{CANDBC::CreateInstance()}
+        {}
 
 template <class Device>
 uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
@@ -122,28 +136,31 @@ uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
 //}
 
 template <class Device>
-bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages() {
-    uint8_t temp_buffer[MAX_BUFFER_SIZE + sizeof(CANHeader) + 64];
-    std::shared_ptr<int> transferred = std::make_shared<int>(0);
+bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vector<uint8_t>& chunk) {
+//    uint8_t temp_buffer[MAX_BUFFER_SIZE + sizeof(CANHeader) + 64];
+//    std::shared_ptr<int> transferred = std::make_shared<int>(0);
+//
+//
+//    DeviceStatus status = device_->bulkRead(
+//            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
+//            temp_buffer,
+//            transferred);
+//
+//    // this actual number of bytes transferred from USB
+//    // let's dereference once so we can reuse it in multiple checks
+//    int received = *transferred;
 
+    auto temp_buffer = chunk.data();
+    int received = chunk.size();
 
-    DeviceStatus status = device_->bulkRead(
-            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-            temp_buffer,
-            transferred);
-
-    // this actual number of bytes transferred from USB
-    // let's dereference once so we can reuse it in multiple checks
-    int received = *transferred;
-
-    if (!device_.isCommHealthy()) {
-        return false;
-    }
+//    if (!device_.isCommHealthy()) {
+//        return false;
+//    }
     if (received == MAX_BUFFER_SIZE) {
         AWARN << " The Panda Receive Buffer is Full";
     }
     // Check if adding new data exceeds max buffer size
-    if (receiveBuffer_.size() + *transferred > MAX_BUFFER_SIZE) {
+    if (receiveBuffer_.size() + received > MAX_BUFFER_SIZE) {
         // Handle buffer overflow, e.g., log error, discard data, etc.
         AWARN << "Exceeding maximum buffer size, discarding data";
         return false;
@@ -204,7 +221,7 @@ void CommaAICANInterfaceWithSimplyDeque<Device>::pushCANDataAndPopFromRawBuffer(
 template <class Device>
 bool CommaAICANInterfaceWithSimplyDeque<Device>::parseRawCANToCANFrame() {
     size_t position = 0;
-    while (receiveBuffer_.size() >= sizeof(CANHeader)) {
+    while (receiveBuffer_.size() >= (position + sizeof(CANHeader))) {
         CANHeader header;
 
         // we copy to a temp vector to prevent potential errors in  memory layout introduced by manual copying directly
@@ -276,6 +293,7 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
         // on a specified interval, converted to DDS messages and cleared.
         addCANMessage(std::move(canMessage));
     }
+    return true;
 }
 
 //template <class Device>
