@@ -233,7 +233,49 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseRawCANToCANFrame() {
 
 template <class Device>
 bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
+    for (auto const& dataFrame : canDataFrames_) {
+        CANMessage canMessage;
+        canMessage.address = dataFrame.address;
 
+        auto const& signalsRef = canDatabase_->getSignalSchemasByAddress(dataFrame.address);
+        if (signalsRef.has_value()) {
+
+            auto const& signals = signalsRef.value().get();
+            canMessage.signals.reserve(signals.size());
+            canMessage.name = signals[0].messageName;
+
+            for (auto const& signalSchema : signals) {
+                auto parsedSignal = canMessage.signals.emplace_back();
+                int64_t tmp = parseValueUsingSignalSchema(dataFrame.data, signalSchema);
+                if (signalSchema.is_signed) {
+                    tmp -= ((tmp >> (signalSchema.size-1)) & 0x1) ? (1ULL << signalSchema.size) : 0;
+                }
+//                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
+//                bool checksum_failed = false;
+//                if (!ignore_checksum) {
+//                    if (sig.calc_checksum != nullptr && sig.calc_checksum(address, sig, dat) != tmp) {
+//                        checksum_failed = true;
+//                    }
+//                }
+//                bool counter_failed = false;
+//                if (!ignore_counter) {
+//                    if (sig.type == SignalType::COUNTER) {
+//                        counter_failed = !update_counter_generic(tmp, sig.size);
+//                    }
+//                }
+//                if (checksum_failed || counter_failed) {
+//                    LOGE("0x%X message checks failed, checksum failed %d, counter failed %d", address, checksum_failed, counter_failed);
+//                    return false;
+//                }
+                parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
+                parsedSignal.name = signalSchema.name;
+//                all_vals[i].push_back(vals[i]);
+            }
+        }
+        // we add the can message to the CAN Message Queue which is picked up by the CAN Timer Component
+        // on a specified interval, converted to DDS messages and cleared.
+        addCANMessage(std::move(canMessage));
+    }
 }
 
 //template <class Device>
