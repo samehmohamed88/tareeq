@@ -237,7 +237,10 @@ void CommaAICANInterfaceWithSimplyDeque<Device>::pushCANDataAndPopFromRawBuffer(
 //        }
 
     // we can now pop the entire contents of the CAN Header from the buffer
-    receiveBuffer_.erase(receiveBuffer_.begin(), receiveBuffer_.begin() + sizeof(CANHeader));
+//    receiveBuffer_.erase(receiveBuffer_.begin(), receiveBuffer_.begin() + sizeof(CANHeader));
+    for (size_t i = 0; i < sizeof(CANHeader); i++) {
+        receiveBuffer_.pop_front();
+    }
     // we move and pop the CAN frame data from the buffer to the CANFrame structure
     canFrame.data.reserve(dataFrameLength);
     for (size_t i = 0; i < dataFrameLength; ++i) {
@@ -321,9 +324,9 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
 //                }
                 parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
                 parsedSignal.name = signalSchema.name;
-                if (canMessage.name == "Steering") {
+                if (canMessage.name == "Steering_Torque") {
 //                throw std::runtime_error("FOUND");
-                    if (parsedSignal.name == "Steering_Angle" && parsedSignal.value > 0) {
+                    if (parsedSignal.name == "Steering_Torque" && parsedSignal.value > 0) {
                         std::cout << ">>>>>>>>>>>>> HAPPY " << parsedSignal.value;
                     }
                 }

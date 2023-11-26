@@ -69,10 +69,12 @@ int main() {
     assert(hw == 7);
     std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
 
-    std::string filename = "/apollo/can_output_2023-11-25_22-32-26.bin"; // Replace with your filename
+    std::string filename = "/apollo/nav/can_client/data/can_output_2023-11-25_22-32-26.bin"; // Replace with your filename
     std::ifstream file(filename, std::ios::binary);
-    const size_t chunkSize = 0x1000U; // Size of each chunk in bytes
+    const size_t chunkSize = 1024; // Size of each chunk in bytes
     std::vector<uint8_t> buffer(chunkSize);
+
+    std::ofstream parsedData("/apollo/nav/can_client/data/can_parsed_2023-11-25_22-32-26.csv");
 
 
     auto thread1 = std::thread([&]{
@@ -81,12 +83,19 @@ int main() {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 //            std::cout << " size of messages " << messages.size() << std::endl;
             for (auto const& message : messages) {
-                std::cout << "Message name is "
-                          << message.name
-                          << " and address is "
-                          << message.address
-                          << " and signal size "
-                          << message.signals.size() << std::endl;
+//                std::cout << "Message name is "
+//                          << message.name
+//                          << " and address is "
+//                          << message.address
+//                          << " and signal size "
+//                          << message.signals.size() << std::endl;
+                for (auto const& signal : message.signals) {
+                    parsedData << message.name << ",";
+                    parsedData << signal.name << ",";
+                    parsedData << signal.value;
+                }
+                parsedData << "\n";
+
             }
         }
     });
