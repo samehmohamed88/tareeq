@@ -88,6 +88,7 @@ private:
     std::vector<CANFrame> canDataFrames_;
     std::vector<CANMessage> canMessages;
     std::unique_ptr<CANDBC> canDatabase_;
+    std::unique_ptr<std::vector<uint8_t>> temp_buffer;
 
 
     static constexpr size_t MAX_BUFFER_SIZE = 0x4000U; // Max buffer size
@@ -109,7 +110,14 @@ CommaAICANInterfaceWithSimplyDeque<Device>::CommaAICANInterfaceWithSimplyDeque(s
         , canDataFrames_{}
         , canMessages{}
         , canDatabase_{CANDBC::CreateInstance()}
-        {}
+        , temp_buffer{std::make_unique<std::vector<uint8_t>>()}
+        {
+            temp_buffer->reserve(MAX_BUFFER_SIZE + sizeof(CANHeader) + 64);
+            for (size_t i =0 ; i < (MAX_BUFFER_SIZE + sizeof(CANHeader) + 64); i++){
+                temp_buffer->push_back(0);
+//        std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>.";
+            }
+        }
 
 template <class Device>
 uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
@@ -138,20 +146,23 @@ uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
 template <class Device>
 bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vector<uint8_t>& chunk) {
 //    uint8_t temp_buffer[MAX_BUFFER_SIZE + sizeof(CANHeader) + 64];
-//    std::shared_ptr<int> transferred = std::make_shared<int>(0);
-//
-//
-//    DeviceStatus status = device_->bulkRead(
-//            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-//            temp_buffer,
-//            transferred);
-//
-//    // this actual number of bytes transferred from USB
-//    // let's dereference once so we can reuse it in multiple checks
-//    int received = *transferred;
 
-    auto temp_buffer = chunk.data();
-    int received = chunk.size();
+
+//    std::cout << std::endl;
+    std::shared_ptr<int> transferred = std::make_shared<int>(0);
+
+
+    device_->bulkRead(
+            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
+            *temp_buffer.get(),
+            transferred);
+
+    // this actual number of bytes transferred from USB
+    // let's dereference once so we can reuse it in multiple checks
+    int received = *transferred;
+
+//    auto temp_buffer = chunk.data();
+//    int received = chunk.size();
 
 //    if (!device_.isCommHealthy()) {
 //        return false;
@@ -166,8 +177,12 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vect
         return false;
     }
     // Add received bytes to the deque
-    receiveBuffer_.insert(receiveBuffer_.end(), temp_buffer, temp_buffer + received);
+//    receiveBuffer_.insert(receiveBuffer_.end(), received, *temp_buffer->data());
 
+//    std::move(begin(*temp_buffer.get()), received, std::back_inserter(receiveBuffer_));
+    for(int i = 0; i < received; i++){
+        receiveBuffer_.push_front((*temp_buffer)[i]);
+    }
 //    bool invalid = (received <= 0);
 //    invalid &= parseRawCANToCANFrame();
 
@@ -260,6 +275,9 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
             auto const& signals = signalsRef.value().get();
             canMessage.signals.reserve(signals.size());
             canMessage.name = signals[0].messageName;
+            if (canMessage.name == "Steering") {
+                throw std::runtime_error("FOUND");
+            }
 
             for (auto const& signalSchema : signals) {
                 auto parsedSignal = canMessage.signals.emplace_back();

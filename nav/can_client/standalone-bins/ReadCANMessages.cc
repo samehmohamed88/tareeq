@@ -9,6 +9,8 @@
 #include <libusb-1.0/libusb.h>
 
 #include <fstream>
+#include <chrono>
+#include <thread>
 #include <vector>
 #include <iostream>
 #include <cstdint>  // For uint8_t
@@ -67,37 +69,40 @@ int main() {
     assert(hw == 7);
     std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
 
-    std::string filename = "/apollo/can_uint8_t.txt"; // Replace with your filename
+    std::string filename = "/apollo/can.txt"; // Replace with your filename
     std::ifstream file(filename, std::ios::binary);
     const size_t chunkSize = 0x1000U; // Size of each chunk in bytes
     std::vector<uint8_t> buffer(chunkSize);
 
 
     auto thread1 = std::thread([&]{
-        while (file) {
+        while (true) {
             auto messages = canDevice.getCANMessagesAndClearContainer();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 //            std::cout << " size of messages " << messages.size() << std::endl;
-//            for (auto const& message : messages) {
-//                std::cout << "Message name is "
-//                          << message.name
-//                          << " and address is "
-//                          << message.address
-//                          << " and signal size "
-//                          << message.signals.size() << std::endl;
-//            }
+            for (auto const& message : messages) {
+                std::cout << "Message name is "
+                          << message.name
+                          << " and address is "
+                          << message.address
+                          << " and signal size "
+                          << message.signals.size() << std::endl;
+            }
         }
     });
 
     auto thread2 = std::thread([&]{
-        while (file) {
-            file.read(reinterpret_cast<char*>(buffer.data()), chunkSize);
-            size_t bytesRead = file.gcount();
-            std::cout << " number of bytes read = " << bytesRead << std::endl;
-            if (bytesRead > 0) {
-                buffer.resize(bytesRead); // Resize buffer to actual bytes read
-                canDevice.receiveMessages(buffer);
-                buffer.resize(chunkSize); // Resize back for next read
-            }
+        while (true) {
+            canDevice.receiveMessages(buffer);
+            std::this_thread::sleep_for(std::chrono::milliseconds(75));
+//            file.read(reinterpret_cast<char*>(buffer.data()), chunkSize);
+//            size_t bytesRead = file.gcount();
+//            std::cout << " number of bytes read = " << bytesRead << std::endl;
+//            if (bytesRead > 0) {
+////                buffer.resize(bytesRead); // Resize buffer to actual bytes read
+//
+////                buffer.resize(chunkSize); // Resize back for next read
+//            }
         }
     });
     thread1.join();
