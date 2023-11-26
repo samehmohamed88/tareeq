@@ -69,14 +69,14 @@ int main() {
     assert(hw == 7);
     std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
 
-    std::string filename = "/apollo/can.txt"; // Replace with your filename
+    std::string filename = "/apollo/can_output_2023-11-25_22-32-26.bin"; // Replace with your filename
     std::ifstream file(filename, std::ios::binary);
     const size_t chunkSize = 0x1000U; // Size of each chunk in bytes
     std::vector<uint8_t> buffer(chunkSize);
 
 
     auto thread1 = std::thread([&]{
-        while (true) {
+        while (file) {
             auto messages = canDevice.getCANMessagesAndClearContainer();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 //            std::cout << " size of messages " << messages.size() << std::endl;
@@ -92,20 +92,19 @@ int main() {
     });
 
     auto thread2 = std::thread([&]{
-        while (true) {
-            canDevice.receiveMessages(buffer);
-            std::this_thread::sleep_for(std::chrono::milliseconds(75));
-//            file.read(reinterpret_cast<char*>(buffer.data()), chunkSize);
-//            size_t bytesRead = file.gcount();
+        while (file) {
+//            std::this_thread::sleep_for(std::chrono::milliseconds(75));
+            file.read(reinterpret_cast<char*>(buffer.data()), chunkSize);
+            size_t bytesRead = file.gcount();
 //            std::cout << " number of bytes read = " << bytesRead << std::endl;
-//            if (bytesRead > 0) {
-////                buffer.resize(bytesRead); // Resize buffer to actual bytes read
-//
-////                buffer.resize(chunkSize); // Resize back for next read
-//            }
+            if (bytesRead > 0) {
+                buffer.resize(bytesRead); // Resize buffer to actual bytes read
+                canDevice.receiveMessages(buffer);
+                buffer.resize(chunkSize); // Resize back for next read
+            }
         }
     });
-    thread1.join();
+//    thread1.join();
     thread2.join();
 
     return 0;

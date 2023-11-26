@@ -46,7 +46,7 @@ public:
 
         return currentMessages;
     }
-    bool receiveMessages(const std::vector<uint8_t>& chunk);
+    bool receiveMessages(std::vector<uint8_t>& chunk);
 
 private:
     void addCANMessage(const CANMessage& message);
@@ -144,7 +144,7 @@ uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
 //}
 
 template <class Device>
-bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vector<uint8_t>& chunk) {
+bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(std::vector<uint8_t>& chunk) {
 //    uint8_t temp_buffer[MAX_BUFFER_SIZE + sizeof(CANHeader) + 64];
 
 
@@ -152,17 +152,21 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vect
     std::shared_ptr<int> transferred = std::make_shared<int>(0);
 
 
-    device_->bulkRead(
-            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-            *temp_buffer.get(),
-            transferred);
+//    device_->bulkRead(
+//            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
+//            *temp_buffer.get(),
+//            transferred);
+
 
     // this actual number of bytes transferred from USB
     // let's dereference once so we can reuse it in multiple checks
-    int received = *transferred;
+//    int received = *transferred;
 
 //    auto temp_buffer = chunk.data();
-//    int received = chunk.size();
+    int received = chunk.size();
+
+    CANHeader header;
+    memcpy(&header, &chunk[0], sizeof(CANHeader));
 
 //    if (!device_.isCommHealthy()) {
 //        return false;
@@ -181,7 +185,8 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vect
 
 //    std::move(begin(*temp_buffer.get()), received, std::back_inserter(receiveBuffer_));
     for(int i = 0; i < received; i++){
-        receiveBuffer_.push_front((*temp_buffer)[i]);
+//        receiveBuffer_.push_front((*temp_buffer)[i]);
+        receiveBuffer_.push_back(chunk[i]);
     }
 //    bool invalid = (received <= 0);
 //    invalid &= parseRawCANToCANFrame();
@@ -191,6 +196,14 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(const std::vect
 
     parseRawCANToCANFrame();
     parseCANFrameToCANMessage();
+//    if (valid) {
+
+//    } else {
+//        for(int i = 0; i < received; i++){
+//        receiveBuffer_.push_front((*temp_buffer)[i]);
+//            receiveBuffer_.pop_front();
+//        }
+//    }
 
 
 //    return received <= 0 ? true : unpack_can_buffer(receiveBuffer_);
@@ -207,7 +220,7 @@ template <class Device>
 void CommaAICANInterfaceWithSimplyDeque<Device>::pushCANDataAndPopFromRawBuffer(const CANHeader &canHeader,
                                                                                 size_t dataFrameLength) {
     uint32_t bus_offset = 0;
-    CANFrame canFrame = canDataFrames_.emplace_back();
+    CANFrame &canFrame = canDataFrames_.emplace_back();
     // Set canData properties
     canFrame.busTime = 0;
     canFrame.address = canHeader.addr;
@@ -238,13 +251,18 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseRawCANToCANFrame() {
     size_t position = 0;
     while (receiveBuffer_.size() >= (position + sizeof(CANHeader))) {
         CANHeader header;
-
+        auto X = sizeof(CANHeader);
         // we copy to a temp vector to prevent potential errors in  memory layout introduced by manual copying directly
         // into the receivedBuffer std::deque
         std::vector<uint8_t> tempBuffer(receiveBuffer_.begin() + position, receiveBuffer_.begin() + position + sizeof(CANHeader));
         std::memcpy(&header, tempBuffer.data(), sizeof(CANHeader));
-
+        std::cout << "data len code " << std::to_string(header.data_len_code) << X << " " << std::endl;;
+        if (header.data_len_code == 0) {
+//            throw std::runtime_error(std::to_string(header.data_len_code));
+                return false;
+        }
         const uint8_t dataLength = CANDBC::dataLengthCodeToNumBytes[header.data_len_code];
+
         if (receiveBuffer_.size() < sizeof(CANHeader) + dataLength) {
             // we don't have all the data for this message yet
             // so we leave the data on the buffer and the next iteration of receiveMessages() should
@@ -275,16 +293,15 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
             auto const& signals = signalsRef.value().get();
             canMessage.signals.reserve(signals.size());
             canMessage.name = signals[0].messageName;
-            if (canMessage.name == "Steering") {
-                throw std::runtime_error("FOUND");
-            }
+
 
             for (auto const& signalSchema : signals) {
-                auto parsedSignal = canMessage.signals.emplace_back();
+                auto &parsedSignal = canMessage.signals.emplace_back();
                 int64_t tmp = parseValueUsingSignalSchema(dataFrame.data, signalSchema);
                 if (signalSchema.is_signed) {
                     tmp -= ((tmp >> (signalSchema.size-1)) & 0x1) ? (1ULL << signalSchema.size) : 0;
                 }
+
 //                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
 //                bool checksum_failed = false;
 //                if (!ignore_checksum) {
@@ -304,6 +321,12 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::parseCANFrameToCANMessage() {
 //                }
                 parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
                 parsedSignal.name = signalSchema.name;
+                if (canMessage.name == "Steering") {
+//                throw std::runtime_error("FOUND");
+                    if (parsedSignal.name == "Steering_Angle" && parsedSignal.value > 0) {
+                        std::cout << ">>>>>>>>>>>>> HAPPY " << parsedSignal.value;
+                    }
+                }
 //                all_vals[i].push_back(vals[i]);
             }
         }
