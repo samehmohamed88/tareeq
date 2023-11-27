@@ -26,6 +26,13 @@ public:
     static constexpr uint16_t productID_ = 0xddcc;
     /// interface number taken from https://github.com/commaai/openpilot/blob/master/selfdrive/boardd/panda_comms.cc#L73
     static constexpr int interfaceNumber_ = 0;
+    /// the main CAN bus on which important messages are sent.  Messages such as steering torque, wheels speeds, etc.
+    static constexpr int subaruMainCanBus = 0;
+    /// TODO: we want this in an external config.
+    static constexpr bool ignoreChecksum = false;
+    /// TODO: we want this in an external config.
+    static constexpr bool ignoreCounter = false;
+    static constexpr int MAX_MESSAGE_LEN = 64;
 public:
     CommaAICANInterfaceWithBoostBuffer(std::unique_ptr<Device> device);
 
@@ -143,8 +150,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 //    if (!device_.isCommHealthy()) {
 //        return false;
 //    }
-    bool ignore_checksum = false;
-    bool ignore_counter = false;
+
     int received = chunk.size();
 
     // Check if adding new data exceeds max buffer size
@@ -163,7 +169,14 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         memcpy(&canHeader, circularBuffer.array_one().first, sizeof(CANHeader));
 
         // get the message length from the header
-        const uint8_t dataLength = CANDBC::dataLengthCodeToNumBytes[canHeader.data_len_code];
+        if (canHeader.dataLengthCode < 0 || canHeader.dataLengthCode > sizeof(CANDBC::dataLengthCodeToNumBytes) /
+                                                                       sizeof(CANDBC::dataLengthCodeToNumBytes[0])) {
+            AERROR << "Message has invalid Data Length of greater than 64 bits.  Erasing buffer";
+            circularBuffer.erase(circularBuffer.begin(), circularBuffer.end());
+            break;
+        }
+        const uint8_t dataLength = CANDBC::dataLengthCodeToNumBytes[canHeader.dataLengthCode];
+
         if (circularBuffer.size() < sizeof(CANHeader) + dataLength) {
             // we don't have all the data for this message yet
             // so we leave the data on the buffer and the next iteration of receiveMessages() should
@@ -172,12 +185,11 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         }
 
         // create a CANFrame object to hold the raw message data
-        uint32_t bus_offset = 0;
         CANFrame &canFrame = canDataFrames_.emplace_back();
         // Set canData properties
         canFrame.busTime = 0;
         canFrame.address = canHeader.addr;
-        canFrame.src = canHeader.bus + bus_offset;
+        canFrame.src = canHeader.bus;
         if (canHeader.rejected) {
             canFrame.src += CAN_REJECTED_BUS_OFFSET;
         }
@@ -222,14 +234,14 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 
 //                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
                 bool checksum_failed = false;
-                if (!ignore_checksum) {
-                    if (signalSchema.calcChecksum != nullptr && signalSchema.calcChecksum(address, sig, dat) != tmp) {
+                if (!ignoreChecksum) {
+                    if (signalSchema.calcSubaruChecksum(, sig, dat) != tmp) {
                         checksum_failed = true;
                     }
                 }
                 bool counter_failed = false;
-                if (!ignore_counter) {
-                    if (signalSchema.type == SignalType::COUNTER) {
+                if (!ignoreCounter) {
+                    if (signalSchema.type == CANDBC::SignalType::COUNTER) {
                         counter_failed = !update_counter_generic(tmp, sig.size);
                     }
                 }
