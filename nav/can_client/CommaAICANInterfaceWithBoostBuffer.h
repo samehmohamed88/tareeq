@@ -36,24 +36,11 @@ public:
     bool setSafetyModel(SafetyModel safety_model, uint16_t safety_param=0U);
 
     uint8_t getHardwareType();
-    std::vector<CANMessage> getCANMessagesAndClearContainer() {
-        std::lock_guard<std::mutex> lock(mtx);
-        // Move the entire vector
-        std::vector<CANMessage> currentMessages = std::move(canMessages);
-
-        // After the move, canMessages is empty
-        // No need to call clear()
-
-        return currentMessages;
-    }
     bool receiveMessages(std::vector<uint8_t>& chunk);
+    std::vector<CANMessage> getCANMessagesAndClearContainer();
 
 private:
     void addCANMessage(const CANMessage& message);
-    bool parseRawCANToCANFrame();
-    bool parseCANFrameToCANMessage();
-    void pushCANDataAndPopFromRawBuffer(const CANHeader &canHeader,
-                                        size_t dataFrameLength);
 
     uint8_t calculate_checksum(const uint8_t *data, uint32_t len) {
         uint8_t checksum = 0U;
@@ -132,10 +119,15 @@ uint8_t CommaAICANInterfaceWithBoostBuffer<Device>::getHardwareType() {
     return 200;
 }
 
-//template <class Device>
-//std::vector<CANMessage> CommaAICANInterfaceWithBoostBuffer<Device>::getCANMessagesAndClearContainer() {
-//
-//}
+template <class Device>
+std::vector<CANMessage> CommaAICANInterfaceWithBoostBuffer<Device>::getCANMessagesAndClearContainer() {
+    std::lock_guard<std::mutex> lock(mtx);
+    // Move the entire vector
+    std::vector<CANMessage> currentMessages = std::move(canMessages);
+    // After the move, canMessages is empty
+    // No need to call clear()
+    return currentMessages;
+}
 
 template <class Device>
 bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uint8_t>& chunk) {
@@ -144,8 +136,6 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 //            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
 //            *temp_buffer.get(),
 //            transferred);
-
-
     // this actual number of bytes transferred from USB
     // let's dereference once so we can reuse it in multiple checks
 //    int received = *transferred;
@@ -153,8 +143,8 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 //    if (!device_.isCommHealthy()) {
 //        return false;
 //    }
-
-//    auto temp_buffer = chunk.data();
+    bool ignore_checksum = false;
+    bool ignore_counter = false;
     int received = chunk.size();
 
     // Check if adding new data exceeds max buffer size
@@ -181,10 +171,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
             break;
         }
 
-        // we have enough for the message, so we pop the CANHeader from the queue
-        circularBuffer.erase(circularBuffer.begin(), circularBuffer.begin() + sizeof(CANHeader));
-
-        // get the CAN RAW DataFrame from the buffer
+        // create a CANFrame object to hold the raw message data
         uint32_t bus_offset = 0;
         CANFrame &canFrame = canDataFrames_.emplace_back();
         // Set canData properties
@@ -197,15 +184,21 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         if (canHeader.returned) {
             canFrame.src += CAN_RETURNED_BUS_OFFSET;
         }
-//        if (calculate_checksum(receiveBuffer_.begin(), sizeof(CANHeader) + dataLength) != 0) {
-//            AERROR << "Panda CAN checksum failed";
-//            return false;
-//        }
+        if (calculate_checksum(chunk.data(), sizeof(CANHeader) + dataLength) != 0) {
+            // checksum did not pass, so we clear the header and message from the buffer
+            circularBuffer.erase(circularBuffer.begin(), circularBuffer.end());
+            AINFO << "Panda CAN checksum failed";
+            break;
+        }
 
-        // we move and pop the CAN frame data from the buffer to the CANFrame structure
-        canFrame.data.reserve(dataLength);
-        canFrame.data = std::move(std::vector<uint8_t>{circularBuffer.begin(), circularBuffer.begin() + dataLength});
-        circularBuffer.erase(circularBuffer.begin(), circularBuffer.begin() + dataLength);
+        // we move the raw message from the buffer to the CANFrame object's data vector
+        // and erase the header and message from the buffer
+        canFrame.data = std::move(std::vector<uint8_t>{
+            circularBuffer.begin() + sizeof(CANHeader),
+            circularBuffer.begin() + sizeof(CANHeader) + dataLength});
+
+        // now we can erase the entire message form the buffer
+        circularBuffer.erase(circularBuffer.begin(), circularBuffer.begin() + sizeof(CANHeader) + dataLength);
     }
 
     for (auto const& dataFrame : canDataFrames_) {
@@ -228,22 +221,22 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
                 }
 
 //                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
-//                bool checksum_failed = false;
-//                if (!ignore_checksum) {
-//                    if (sig.calc_checksum != nullptr && sig.calc_checksum(address, sig, dat) != tmp) {
-//                        checksum_failed = true;
-//                    }
-//                }
-//                bool counter_failed = false;
-//                if (!ignore_counter) {
-//                    if (sig.type == SignalType::COUNTER) {
-//                        counter_failed = !update_counter_generic(tmp, sig.size);
-//                    }
-//                }
-//                if (checksum_failed || counter_failed) {
-//                    LOGE("0x%X message checks failed, checksum failed %d, counter failed %d", address, checksum_failed, counter_failed);
-//                    return false;
-//                }
+                bool checksum_failed = false;
+                if (!ignore_checksum) {
+                    if (signalSchema.calcChecksum != nullptr && signalSchema.calcChecksum(address, sig, dat) != tmp) {
+                        checksum_failed = true;
+                    }
+                }
+                bool counter_failed = false;
+                if (!ignore_counter) {
+                    if (signalSchema.type == SignalType::COUNTER) {
+                        counter_failed = !update_counter_generic(tmp, sig.size);
+                    }
+                }
+                if (checksum_failed || counter_failed) {
+                    LOGE("0x%X message checks failed, checksum failed %d, counter failed %d", address, checksum_failed, counter_failed);
+                    return false;
+                }
                 parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
                 parsedSignal.name = signalSchema.name;
                 if (canMessage.name == "Steering_Torque") {
@@ -268,163 +261,6 @@ void CommaAICANInterfaceWithBoostBuffer<Device>::addCANMessage(const CANMessage&
     std::lock_guard<std::mutex> lock(mtx);
     canMessages.push_back(message);
 }
-
-template <class Device>
-void CommaAICANInterfaceWithBoostBuffer<Device>::pushCANDataAndPopFromRawBuffer(const CANHeader &canHeader,
-                                                                                size_t dataFrameLength) {
-//    uint32_t bus_offset = 0;
-//    CANFrame &canFrame = canDataFrames_.emplace_back();
-//    // Set canData properties
-//    canFrame.busTime = 0;
-//    canFrame.address = canHeader.addr;
-//    canFrame.src = canHeader.bus + bus_offset;
-//    if (canHeader.rejected) {
-//        canFrame.src += CAN_REJECTED_BUS_OFFSET;
-//    }
-//    if (canHeader.returned) {
-//        canFrame.src += CAN_RETURNED_BUS_OFFSET;
-//    }
-////        if (calculate_checksum(receiveBuffer_.begin(), sizeof(CANHeader) + dataLength) != 0) {
-////            AERROR << "Panda CAN checksum failed";
-////            return false;
-////        }
-//
-//    // we can now pop the entire contents of the CAN Header from the buffer
-////    receiveBuffer_.erase(receiveBuffer_.begin(), receiveBuffer_.begin() + sizeof(CANHeader));
-//    for (size_t i = 0; i < sizeof(CANHeader); i++) {
-//        receiveBuffer_.pop_front();
-//    }
-//    // we move and pop the CAN frame data from the buffer to the CANFrame structure
-//    canFrame.data.reserve(dataFrameLength);
-//    for (size_t i = 0; i < dataFrameLength; ++i) {
-//        canFrame.data.push_back(std::move(receiveBuffer_.front()));
-//        receiveBuffer_.pop_front();
-//    }
-}
-
-template <class Device>
-bool CommaAICANInterfaceWithBoostBuffer<Device>::parseRawCANToCANFrame() {
-//    size_t position = 0;
-//    while (receiveBuffer_.size() >= (position + sizeof(CANHeader))) {
-//        CANHeader header;
-//        auto X = sizeof(CANHeader);
-//        // we copy to a temp vector to prevent potential errors in  memory layout introduced by manual copying directly
-//        // into the receivedBuffer std::deque
-//        std::vector<uint8_t> tempBuffer(receiveBuffer_.begin() + position, receiveBuffer_.begin() + position + sizeof(CANHeader));
-//        std::memcpy(&header, tempBuffer.data(), sizeof(CANHeader));
-//        std::cout << "data len code " << std::to_string(header.data_len_code) << X << " " << std::endl;;
-//        if (header.data_len_code == 0) {
-////            throw std::runtime_error(std::to_string(header.data_len_code));
-//                return false;
-//        }
-//        const uint8_t dataLength = CANDBC::dataLengthCodeToNumBytes[header.data_len_code];
-//
-//        if (receiveBuffer_.size() < sizeof(CANHeader) + dataLength) {
-//            // we don't have all the data for this message yet
-//            // so we leave the data on the buffer and the next iteration of receiveMessages() should
-//            // append the remainder of the message to the buffer
-//            break;
-//        }
-//        // we have a full message so we parse the raw buffer to a CANFrame struct
-//        // using the information from the header to add the CANFrame data to the canDataFrames_ std::vector
-//        pushCANDataAndPopFromRawBuffer(header, dataLength);
-//
-//        // we increase the position and move the overflowing data to the beginning of the buffer
-//        // for the next iteration of the while loop
-//        position += sizeof(CANHeader) + dataLength;
-//
-//    }
-    return true;
-}
-
-template <class Device>
-bool CommaAICANInterfaceWithBoostBuffer<Device>::parseCANFrameToCANMessage() {
-    for (auto const& dataFrame : canDataFrames_) {
-        CANMessage canMessage;
-        canMessage.address = dataFrame.address;
-
-        auto const& signalsRef = canDatabase_->getSignalSchemasByAddress(dataFrame.address);
-        if (signalsRef.has_value()) {
-
-            auto const& signals = signalsRef.value().get();
-            canMessage.signals.reserve(signals.size());
-            canMessage.name = signals[0].messageName;
-
-
-            for (auto const& signalSchema : signals) {
-                auto &parsedSignal = canMessage.signals.emplace_back();
-                int64_t tmp = parseValueUsingSignalSchema(dataFrame.data, signalSchema);
-                if (signalSchema.is_signed) {
-                    tmp -= ((tmp >> (signalSchema.size-1)) & 0x1) ? (1ULL << signalSchema.size) : 0;
-                }
-
-//                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
-//                bool checksum_failed = false;
-//                if (!ignore_checksum) {
-//                    if (sig.calc_checksum != nullptr && sig.calc_checksum(address, sig, dat) != tmp) {
-//                        checksum_failed = true;
-//                    }
-//                }
-//                bool counter_failed = false;
-//                if (!ignore_counter) {
-//                    if (sig.type == SignalType::COUNTER) {
-//                        counter_failed = !update_counter_generic(tmp, sig.size);
-//                    }
-//                }
-//                if (checksum_failed || counter_failed) {
-//                    LOGE("0x%X message checks failed, checksum failed %d, counter failed %d", address, checksum_failed, counter_failed);
-//                    return false;
-//                }
-                parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
-                parsedSignal.name = signalSchema.name;
-                if (canMessage.name == "Steering_Torque") {
-//                throw std::runtime_error("FOUND");
-                    if (parsedSignal.name == "Steering_Torque" && parsedSignal.value > 0) {
-                        std::cout << ">>>>>>>>>>>>> HAPPY " << parsedSignal.value;
-                    }
-                }
-//                all_vals[i].push_back(vals[i]);
-            }
-        }
-        // we add the can message to the CAN Message Queue which is picked up by the CAN Timer Component
-        // on a specified interval, converted to DDS messages and cleared.
-        addCANMessage(std::move(canMessage));
-    }
-    return true;
-}
-
-//template <class Device>
-//bool CommaAICANInterface<Device>::receiveMessages(const boost::system::error_code& /*e*/, boost::asio::steady_timer* t, int* count) {
-//    // holds the value of the actual number of bytes read
-//    std::shared_ptr<int> transferred = std::make_shared<int>(0);
-//        DeviceStatus status = device_->bulkRead(
-//            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-//            dataBuffer_,
-//            transferred);
-
-//    constexpr auto vectorSize = 0x4000U;
-//
-//    std::vector<uint8_t> data;
-//    data.reserve(vectorSize);
-//    for (unsigned int i =0; i < vectorSize; i++) {
-//        data.push_back(0);
-//    }
-//    std::cout << "We started with " << std::to_string(data[0]) << std::endl;
-
-//    std::cout << "Panda returned " << std::to_string(data[0]) << std::endl;
-////    std::ofstream oufile("/home/sameh/can_example.txt"+std::to_string(*transferred));
-////    oufile.open();
-//    std::ostream_iterator<std::uint8_t> output_iterator(output_file_, "\n");
-//    std::copy(std::begin(data), std::end(data), output_iterator);
-////    for (int i = 0; i  < *transferred; i++) {
-////        oufile << data[i];
-////    }
-////    oufile << "\n";
-//    if (status == DeviceStatus::SUCCESS) {
-//        return true;
-//    }
-//    return false;
-//}
 
 } // namespace can
 } // namespace nav

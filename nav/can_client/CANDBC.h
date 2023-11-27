@@ -64,6 +64,22 @@ public:
 
     std::optional<std::reference_wrapper<const std::vector<SignalSchema>>> getSignalSchemasByAddress(uint32_t address);
 public:
+    enum class SignalType {
+        DEFAULT,
+        COUNTER,
+        CHECKSUM,
+    };
+    /// This is taken from CommaAI openpilot
+    /// This project only supports Subaru Forester 2020 whereas Comma AI supports many different cars.
+    /// So we hardcode the values as they are in openpilot for Subaru
+    /// https://github.com/commaai/opendbc/blob/2b96bcc45669cdd14f9c652b07ef32d6403630f6/can/dbc.cc#L65
+    struct ChecksumState {
+        static const int checksumSize = 8;
+        static const int counterSize = -1;
+        static const int checksumStartBit = 0;
+        static const int counterStartBit = -1;
+        static const bool littleEndian = true;
+    };
     struct SignalSchema {
         struct ValueDescription {
             std::string name;
@@ -76,8 +92,21 @@ public:
         bool is_signed;
         double factor, offset;
         bool isLittleEndian;
-        unsigned int (*calcChecksum)(uint32_t address, const SignalSchema &signal, const std::vector<uint8_t> &d);
+        SignalType type;
         ValueDescription valueDescription_;
+        /// This is taken from CommaAI openpilot
+        /// reference: https://github.com/commaai/opendbc/blob/2b96bcc45669cdd14f9c652b07ef32d6403630f6/can/common.cc#L27C1-L27C1
+        uint8_t calcSubaruChecksum(uint32_t address, const SignalSchema &signalSchema, const std::vector<uint8_t> &d) {
+            unsigned int s = 0;
+            while (address) {
+                s += address & 0xFF; address >>= 8;
+            }
+            // skip checksum in first byte
+            for (size_t i = 1; i < d.size(); i++) {
+                s += d[i];
+            }
+            return s & 0xFF;
+        };
     };
     struct MessageSchema {
         std::string name;
@@ -110,6 +139,8 @@ private:
       throw std::runtime_error(is.str());                          \
     }                                                              \
   } while (false)
+
+
 
     CANDBC(bool allow_duplicate_message_name = false) {
         /// The variable `subaruGlobalCANDBC` is defined in header `nav/can_client/SubaruGlobalCANDBC.h` which is generated
@@ -178,6 +209,19 @@ private:
                 signalSchema.is_signed = match[offset + 5].str() == "-";
                 signalSchema.factor = std::stod(match[offset + 6].str());
                 signalSchema.offset = std::stod(match[offset + 7].str());
+
+                if (signalSchema.name == "CHECKSUM") {
+                    DBC_ASSERT(ChecksumState::checksumSize == -1 || signalSchema.size == ChecksumState::checksumSize, "CHECKSUM is not " << ChecksumState::checksumSize << " bits long");
+                    DBC_ASSERT(ChecksumState::checksumStartBit == -1 || (signalSchema.startBit % 8) == ChecksumState::checksumStartBit, " CHECKSUM starts at wrong bit");
+                    DBC_ASSERT(signalSchema.isLittleEndian == ChecksumState::littleEndian, "CHECKSUM has wrong endianness");
+                    signalSchema.type = SignalType::CHECKSUM;
+                } else if (signalSchema.name == "COUNTER") {
+                    DBC_ASSERT(ChecksumState::counterSize == -1 || signalSchema.size == ChecksumState::counterSize, "COUNTER is not " << ChecksumState::counterSize << " bits long");
+                    DBC_ASSERT(ChecksumState::counterStartBit == -1 || (signalSchema.startBit % 8) == ChecksumState::counterStartBit, "COUNTER starts at wrong bit");
+                    DBC_ASSERT(ChecksumState::littleEndian == signalSchema.isLittleEndian, "COUNTER has wrong endianness");
+                    signalSchema.type = SignalType::COUNTER;
+                }
+
                 if (signalSchema.isLittleEndian) {
                     signalSchema.leastSignificantBit = signalSchema.startBit;
                     signalSchema.mostSignificantBit = signalSchema.startBit + signalSchema.size - 1;
@@ -212,7 +256,6 @@ private:
                 std::copy(words.begin(), words.end(), std::ostream_iterator<std::string>(s, " "));
                 valueDefinitions = s.str();
                 valueDefinitions = trim(valueDefinitions);
-
 
                 auto &signals = signalAddressMap[address];
                 for (auto signal : signals) {
