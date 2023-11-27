@@ -75,17 +75,6 @@ cc_library(
 )
 
 cc_library(
-    name = "panda_api",
-    srcs = ["CANClient.cc"],
-    hdrs = ["CANClient.h"],
-    visibility = ["//visibility:private"],
-    deps = [
-        ":panda_usb_handler",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
     name = "lib_usb_device_interface",
     hdrs = ["LibUsbDeviceInterface.h"],
     linkopts = ["-lusb-1.0"],
