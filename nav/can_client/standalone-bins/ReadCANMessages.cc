@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdint>  // For uint8_t
+#include <unordered_map>
 
 using namespace nav;
 
@@ -21,6 +22,8 @@ int main() {
     using namespace nav;
     static constexpr uint16_t vendorID_ = 0xbbaa;
     static constexpr uint16_t productID_ = 0xddcc;
+
+    std::unordered_map<std::string , int32_t > messageMap{};
 
     auto device = std::make_unique<can::UsbDevice<can::LibUsbDevice>>(
             std::make_unique<can::LibUsbDevice>(),
@@ -53,7 +56,16 @@ int main() {
 //                          << message.address
 //                          << " and signal size "
 //                          << message.signals.size() << std::endl;
+
+                if (messageMap.find(message.name) != messageMap.end()) {
+                    messageMap[message.name]++;
+                } else {
+                    messageMap[message.name] = 1;
+                }
                 for (auto const& signal : message.signals) {
+                    if (signal.name == "CHECKSUM" || signal.name == "COUNTER") {
+                        continue;
+                    }
                     parsedData << message.name << ",";
                     parsedData << signal.name << ",";
                     parsedData << signal.value;
@@ -78,6 +90,12 @@ int main() {
     });
     thread1.join();
     thread2.join();
-    std::cout << "All clear" << std::endl;
+    int total = 0;
+    std::cout << "All clear.  Found the following" << std::endl;
+    for (const auto& kv : messageMap) {
+        std::cout << "Key: " << kv.first << ", Value: " << kv.second << std::endl;
+        total += kv.second;
+    }
+    std::cout << "For a total of " << std::to_string(total) << " messages" << std::endl;
     return 0;
 }

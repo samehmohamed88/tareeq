@@ -29,10 +29,11 @@ public:
     /// the main CAN bus on which important messages are sent.  Messages such as steering torque, wheels speeds, etc.
     static constexpr int subaruMainCanBus = 0;
     /// TODO: we want this in an external config.
-    static constexpr bool ignoreChecksum = false;
+    static constexpr bool ignoreChecksum = true;
     /// TODO: we want this in an external config.
     static constexpr bool ignoreCounter = false;
-    static constexpr int MAX_MESSAGE_LEN = 64;
+    static constexpr int MAX_BAD_COUNTER = 5;
+    static constexpr int CAN_INVALID_COUNT = 5;
 public:
     CommaAICANInterfaceWithBoostBuffer(std::unique_ptr<Device> device);
 
@@ -48,6 +49,17 @@ public:
 
 private:
     void addCANMessage(const CANMessage& message);
+
+    std::string stripWhitespace(const std::string& input) {
+        std::string output = input;
+        output.erase(
+                std::remove_if(output.begin(), output.end(), [](unsigned char ch) {
+                    return std::isspace(ch);
+                }),
+                output.end()
+        );
+        return output;
+    }
 
     uint8_t calculate_checksum(const uint8_t *data, uint32_t len) {
         uint8_t checksum = 0U;
@@ -73,6 +85,28 @@ private:
             i = signalSchema.isLittleEndian ? i-1 : i+1;
         }
         return ret;
+    }
+
+    bool updateCounter(CANFrame &dataFrame, int64_t v, int signalCountSize) {
+        uint8_t old_counter = dataFrame.counter;
+        dataFrame.counter = v;
+        if (((old_counter+1) & ((1 << signalCountSize) -1)) != v) {
+            dataFrame.numCounterErrors += 1;
+            if (dataFrame.numCounterErrors > 1) {
+                AERROR << "COUNTER FAIL "
+                       << dataFrame.address
+                       << " "
+                       << dataFrame.numCounterErrors
+                        << " "
+                       <<  (int)v;
+            }
+            if (dataFrame.numCounterErrors >= MAX_BAD_COUNTER) {
+                return false;
+            }
+        } else if (dataFrame.numCounterErrors > 0) {
+            dataFrame.numCounterErrors--;
+        }
+        return true;
     }
 
 private:
@@ -169,9 +203,14 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         memcpy(&canHeader, circularBuffer.array_one().first, sizeof(CANHeader));
 
         // get the message length from the header
-        if (canHeader.dataLengthCode < 0 || canHeader.dataLengthCode > sizeof(CANDBC::dataLengthCodeToNumBytes) /
-                                                                       sizeof(CANDBC::dataLengthCodeToNumBytes[0])) {
-            AERROR << "Message has invalid Data Length of greater than 64 bits.  Erasing buffer";
+        if (
+                (canHeader.dataLengthCode < 0 ||
+                        canHeader.dataLengthCode > sizeof(CANDBC::dataLengthCodeToNumBytes) /
+                                                                       sizeof(CANDBC::dataLengthCodeToNumBytes[0]))
+                || (canHeader.bus != subaruMainCanBus)
+                ) {
+            AERROR << "Message has invalid Data Length of greater than 64 bits,"
+                   << "or sent on wrong CAN Bus.  Erasing buffer";
             circularBuffer.erase(circularBuffer.begin(), circularBuffer.end());
             break;
         }
@@ -213,21 +252,19 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         circularBuffer.erase(circularBuffer.begin(), circularBuffer.begin() + sizeof(CANHeader) + dataLength);
     }
 
-    for (auto const& dataFrame : canDataFrames_) {
+    for (auto &dataFrame : canDataFrames_) {
         CANMessage canMessage;
         canMessage.address = dataFrame.address;
 
         auto const &signalsRef = canDatabase_->getSignalSchemasByAddress(dataFrame.address);
         if (signalsRef.has_value()) {
-
             auto const &signals = signalsRef.value().get();
             canMessage.signals.reserve(signals.size());
             canMessage.name = signals[0].messageName;
 
-
             for (auto const &signalSchema: signals) {
-                auto &parsedSignal = canMessage.signals.emplace_back();
                 int64_t tmp = parseValueUsingSignalSchema(dataFrame.data, signalSchema);
+
                 if (signalSchema.is_signed) {
                     tmp -= ((tmp >> (signalSchema.size - 1)) & 0x1) ? (1ULL << signalSchema.size) : 0;
                 }
@@ -235,33 +272,31 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 //                AINFO << "parse 0x%X %s -> %ld\n" << address <<  sig.name, tmp);
                 bool checksum_failed = false;
                 if (!ignoreChecksum) {
-                    if (signalSchema.calcSubaruChecksum(, sig, dat) != tmp) {
+                    if (signalSchema.calcSubaruChecksum(dataFrame.address, dataFrame.data) != tmp) {
                         checksum_failed = true;
                     }
                 }
                 bool counter_failed = false;
                 if (!ignoreCounter) {
                     if (signalSchema.type == CANDBC::SignalType::COUNTER) {
-                        counter_failed = !update_counter_generic(tmp, sig.size);
+                        counter_failed = !updateCounter(dataFrame, tmp, signalSchema.size);
                     }
                 }
                 if (checksum_failed || counter_failed) {
-                    LOGE("0x%X message checks failed, checksum failed %d, counter failed %d", address, checksum_failed, counter_failed);
-                    return false;
+                    AERROR << "Message checks failed: "
+                           << dataFrame.address
+                           << " checksum failed " << checksum_failed
+                           << " counter failed " << counter_failed;
+                    continue;
                 }
+                auto &parsedSignal = canMessage.signals.emplace_back();
                 parsedSignal.value = tmp * signalSchema.factor + signalSchema.offset;
                 parsedSignal.name = signalSchema.name;
-                if (canMessage.name == "Steering_Torque") {
-                    if (parsedSignal.name == "Steering_Torque" && parsedSignal.value > 0) {
-                        std::cout << ">>>>>>>>>>>>> HAPPY " << parsedSignal.value;
-                    }
-                }
-//                all_vals[i].push_back(vals[i]);
             }
+            // we add the can message to the CAN Message Queue which is picked up by the CAN Timer Component
+            // on a specified interval, converted to DDS messages and cleared.
+            addCANMessage(std::move(canMessage));
         }
-        // we add the can message to the CAN Message Queue which is picked up by the CAN Timer Component
-        // on a specified interval, converted to DDS messages and cleared.
-        addCANMessage(std::move(canMessage));
     }
     // we processed all messages, so let's clear for the next iteration
     canDataFrames_.clear();

@@ -33,6 +33,8 @@ struct CANFrame {
     std::vector<uint8_t> data;
     long busTime;
     long src;
+    uint8_t counter = 0;
+    uint8_t numCounterErrors = 0;
 };
 
 struct CANMessage {
@@ -96,7 +98,7 @@ public:
         ValueDescription valueDescription_;
         /// This is taken from CommaAI openpilot
         /// reference: https://github.com/commaai/opendbc/blob/2b96bcc45669cdd14f9c652b07ef32d6403630f6/can/common.cc#L27C1-L27C1
-        uint8_t calcSubaruChecksum(uint32_t address, const SignalSchema &signalSchema, const std::vector<uint8_t> &d) {
+        uint8_t calcSubaruChecksum(uint32_t address, const std::vector<uint8_t> &d) const {
             unsigned int s = 0;
             while (address) {
                 s += address & 0xFF; address >>= 8;
