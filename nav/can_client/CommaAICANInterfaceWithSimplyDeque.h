@@ -145,13 +145,7 @@ uint8_t CommaAICANInterfaceWithSimplyDeque<Device>::getHardwareType() {
 
 template <class Device>
 bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(std::vector<uint8_t>& chunk) {
-//    uint8_t temp_buffer[MAX_BUFFER_SIZE + sizeof(CANHeader) + 64];
-
-
-//    std::cout << std::endl;
-    std::shared_ptr<int> transferred = std::make_shared<int>(0);
-
-
+//    std::shared_ptr<int> transferred = std::make_shared<int>(0);
 //    device_->bulkRead(
 //            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
 //            *temp_buffer.get(),
@@ -165,37 +159,43 @@ bool CommaAICANInterfaceWithSimplyDeque<Device>::receiveMessages(std::vector<uin
 //    auto temp_buffer = chunk.data();
     int received = chunk.size();
 
-    CANHeader header;
-    memcpy(&header, &chunk[0], sizeof(CANHeader));
+    //let's add everything received onto the buffer
+    for (int i = 0; i < received; i++) {
+        receiveBuffer_.push_back(chunk[i]);
+    }
+
+    // the front of the buffer should always be a can header
+//    CANHeader header;
+//    memcpy(&header, receiveBuffer_.be, sizeof(CANHeader));
 
 //    if (!device_.isCommHealthy()) {
 //        return false;
 //    }
-    if (received == MAX_BUFFER_SIZE) {
-        AWARN << " The Panda Receive Buffer is Full";
-    }
+//    if (received == MAX_BUFFER_SIZE) {
+//        AWARN << " The Panda Receive Buffer is Full";
+//    }
     // Check if adding new data exceeds max buffer size
-    if (receiveBuffer_.size() + received > MAX_BUFFER_SIZE) {
-        // Handle buffer overflow, e.g., log error, discard data, etc.
-        AWARN << "Exceeding maximum buffer size, discarding data";
-        return false;
-    }
+//    if (receiveBuffer_.size() + received > MAX_BUFFER_SIZE) {
+//        // Handle buffer overflow, e.g., log error, discard data, etc.
+//        AWARN << "Exceeding maximum buffer size, discarding data";
+//        return false;
+//    }
     // Add received bytes to the deque
 //    receiveBuffer_.insert(receiveBuffer_.end(), received, *temp_buffer->data());
 
 //    std::move(begin(*temp_buffer.get()), received, std::back_inserter(receiveBuffer_));
-    for(int i = 0; i < received; i++){
-//        receiveBuffer_.push_front((*temp_buffer)[i]);
-        receiveBuffer_.push_back(chunk[i]);
-    }
+//    for(int i = 0; i < received; i++){
+////        receiveBuffer_.push_front((*temp_buffer)[i]);
+//        receiveBuffer_.push_back(chunk[i]);
+//    }
 //    bool invalid = (received <= 0);
 //    invalid &= parseRawCANToCANFrame();
 
     // we clean the vector of CAN Data Frames before processing more
 //    canDataFrames_.clear();
 
-    parseRawCANToCANFrame();
-    parseCANFrameToCANMessage();
+//    parseRawCANToCANFrame();
+//    parseCANFrameToCANMessage();
 //    if (valid) {
 
 //    } else {

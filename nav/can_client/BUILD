@@ -142,6 +142,20 @@ cc_library(
     alwayslink = True,
 )
 
+cc_library(
+    name = "comma_ai_can_interface_boost_buffer",
+    hdrs = [
+        "CommaAICANInterfaceWithBoostBuffer.h",
+    ],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":can_database",
+        ":device_enum_classes",
+        "@boost",
+    ],
+    alwayslink = True,
+)
+
 #install(
 #    name = "install",
 #    data = [
