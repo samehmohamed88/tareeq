@@ -24,10 +24,6 @@ struct __attribute__((packed)) CANHeader {
     uint8_t checksum : 8;
 };
 
-constexpr size_t getSizeOfCANHeader() {
-    return sizeof(CANHeader);
-}
-
 struct CANFrame {
     long address;
     std::vector<uint8_t> data;
@@ -56,13 +52,26 @@ public:
     struct MessageSchema;
     struct SignalSchema;
 
+    /// This array returns the C++ data size in bytes from the data length code in the message.
     static constexpr uint8_t dataLengthCodeToNumBytes[] = {0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 12U, 16U, 20U, 24U, 32U, 48U, 64U};
+    /// This method reverses the C++ data size in bytes back to the data length code needed for the message.
+    static uint8_t bufferSizeToDataLengthCode(uint8_t len) {
+        if (len <= 8) {
+            return len;
+        }
+        if (len <= 24) {
+            return 8 + ((len - 8) / 4) + ((len % 4) ? 1 : 0);
+        } else {
+            return 11 + (len / 16) + ((len % 16) ? 1 : 0);
+        }
+    }
 
     static std::unique_ptr<CANDBC> CreateInstance() {
         return std::move(std::make_unique<CANDBC>(CANDBC()));
     }
 
     std::optional<std::reference_wrapper<const MessageSchema>> getMessageByAddress(uint32_t address);
+    std::optional<std::reference_wrapper<const MessageSchema>> getMessageByName(std::string messageName);
 
     std::optional<std::reference_wrapper<const std::vector<SignalSchema>>> getSignalSchemasByAddress(uint32_t address);
 public:
@@ -115,6 +124,15 @@ public:
         uint32_t address;
         uint32_t size;
         std::vector<SignalSchema> signals;
+        std::unordered_map<std::string, const SignalSchema> signalNameToSignalMap;
+        std::optional<std::reference_wrapper<const SignalSchema>> getSignalSchmeByName(std::string signalName) const {
+            const auto it = signalNameToSignalMap.find(signalName);
+            if (it != signalNameToSignalMap.end()) {
+                return std::cref(it->second);
+            } else {
+                return std::nullopt; // Represents an empty optional
+            }
+        }
     };
 private:
     ///
@@ -126,6 +144,7 @@ private:
 
     std::string name_ = std::string("Subaru Forester 2020");
     std::map<uint32_t, MessageSchema> messagesAddressMap_;
+    std::map<std::string , MessageSchema> messagesNameMap_;
 
     std::string& trim(std::string& s, const char* t = " \t\n\r\f\v");
     bool startswith(const std::string& str, const char* prefix);
@@ -237,6 +256,14 @@ private:
                 // Check for duplicate signal names
                 DBC_ASSERT(signalNameSetMap[address].find(signalSchema.name) == signalNameSetMap[address].end(), "Duplicate signal name: " << signalSchema.name);
                 signalNameSetMap[address].insert(signalSchema.name);
+
+                // now we store a const reference to the SignalSchema in a name to signal map
+                // for quick lookup during CAN Send/Receive operations
+                std::string signalSchemaName = signalSchema.name;
+                SignalSchema signalSchema1 = signalSchema;
+                auto& signalNameToSignalMap = messagesAddressMap_[address].signalNameToSignalMap;
+                signalNameToSignalMap.emplace(std::move(signalSchemaName), std::move(signalSchema1));
+
             } else if (startswith(line, "VAL_ ")) {
                 // new signal value/definition
                 bool ret = std::regex_search(line, match, valRegExp_);
@@ -271,11 +298,26 @@ private:
                 }
             }
         }
+        // we now create a map to find messages by name as well as ID
         for (auto& [key, message] : messagesAddressMap_) {
             message.signals = signalAddressMap[key];
+            messagesNameMap_[message.name] = message;
         }
     }
 
 };
+
+constexpr size_t getSizeOfCANHeader() {
+    return sizeof(CANHeader);
 }
+
+constexpr size_t getSizeOfDataLengthArray() {
+    return sizeof(CANDBC::dataLengthCodeToNumBytes);
 }
+
+constexpr size_t getSizeOfDataLengthElement() {
+    return sizeof(CANDBC::dataLengthCodeToNumBytes[0]);
+}
+
+} // namespace can
+} // namespace nav

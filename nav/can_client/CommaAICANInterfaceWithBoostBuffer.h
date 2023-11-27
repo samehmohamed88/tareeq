@@ -13,6 +13,7 @@
 #include <string>
 #include <functional>
 #include <iostream>
+#include <cmath>
 
 namespace nav {
 namespace can {
@@ -34,6 +35,7 @@ public:
     static constexpr bool ignoreCounter = false;
     static constexpr int MAX_BAD_COUNTER = 5;
     static constexpr int CAN_INVALID_COUNT = 5;
+    static constexpr size_t USB_TX_SOFT_LIMIT = 0x100U;
 public:
     CommaAICANInterfaceWithBoostBuffer(std::unique_ptr<Device> device);
 
@@ -45,6 +47,7 @@ public:
 
     uint8_t getHardwareType();
     bool receiveMessages(std::vector<uint8_t>& chunk);
+    std::vector<uint8_t> sendMessages(const std::vector<CANMessage> &messages);
     std::vector<CANMessage> getCANMessagesAndClearContainer();
 
 private:
@@ -87,6 +90,26 @@ private:
         return ret;
     }
 
+    void packValueUsingSignalSchema(std::vector<uint8_t> &writeBuffer, const CANDBC::SignalSchema &signalSchema, int64_t tmp_val) {
+        int i = signalSchema.leastSignificantBit / 8;
+        int bits = signalSchema.size;
+        if (signalSchema.size < 64) {
+            tmp_val &= ((1ULL << signalSchema.size) - 1);
+        }
+
+        while (i >= 0 && i < static_cast<int>(writeBuffer.size()) && bits > 0) {
+            int shift = (int)(signalSchema.leastSignificantBit / 8) == i ? signalSchema.leastSignificantBit % 8 : 0;
+            int size = std::min(bits, 8 - shift);
+
+            writeBuffer[i] &= ~(((1ULL << size) - 1) << shift);
+            writeBuffer[i] |= (tmp_val & ((1ULL << size) - 1)) << shift;
+
+            bits -= size;
+            tmp_val >>= size;
+            i = signalSchema.isLittleEndian ? i+1 : i-1;
+        }
+    }
+
     bool updateCounter(CANFrame &dataFrame, int64_t v, int signalCountSize) {
         uint8_t old_counter = dataFrame.counter;
         dataFrame.counter = v;
@@ -110,13 +133,14 @@ private:
     }
 
 private:
-    mutable std::mutex mtx;
+    mutable std::mutex mtx_;
     std::unique_ptr<Device> device_;
     std::vector<CANFrame> canDataFrames_;
     std::vector<CANMessage> canMessages;
     std::unique_ptr<CANDBC> canDatabase_;
-    boost::circular_buffer<uint8_t> circularBuffer;
-    std::unique_ptr<std::vector<uint8_t>> transferBuffer;
+    boost::circular_buffer<uint8_t> circularBuffer_;
+    std::unique_ptr<std::vector<uint8_t>> transferBuffer_;
+    std::unordered_map<uint32_t, uint32_t> messageCountsByAddress_;
 
 
     static constexpr size_t MAX_BUFFER_SIZE = 0x4000U; // Max buffer size
@@ -132,13 +156,13 @@ bool CommaAICANInterfaceWithBoostBuffer<T>::setSafetyModel(SafetyModel safetyMod
 
 template <class Device>
 CommaAICANInterfaceWithBoostBuffer<Device>::CommaAICANInterfaceWithBoostBuffer(std::unique_ptr<Device> device) :
-        mtx{}
+        mtx_{}
         , device_{std::move(device)}
         , canDataFrames_{}
         , canMessages{}
         , canDatabase_{CANDBC::CreateInstance()}
-        , circularBuffer{MAX_BUFFER_SIZE + sizeof(CANHeader) + 64}
-        , transferBuffer{std::make_unique<std::vector<uint8_t>>(MAX_BUFFER_SIZE + sizeof(CANHeader) + 64, 0)}
+        , circularBuffer_{MAX_BUFFER_SIZE + getSizeOfCANHeader() + 64}
+        , transferBuffer_{std::make_unique<std::vector<uint8_t>>(MAX_BUFFER_SIZE + getSizeOfCANHeader() + 64, 0)}
         {}
 
 template <class Device>
@@ -161,8 +185,136 @@ uint8_t CommaAICANInterfaceWithBoostBuffer<Device>::getHardwareType() {
 }
 
 template <class Device>
+std::vector<uint8_t> CommaAICANInterfaceWithBoostBuffer<Device>::sendMessages(const std::vector<CANMessage> &messages) {
+    // we fill up the `canBuffer` until the number of elements, i.e. position on the buffer
+    // is greater than `USB_TX_SOFT_LIMIT`
+    // then we send the buffer over the USB Interface to the Vehicle CAN
+    uint bufferLength = 0;
+    std::vector<uint8_t> canBuffer(2 * USB_TX_SOFT_LIMIT);
+
+    // TODO: determine if flattening the maps will improve performance.
+    // for example we can store std::unordered_map<std::pair(messageId, signalName), SignalSchema>
+    // but this will require profiling to determine the bottlenecks.
+    for (const auto& message : messages) {
+        // set all values for all given signal/value pairs
+        bool setCounterSignal = false;
+        const auto messageSchemaRef = canDatabase_->getMessageByName(message.name);
+
+        // we lookup message schema by name and make sure we don't get a nullptr
+        if (messageSchemaRef.has_value()) {
+            // get the MessageSchema from the std::optional and begin processing message
+            const auto& messageSchema = messageSchemaRef.value().get();
+
+            // first we make a std::vector to hold the raw data that will be transferred over USB
+            std::vector<uint8_t> rawData(messageSchema.size, 0);
+
+            for (const auto& messageSignal : message.signals) {
+                // we lookup the Signal Schema by name inside the MessageSchema and make sure we don't get a nullptr
+                const auto signalSchemaRef = messageSchema.getSignalSchmeByName(messageSignal.name);
+                if (signalSchemaRef.has_value()) {
+                    // get the Signal Schema from std::optional
+                    const auto signalSchema = signalSchemaRef.value().get();
+
+                    // convert value to raw value using signal schema offset and factor
+                    int64_t tmp_val = (int64_t)(std::round((messageSignal.value - signalSchema.offset) / signalSchema.factor));
+                    if (tmp_val < 0) {
+                        tmp_val = (1ULL << signalSchema.size) + tmp_val;
+                    }
+                    packValueUsingSignalSchema(rawData, signalSchema, tmp_val);
+
+                    setCounterSignal = setCounterSignal || (signalSchema.name == "COUNTER");
+                    if (setCounterSignal) {
+                        messageCountsByAddress_[message.address] = messageSignal.value;
+                    }
+                }
+            }
+
+            // set message counter
+            // we lookup the COUNT SignalSchema by name inside the MessageSchema and make sure we don't get a nullptr
+            const auto countSignalSchemaRef = messageSchema.getSignalSchmeByName("COUNT");
+            // setCounterSignal false means that the CANMessage above did not supply a COUNT Signal
+            // for example ES_LKAS message does not supply COUNT in code so we set it here
+            if (!setCounterSignal && countSignalSchemaRef.has_value()) {
+                const auto& countSignalSchema = countSignalSchemaRef.value().get();
+
+                // we zero out the counter first if it exists
+                if (messageCountsByAddress_.find(message.address) == messageCountsByAddress_.end()) {
+                    messageCountsByAddress_[message.address] = 0;
+                }
+                packValueUsingSignalSchema(rawData, countSignalSchema, messageCountsByAddress_[message.address]);
+                messageCountsByAddress_[message.address] = (messageCountsByAddress_[message.address] + 1) % (1 << countSignalSchema.size);
+            }
+
+            // set message checksum
+            // we lookup the CHECKSUM SignalSchema by name inside the MessageSchema and make sure we don't get a nullptr
+            const auto checksumSignalSchemaRef = messageSchema.getSignalSchmeByName("CHECKSUM");
+            if (checksumSignalSchemaRef.has_value()) {
+                const auto& checksumSignalSchema = checksumSignalSchemaRef.value().get();
+
+                // use the Subaru checksum calculation copies from Comma AI
+                unsigned int checksum = checksumSignalSchema.calcSubaruChecksum(message.address, rawData);
+
+                // pack the checksum into the output buffer
+                packValueUsingSignalSchema(rawData, checksumSignalSchema, checksum);
+            }
+
+            uint8_t dataLengthCode = CANDBC::bufferSizeToDataLengthCode(rawData.size());
+            assert(rawData.size() <= 64);
+            // assert we did the converstion back successfully
+            assert(rawData.size() == CANDBC::dataLengthCodeToNumBytes[dataLengthCode]);
+
+            CANHeader canHeader{};
+            canHeader.addr = message.address;
+            canHeader.extended = (message.address >= 0x800) ? 1 : 0;
+            canHeader.dataLengthCode = dataLengthCode;
+            canHeader.bus = subaruMainCanBus;
+            canHeader.checksum = 0;
+
+            memcpy(&canBuffer[bufferLength], &canHeader, sizeof(CANHeader));
+            memcpy(&canBuffer[bufferLength + sizeof(CANHeader)], rawData.data(), rawData.size());
+            uint32_t msg_size = sizeof(CANHeader) + rawData.size();
+
+            // set checksum
+            ((CANHeader *) &canBuffer[bufferLength])->checksum = calculate_checksum(&canBuffer[bufferLength], msg_size);
+
+            bufferLength += msg_size;
+            if (bufferLength >= USB_TX_SOFT_LIMIT) {
+                std::vector<uint8_t> transferData;
+                transferData.insert(
+                        transferData.end(),
+                        std::make_move_iterator(canBuffer.begin()),
+                        std::make_move_iterator(canBuffer.begin() + bufferLength)
+                );
+//                device_->bulkWrite(
+//                        static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
+//                        transferData,
+//                        std::make_unique<int>(0));
+//                bufferLength = 0;
+                return transferData;
+            }
+        }
+    }
+    // send remaining packets
+    if (bufferLength > 0) {
+        std::vector<uint8_t> transferData;
+        transferData.insert(
+                transferData.end(),
+                std::make_move_iterator(canBuffer.begin()),
+                std::make_move_iterator(canBuffer.begin() + bufferLength)
+        );
+        return transferData;
+//        device_->bulkWrite(
+//                static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
+//                transferData,
+//                std::make_unique<int>(0));
+    }
+//    return true;
+    return std::vector<uint8_t>{};
+}
+
+template <class Device>
 std::vector<CANMessage> CommaAICANInterfaceWithBoostBuffer<Device>::getCANMessagesAndClearContainer() {
-    std::lock_guard<std::mutex> lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx_);
     // Move the entire vector
     std::vector<CANMessage> currentMessages = std::move(canMessages);
     // After the move, canMessages is empty
@@ -188,35 +340,34 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
     int received = chunk.size();
 
     // Check if adding new data exceeds max buffer size
-    if (circularBuffer.size() + received > MAX_BUFFER_SIZE) {
+    if (circularBuffer_.size() + received > MAX_BUFFER_SIZE) {
         // Handle buffer overflow, e.g., log error, discard data, etc.
         AWARN << "Exceeding maximum buffer size, discarding data";
         return false;
     }
 
     // Add all received bytes to the deque
-    circularBuffer.insert(circularBuffer.end(), chunk.begin(), chunk.begin() + received);
+    circularBuffer_.insert(circularBuffer_.end(), chunk.begin(), chunk.begin() + received);
 
-    while (circularBuffer.size() >= sizeof(CANHeader)) {
+    while (circularBuffer_.size() >= getSizeOfCANHeader()) {
         // the front of the buffer should always be a can header
         CANHeader canHeader;
-        memcpy(&canHeader, circularBuffer.array_one().first, sizeof(CANHeader));
+        memcpy(&canHeader, circularBuffer_.array_one().first, getSizeOfCANHeader());
 
         // get the message length from the header
         if (
                 (canHeader.dataLengthCode < 0 ||
-                        canHeader.dataLengthCode > sizeof(CANDBC::dataLengthCodeToNumBytes) /
-                                                                       sizeof(CANDBC::dataLengthCodeToNumBytes[0]))
+                        canHeader.dataLengthCode > getSizeOfDataLengthArray() / getSizeOfDataLengthElement())
                 || (canHeader.bus != subaruMainCanBus)
                 ) {
             AERROR << "Message has invalid Data Length of greater than 64 bits,"
                    << "or sent on wrong CAN Bus.  Erasing buffer";
-            circularBuffer.erase(circularBuffer.begin(), circularBuffer.end());
+            circularBuffer_.erase(circularBuffer_.begin(), circularBuffer_.end());
             break;
         }
         const uint8_t dataLength = CANDBC::dataLengthCodeToNumBytes[canHeader.dataLengthCode];
 
-        if (circularBuffer.size() < sizeof(CANHeader) + dataLength) {
+        if (circularBuffer_.size() < getSizeOfCANHeader() + dataLength) {
             // we don't have all the data for this message yet
             // so we leave the data on the buffer and the next iteration of receiveMessages() should
             // append the remainder of the message to the buffer
@@ -235,9 +386,9 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         if (canHeader.returned) {
             canFrame.src += CAN_RETURNED_BUS_OFFSET;
         }
-        if (calculate_checksum(chunk.data(), sizeof(CANHeader) + dataLength) != 0) {
+        if (calculate_checksum(chunk.data(), getSizeOfCANHeader() + dataLength) != 0) {
             // checksum did not pass, so we clear the header and message from the buffer
-            circularBuffer.erase(circularBuffer.begin(), circularBuffer.end());
+            circularBuffer_.erase(circularBuffer_.begin(), circularBuffer_.end());
             AINFO << "Panda CAN checksum failed";
             break;
         }
@@ -245,11 +396,11 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         // we move the raw message from the buffer to the CANFrame object's data vector
         // and erase the header and message from the buffer
         canFrame.data = std::move(std::vector<uint8_t>{
-            circularBuffer.begin() + sizeof(CANHeader),
-            circularBuffer.begin() + sizeof(CANHeader) + dataLength});
+            circularBuffer_.begin() + getSizeOfCANHeader(),
+            circularBuffer_.begin() + getSizeOfCANHeader() + dataLength});
 
         // now we can erase the entire message form the buffer
-        circularBuffer.erase(circularBuffer.begin(), circularBuffer.begin() + sizeof(CANHeader) + dataLength);
+        circularBuffer_.erase(circularBuffer_.begin(), circularBuffer_.begin() + getSizeOfCANHeader() + dataLength);
     }
 
     for (auto &dataFrame : canDataFrames_) {
@@ -305,7 +456,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
 
 template <class Device>
 void CommaAICANInterfaceWithBoostBuffer<Device>::addCANMessage(const CANMessage& message) {
-    std::lock_guard<std::mutex> lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx_);
     canMessages.push_back(message);
 }
 

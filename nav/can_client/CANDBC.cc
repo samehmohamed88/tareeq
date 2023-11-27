@@ -20,6 +20,15 @@ std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMe
     }
 }
 
+std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMessageByName(std::string messageName) {
+    const auto it = messagesNameMap_.find(messageName);
+    if (it != messagesNameMap_.end()) {
+        return std::cref(it->second);
+    } else {
+        return std::nullopt; // Represents an empty optional
+    }
+}
+
 std::optional<std::reference_wrapper<const std::vector<CANDBC::SignalSchema>>> CANDBC::getSignalSchemasByAddress(uint32_t address) {
     const auto it = messagesAddressMap_.find(address);
     if (it != messagesAddressMap_.end()) {

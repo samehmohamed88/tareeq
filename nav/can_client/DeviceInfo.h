@@ -31,7 +31,8 @@ enum class DeviceRequests {
     ResetCommunications = 0xc0,
     SafetyModel = 0xdc,
     HardwareType = 0xc1,
-    READ_CAN_BUS = 0x81
+    READ_CAN_BUS = 0x81,
+    WRITE_TO_CAN_BUS = 3
 };
 
 } // namespace can
