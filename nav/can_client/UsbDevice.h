@@ -249,11 +249,6 @@ DeviceStatus UsbDevice<LibUsbInterface>::configure() {
         return logConnectionLostAndReturn();
     }
 
-    returnCode = libUsbInterface_->libUsbSetDefaultConfiguration();
-    if (returnCode != libusb_error::LIBUSB_SUCCESS) {
-        return logUsbErrorAndReturn(returnCode);
-    }
-
     returnCode = libUsbInterface_->libUsbDetachKernelDriver(interfaceNumber_);
     if (returnCode != libusb_error::LIBUSB_SUCCESS) {
         isKernelDriverDetached_ = false;
@@ -261,6 +256,11 @@ DeviceStatus UsbDevice<LibUsbInterface>::configure() {
         return logUsbErrorAndReturn(returnCode);
     }
     isKernelDriverDetached_ = true;
+
+    returnCode = libUsbInterface_->libUsbSetDefaultConfiguration();
+    if (returnCode != libusb_error::LIBUSB_SUCCESS) {
+        return logUsbErrorAndReturn(returnCode);
+    }
 
     returnCode = libUsbInterface_->libUsbClaimInterface(interfaceNumber_);
     if (returnCode != libusb_error::LIBUSB_SUCCESS) {
