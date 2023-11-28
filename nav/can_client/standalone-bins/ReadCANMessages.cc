@@ -41,7 +41,7 @@ int main() {
     const size_t chunkSize = 1024; // Size of each chunk in bytes
     std::vector<uint8_t> buffer(chunkSize);
 
-    std::ofstream parsedData("/apollo/nav/can_client/data/can_parsed_2023-11-25_22-32-26.csv");
+    std::ofstream parsedData("/apollo/nav/can_client/data/can_parsed_2023-11-27_09-32-26.csv");
 
 
     auto thread1 = std::thread([&]{

@@ -75,7 +75,7 @@ public:
                                     const uint16_t wValue,
                                     const uint16_t wIndex,
                                     std::vector<uint8_t> &data,
-                                    const units::time::millisecond_t timeout,
+                                    const units::time::millisecond_t timeout = units::time::millisecond_t{0},
                                     const units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
 
     /// Reads data from the USB Device.

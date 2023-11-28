@@ -86,42 +86,49 @@ int main() {
 
     can::CANMessage message = can::CANMessage{290,"ES_LKAS",std::move(signals)};
 
-    std::vector<uint8_t> sentData = canDevice.sendMessages(std::vector<can::CANMessage>{message});
-
-    std::string filename = "/apollo/nav/can_client/data/write_and_read_LKAS_message.bin"; // Replace with your filename
-
-    std::ofstream outFile(filename, std::ios::binary);
-    // Check if the file is open
-    if (!outFile.is_open()) {
-        std::cerr << "Error opening file for writing." << std::endl;
-        return 1;
-    }
-    // Write the vector data to the file
-    outFile.write(reinterpret_cast<const char*>(sentData.data()), sentData.size());
-
-    // Close the file
-    outFile.close();
-
-    // Check for errors during write
-    if (!outFile) {
-        std::cerr << "Error writing to file." << std::endl;
-        return 1;
+    bool valid = canDevice.setSafetyModel(can::SafetyModel::AllOutput, 1);
+    std::cout << valid << std::endl;
+    for (int i = 0 ; i < 10; i++) {
+        std::cout << "sending message " << std::endl;
+        std::vector<uint8_t> sentData = canDevice.sendMessages(std::vector<can::CANMessage>{message});
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    // Now open the file, and read it, and parse it to verify it's the same message
-    int chunk = 1024;
-    std::vector<uint8_t> buffer(chunk);
-    std::ifstream file(filename, std::ios::binary);
-    file.read(reinterpret_cast<char*>(buffer.data()), chunk);
-    size_t bytesRead = file.gcount();
-    buffer.resize(bytesRead); // Resize buffer to actual bytes read
-    canDevice.receiveMessages(buffer);
 
-    // now get the message  off the  queue
-    auto messages = canDevice.getCANMessagesAndClearContainer();
-    assert(messages[0].name  == message.name);
-    assert(messages[0].address  == message.address);
-    assert(messages[0].signals[0].value  == message.signals[0].value);
+//    std::string filename = "/apollo/nav/can_client/data/write_and_read_LKAS_message.bin"; // Replace with your filename
+//
+//    std::ofstream outFile(filename, std::ios::binary);
+//    // Check if the file is open
+//    if (!outFile.is_open()) {
+//        std::cerr << "Error opening file for writing." << std::endl;
+//        return 1;
+//    }
+//    // Write the vector data to the file
+//    outFile.write(reinterpret_cast<const char*>(sentData.data()), sentData.size());
+//
+//    // Close the file
+//    outFile.close();
+//
+//    // Check for errors during write
+//    if (!outFile) {
+//        std::cerr << "Error writing to file." << std::endl;
+//        return 1;
+//    }
+//
+//    // Now open the file, and read it, and parse it to verify it's the same message
+//    int chunk = 1024;
+//    std::vector<uint8_t> buffer(chunk);
+//    std::ifstream file(filename, std::ios::binary);
+//    file.read(reinterpret_cast<char*>(buffer.data()), chunk);
+//    size_t bytesRead = file.gcount();
+//    buffer.resize(bytesRead); // Resize buffer to actual bytes read
+//    canDevice.receiveMessages(buffer);
+//
+//    // now get the message  off the  queue
+//    auto messages = canDevice.getCANMessagesAndClearContainer();
+//    assert(messages[0].name  == message.name);
+//    assert(messages[0].address  == message.address);
+//    assert(messages[0].signals[0].value  == message.signals[0].value);
 
 
     return 0;

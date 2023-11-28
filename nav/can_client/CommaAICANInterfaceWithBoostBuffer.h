@@ -148,9 +148,16 @@ private:
     static constexpr auto CAN_RETURNED_BUS_OFFSET = 0x80U;
 };
 
-template <class T>
-bool CommaAICANInterfaceWithBoostBuffer<T>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
-    DeviceStatus status = device_.controlWrite(DeviceRequests::SafetyModel, static_cast<uint16_t>(safetyModel), safetyParam);
+template <class Device>
+bool CommaAICANInterfaceWithBoostBuffer<Device>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
+//    const uint8_t bmRequestType,
+//    const uint8_t bRequest,
+//    const uint16_t wValue,
+//    const uint16_t wIndex,
+//    std::vector<uint8_t> &data,
+    std::vector<uint8_t> data{0};
+//    data.push_back(safetyParam);
+    DeviceStatus status = device_->controlWrite(Device::WriteRequest, static_cast<uint8_t>(DeviceRequests::SafetyModel), static_cast<uint16_t>(safetyModel), safetyParam, data);
     return status == DeviceStatus::SUCCESS;
 }
 
@@ -285,11 +292,11 @@ std::vector<uint8_t> CommaAICANInterfaceWithBoostBuffer<Device>::sendMessages(co
                         std::make_move_iterator(canBuffer.begin()),
                         std::make_move_iterator(canBuffer.begin() + bufferLength)
                 );
-//                device_->bulkWrite(
-//                        static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
-//                        transferData,
-//                        std::make_unique<int>(0));
-//                bufferLength = 0;
+                device_->bulkWrite(
+                        static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
+                        transferData,
+                        std::make_unique<int>(0));
+                bufferLength = 0;
                 return transferData;
             }
         }
@@ -302,11 +309,11 @@ std::vector<uint8_t> CommaAICANInterfaceWithBoostBuffer<Device>::sendMessages(co
                 std::make_move_iterator(canBuffer.begin()),
                 std::make_move_iterator(canBuffer.begin() + bufferLength)
         );
+        device_->bulkWrite(
+                static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
+                transferData,
+                std::make_unique<int>(0));
         return transferData;
-//        device_->bulkWrite(
-//                static_cast<uint8_t>(DeviceRequests::WRITE_TO_CAN_BUS),
-//                transferData,
-//                std::make_unique<int>(0));
     }
 //    return true;
     return std::vector<uint8_t>{};
@@ -323,21 +330,21 @@ std::vector<CANMessage> CommaAICANInterfaceWithBoostBuffer<Device>::getCANMessag
 }
 
 template <class Device>
-bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uint8_t>& chunk) {
-//    std::shared_ptr<int> transferred = std::make_shared<int>(0);
-//    device_->bulkRead(
-//            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
-//            *temp_buffer.get(),
-//            transferred);
-    // this actual number of bytes transferred from USB
-    // let's dereference once so we can reuse it in multiple checks
-//    int received = *transferred;
+bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uint8_t>& chunk1) {
+    std::shared_ptr<int> transferred = std::make_shared<int>(0);
+    device_->bulkRead(
+            static_cast<uint8_t>(DeviceRequests::READ_CAN_BUS),
+            *transferBuffer_.get(),
+            transferred);
+     //this actual number of bytes transferred from USB
+     //let's dereference once so we can reuse it in multiple checks
+     int received = *transferred;
 
 //    if (!device_.isCommHealthy()) {
 //        return false;
 //    }
 
-    int received = chunk.size();
+//    int received = chunk.size();
 
     // Check if adding new data exceeds max buffer size
     if (circularBuffer_.size() + received > MAX_BUFFER_SIZE) {
@@ -347,7 +354,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
     }
 
     // Add all received bytes to the deque
-    circularBuffer_.insert(circularBuffer_.end(), chunk.begin(), chunk.begin() + received);
+    circularBuffer_.insert(circularBuffer_.end(), transferBuffer_->begin(), transferBuffer_->begin() + received);
 
     while (circularBuffer_.size() >= getSizeOfCANHeader()) {
         // the front of the buffer should always be a can header
@@ -386,7 +393,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         if (canHeader.returned) {
             canFrame.src += CAN_RETURNED_BUS_OFFSET;
         }
-        if (calculate_checksum(chunk.data(), getSizeOfCANHeader() + dataLength) != 0) {
+        if (calculate_checksum(transferBuffer_->data(), getSizeOfCANHeader() + dataLength) != 0) {
             // checksum did not pass, so we clear the header and message from the buffer
             circularBuffer_.erase(circularBuffer_.begin(), circularBuffer_.end());
             AINFO << "Panda CAN checksum failed";
