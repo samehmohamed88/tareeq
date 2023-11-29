@@ -70,32 +70,32 @@ int main() {
 //
 //
 //    thread1.join();
-    std::vector<can::CANMessage::CANSignal> signals{};
-    signals.push_back(can::CANMessage::CANSignal{
-                              0,
-                              "SET_1",
-                              1});
-    signals.push_back(can::CANMessage::CANSignal{
-                              0,
-                              "LKAS_Output",
-                              9.0});
-    signals.push_back(can::CANMessage::CANSignal{
-            0,
-            "LKAS_Request",
-            1});
+//    std::vector<can::CANMessage::CANSignal> signals{};
+//    signals.push_back(can::CANMessage::CANSignal{
+//                              0,
+//                              "SET_1",
+//                              1});
+//    signals.push_back(can::CANMessage::CANSignal{
+//                              0,
+//                              "LKAS_Output",
+//                              9.0});
+//    signals.push_back(can::CANMessage::CANSignal{
+//            0,
+//            "LKAS_Request",
+//            1});
+//
+//    can::CANMessage message = can::CANMessage{290,"ES_LKAS",std::move(signals)};
+//
+//    bool valid = canDevice.setSafetyModel(can::SafetyModel::AllOutput, 1);
+//    std::cout << valid << std::endl;
+//    for (int i = 0 ; i < 10; i++) {
+//        std::cout << "sending message " << std::endl;
+//        std::vector<uint8_t> sentData = canDevice.sendMessages(std::vector<can::CANMessage>{message});
+//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//    }
 
-    can::CANMessage message = can::CANMessage{290,"ES_LKAS",std::move(signals)};
 
-    bool valid = canDevice.setSafetyModel(can::SafetyModel::AllOutput, 1);
-    std::cout << valid << std::endl;
-    for (int i = 0 ; i < 10; i++) {
-        std::cout << "sending message " << std::endl;
-        std::vector<uint8_t> sentData = canDevice.sendMessages(std::vector<can::CANMessage>{message});
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-
-//    std::string filename = "/apollo/nav/can_client/data/write_and_read_LKAS_message.bin"; // Replace with your filename
+    std::string filename = "/apollo/nav/can_client/data/write_and_read_LKAS_message.bin"; // Replace with your filename
 //
 //    std::ofstream outFile(filename, std::ios::binary);
 //    // Check if the file is open
@@ -116,16 +116,16 @@ int main() {
 //    }
 //
 //    // Now open the file, and read it, and parse it to verify it's the same message
-//    int chunk = 1024;
-//    std::vector<uint8_t> buffer(chunk);
-//    std::ifstream file(filename, std::ios::binary);
-//    file.read(reinterpret_cast<char*>(buffer.data()), chunk);
-//    size_t bytesRead = file.gcount();
-//    buffer.resize(bytesRead); // Resize buffer to actual bytes read
-//    canDevice.receiveMessages(buffer);
+    int chunk = 1024;
+    std::vector<uint8_t> buffer(chunk);
+    std::ifstream file(filename, std::ios::binary);
+    file.read(reinterpret_cast<char*>(buffer.data()), chunk);
+    size_t bytesRead = file.gcount();
+    buffer.resize(bytesRead); // Resize buffer to actual bytes read
+    canDevice.receiveMessages(buffer, false);
 //
 //    // now get the message  off the  queue
-//    auto messages = canDevice.getCANMessagesAndClearContainer();
+    auto messages = canDevice.getCANMessagesAndClearContainer();
 //    assert(messages[0].name  == message.name);
 //    assert(messages[0].address  == message.address);
 //    assert(messages[0].signals[0].value  == message.signals[0].value);
