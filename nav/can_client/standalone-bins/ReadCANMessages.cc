@@ -83,7 +83,7 @@ int main() {
 //            std::cout << " number of bytes read = " << bytesRead << std::endl;
             if (bytesRead > 0) {
                 buffer.resize(bytesRead); // Resize buffer to actual bytes read
-                canDevice.receiveMessages(buffer);
+                canDevice.receiveMessages(buffer, false);
                 buffer.resize(chunkSize); // Resize back for next read
             }
         }
