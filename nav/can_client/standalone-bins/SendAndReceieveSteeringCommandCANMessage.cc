@@ -26,6 +26,11 @@ bool DO_SEND = false;
 
 int COUNTER = 0;
 
+
+/// REMEMBER WE MAY STILL NEED TO CREATE SOME MORE FAKE MESSAGE
+/// SUCH AS THE TESTER PRESENT MESSAGE
+/// AND OTHER SYSTEM MESSAGES TO KEEP THE CARY HAPPY
+
 void UpdateLKASStateMessage(can::CANMessage &message) {
     for (auto signal : message.signals) {
         if (signal.name == "LKAS_Alert_Msg") {
