@@ -28,29 +28,30 @@ int COUNTER = 0;
 
 bool IN_CAR = true;
 
-std::string getFileNameAsCurrentTimestamp() {
+std::string getFileNameAsCurrentTimestamp(std::string path = std::string("/apollo/nav/can_client/data/")) {
     auto currentTime = std::chrono::system_clock::now();
     std::time_t time = std::chrono::system_clock::to_time_t(currentTime);
     std::tm timeinfo = *std::localtime(&time);
     char buffer[80];  // Adjust the buffer size as needed
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d-%H-%M-%S", &timeinfo);
-    std::string filename = std::string("can-messages-received_") + std::string(buffer) + ".txt";  // You can change the file extension as needed
+    std::string filename = path + std::string("can-messages-received_") + std::string(buffer) + ".txt";  // You can change the file extension as needed
     return filename;
 }
 
 std::thread CreateWriteFileThread(can::CommaAICANInterfaceWithBoostBuffer<can::UsbDevice<can::LibUsbDevice>>& canDevice) {
-    auto thread1 = std::thread([&]{
+    auto thread = std::thread([&]{
         std::ofstream parsedData(getFileNameAsCurrentTimestamp());
         while (!EXIT) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
             auto messages = canDevice.getCANMessagesAndClearContainer();
             for (auto const& message : messages) {
                 parsedData << message.name << ",";
-                parsedData << message.name << ",";
-                parsedData << signal.value;
+                parsedData << std::to_string(static_cast<int>(message.canBus));
                 parsedData << "\n";
             }
         }
     });
+    return thread;
 }
 
 std::thread CreateReceiveThread(can::CommaAICANInterfaceWithBoostBuffer<can::UsbDevice<can::LibUsbDevice>>& canDevice) {
@@ -59,6 +60,7 @@ std::thread CreateReceiveThread(can::CommaAICANInterfaceWithBoostBuffer<can::Usb
         while (!EXIT) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             canDevice.receiveMessages(chunck, IN_CAR);
+            ++COUNTER;
         }
     });
     return thread;
@@ -66,22 +68,30 @@ std::thread CreateReceiveThread(can::CommaAICANInterfaceWithBoostBuffer<can::Usb
 
 
 int main() {
-//    using namespace nav;
-//    static constexpr uint16_t vendorID_ = 0xbbaa;
-//    static constexpr uint16_t productID_ = 0xddcc;
-//
-//    std::unordered_map<std::string , int32_t > messageMap{};
-//
-//    auto device = std::make_unique<can::UsbDevice<can::LibUsbDevice>>(
-//            std::make_unique<can::LibUsbDevice>(),
-//                    vendorID_,
-//                    productID_,
-//                    0);
-//
-//    auto canDevice = can::CommaAICANInterfaceWithBoostBuffer<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
-//    auto hw = canDevice.getHardwareType();
-//    assert(hw == 7);
-//    std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
+    using namespace nav;
+    static constexpr uint16_t vendorID_ = 0xbbaa;
+    static constexpr uint16_t productID_ = 0xddcc;
+
+    auto device = std::make_unique<can::UsbDevice<can::LibUsbDevice>>(
+            std::make_unique<can::LibUsbDevice>(),
+                    vendorID_,
+                    productID_,
+                    0);
+
+    auto canDevice = can::CommaAICANInterfaceWithBoostBuffer<can::UsbDevice<can::LibUsbDevice>>{std::move(device)};
+    auto hw = canDevice.getHardwareType();
+    assert(hw == 7);
+    std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
+
+    auto receiveThread = CreateReceiveThread(canDevice);
+    auto saveThread = CreateWriteFileThread(canDevice);
+
+    receiveThread.join();
+    saveThread.join();
+    if (COUNTER % 100 == 0) {
+        EXIT = true;
+    }
+
 //
 //    std::string filename = "/apollo/nav/can_client/data/can_output_2023-11-25_22-32-26.bin"; // Replace with your filename
 //    std::ifstream file(filename, std::ios::binary);

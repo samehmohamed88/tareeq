@@ -13,6 +13,13 @@
 namespace nav {
 namespace can {
 
+enum class CANBus {
+    MAIN_BUS = 0,
+    ALT_BUS = 1,
+    CAMERA_BUS = 2
+
+};
+
 struct __attribute__((packed)) CANHeader {
     uint8_t reserved : 1;
     uint8_t bus : 3;
@@ -29,6 +36,7 @@ struct CANFrame {
     std::vector<uint8_t> data;
     long busTime;
     long src;
+    CANBus canBus;
     uint8_t counter = 0;
     uint8_t numCounterErrors = 0;
 };
@@ -43,6 +51,7 @@ struct CANMessage {
     };
     uint32_t address;
     std::string name;
+    CANBus canBus;
     std::vector<CANSignal> signals;
 };
 

@@ -89,7 +89,7 @@ void CreateAndSendSteeringMessage(can::CommaAICANInterfaceWithBoostBuffer<can::U
             0,
             "LKAS_Request",
             1});
-    can::CANMessage message = can::CANMessage{290,"ES_LKAS",std::move(signals)};
+    can::CANMessage message = can::CANMessage{290,"ES_LKAS", can::CANBus::CAMERA_BUS, std::move(signals)};
     std::vector<uint8_t> sentData = canDevice.sendMessages(std::vector<can::CANMessage>{message});
 }
 

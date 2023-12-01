@@ -274,7 +274,7 @@ std::vector<uint8_t> CommaAICANInterfaceWithBoostBuffer<Device>::sendMessages(co
             canHeader.addr = message.address;
             canHeader.extended = (message.address >= 0x800) ? 1 : 0;
             canHeader.dataLengthCode = dataLengthCode;
-            canHeader.bus = subaruMainCanBus;
+            canHeader.bus = static_cast<uint8_t>(message.canBus);
             canHeader.checksum = 0;
 
             memcpy(&canBuffer[bufferLength], &canHeader, sizeof(CANHeader));
@@ -396,6 +396,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
         canFrame.busTime = 0;
         canFrame.address = canHeader.addr;
         canFrame.src = canHeader.bus;
+        canFrame.canBus = static_cast<CANBus>(canHeader.bus);
         if (canHeader.rejected) {
             canFrame.src += CAN_REJECTED_BUS_OFFSET;
         }
@@ -432,6 +433,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
     for (auto &dataFrame : canDataFrames_) {
         CANMessage canMessage;
         canMessage.address = dataFrame.address;
+        canMessage.canBus = dataFrame.canBus;
 
         auto const &signalsRef = canDatabase_->getSignalSchemasByAddress(dataFrame.address);
         if (signalsRef.has_value()) {
