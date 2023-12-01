@@ -150,8 +150,14 @@ private:
 
 template <class Device>
 bool CommaAICANInterfaceWithBoostBuffer<Device>::setSafetyModel(SafetyModel safetyModel, uint16_t safetyParam) {
-    std::vector<uint8_t> data{0};
-    DeviceStatus status = device_->controlWrite(Device::WriteRequest, static_cast<uint8_t>(DeviceRequests::SafetyModel), static_cast<uint16_t>(safetyModel), safetyParam, data);
+    std::vector<uint8_t> data;
+    DeviceStatus status = device_->controlWrite(
+            Device::WriteRequest,
+            static_cast<uint8_t>(DeviceRequests::SafetyModel),
+            11U,
+            0,
+            data,
+            true); // the last boolean is write request vs read request
     return status == DeviceStatus::SUCCESS;
 }
 

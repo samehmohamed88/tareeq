@@ -75,6 +75,7 @@ public:
                                     const uint16_t wValue,
                                     const uint16_t wIndex,
                                     std::vector<uint8_t> &data,
+                                    bool writeRequest = false,
                                     const units::time::millisecond_t timeout = units::time::millisecond_t{0},
                                     const units::time::microsecond_t sleepDuration = units::time::microsecond_t{500});
 
@@ -120,6 +121,7 @@ private:
                                                 const uint16_t wValue,
                                                 const uint16_t wIndex,
                                                 std::vector<uint8_t> &data,
+                                                bool writeRequest,
                                                 const units::time::millisecond_t timeout,
                                                 const units::time::microsecond_t sleepDuration);
 
@@ -279,6 +281,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const uint8_t 
                                                                         const uint16_t wValue,
                                                                         const uint16_t wIndex,
                                                                         std::vector<uint8_t> &data,
+                                                                        bool writeRequest,
                                                                         const units::time::millisecond_t timeout,
                                                                         const units::time::microsecond_t sleepDuration) {
     int returnCode ;
@@ -287,14 +290,24 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const uint8_t 
     }
     std::lock_guard<std::mutex> lock(mutex_);
     do {
-        returnCode = libUsbInterface_->libUsbControlTransfer(
-                bmRequestType,
-                bRequest,
-                wValue,
-                wIndex,
-                data.data(),
-                data.size(),
-                static_cast<unsigned int>(timeout.value()));
+        // write requests must provide a NULL pointer for the data
+        // where as read requests must provide a pointer to a char array
+        returnCode = (writeRequest) ? libUsbInterface_->libUsbControlTransfer(
+                                                            bmRequestType,
+                                                            bRequest,
+                                                            wValue,
+                                                            wIndex,
+                                                            NULL,
+                                                            0,
+                                                            static_cast<unsigned int>(timeout.value())) :
+                        libUsbInterface_->libUsbControlTransfer(
+                                bmRequestType,
+                                bRequest,
+                                wValue,
+                                wIndex,
+                                data.data(),
+                                data.size(),
+                                static_cast<unsigned int>(timeout.value()));
 
         if (returnCode != libusb_error::LIBUSB_SUCCESS) {
             if (returnCode == libusb_error::LIBUSB_ERROR_NO_DEVICE) {
@@ -322,6 +335,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlWrite(const uint8_t bmRequestTyp
                                                             const uint16_t wValue,
                                                             const uint16_t wIndex,
                                                             std::vector<uint8_t> &data,
+                                                            bool writeRequest,
                                                             const units::time::millisecond_t timeout,
                                                             const units::time::microsecond_t sleepDuration) {
     return controlTransferWithRetry(bmRequestType,
@@ -329,6 +343,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlWrite(const uint8_t bmRequestTyp
                                     wValue,
                                     wIndex,
                                     data,
+                                    writeRequest,
                                     timeout,
                                     sleepDuration);
 }
@@ -347,6 +362,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlRead(const uint8_t bmRequestType
                                     wValue,
                                     wIndex,
                                     data,
+                                    false,
                                     timeout,
                                     sleepDuration);
 }

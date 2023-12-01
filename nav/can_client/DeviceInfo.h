@@ -20,8 +20,9 @@ enum class DeviceStatus {
 /// accidental movements/steering
 /// taken from https://github.com/commaai/cereal/blob/416c3d531c90ce16498d782bf383625a857ee74c/car.capnp#L567C8-L567C19
 enum class SafetyModel {
-    NoOutput = 0,
-    AllOutput = 17
+    NoOutput = 0U,
+    SubaruOutput = 11U,
+    AllOutput = 17U
 };
 
 /// @brief Enumerations of the address of the request to the Comma AI CAN Device for reading and writing CAN frames and device

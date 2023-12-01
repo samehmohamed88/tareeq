@@ -26,6 +26,8 @@ bool DO_SEND = false;
 
 int COUNTER = 0;
 
+bool IN_CAR = true;
+
 
 /// REMEMBER WE MAY STILL NEED TO CREATE SOME MORE FAKE MESSAGE
 /// SUCH AS THE TESTER PRESENT MESSAGE
@@ -95,8 +97,8 @@ std::thread CreateReceiveThread(can::CommaAICANInterfaceWithBoostBuffer<can::Usb
     std::vector<uint8_t> chunck{};
     auto thread = std::thread([&]{
         while (!EXIT) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            canDevice.receiveMessages(chunck, true);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            canDevice.receiveMessages(chunck, IN_CAR);
         }
     });
     return thread;
@@ -127,9 +129,6 @@ int main() {
     static constexpr uint16_t vendorID_ = 0xbbaa;
     static constexpr uint16_t productID_ = 0xddcc;
 
-
-//    std::unordered_map<std::string , int32_t > messageMap{};
-//
     auto device = std::make_unique<can::UsbDevice<can::LibUsbDevice>>(
             std::make_unique<can::LibUsbDevice>(),
                     vendorID_,
@@ -140,18 +139,18 @@ int main() {
     auto hw = canDevice.getHardwareType();
     assert(hw == 7);
     std::cout << "Hardware Type == " << std::to_string(hw) << std::endl;
-    bool valid = canDevice.setSafetyModel(can::SafetyModel::AllOutput, 1);
+    bool valid = canDevice.setSafetyModel(can::SafetyModel::SubaruOutput);
     std::cout << "Safety Model set " << valid << std::endl;
 
-    auto sendThread = CreateSendThread(canDevice);
-    auto receiveThread = CreateReceiveThread(canDevice);
-
-    sendThread.join();
-    receiveThread.join();
-
-    if (COUNTER % 10000 == 0) {
-        EXIT = true;
-    }
+//    auto sendThread = CreateSendThread(canDevice);
+//    auto receiveThread = CreateReceiveThread(canDevice);
+//
+//    sendThread.join();
+//    receiveThread.join();
+//
+//    if (COUNTER % 10000 == 0) {
+//        EXIT = true;
+//    }
 
     return 0;
 }
