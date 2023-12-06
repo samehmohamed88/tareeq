@@ -13,7 +13,7 @@ template <class CANSocket>
 class SocketCANDevice {
 public:
     SocketCANDevice(std::unique_ptr<CANSocket> socket);
-    CANMessage getMessage();
+    SocketCANMessage getMessage();
     void sendMessage(uint32_t address, std::vector<uint8_t> rawData);
 private:
     std::unique_ptr<CANSocket> socket_;
@@ -28,7 +28,7 @@ SocketCANDevice<CANSocket>::SocketCANDevice(std::unique_ptr<CANSocket> socket) :
 }
 
 template <class CANSocket>
-CANMessage SocketCANDevice<CANSocket>::getMessage() {
+SocketCANMessage SocketCANDevice<CANSocket>::getMessage() {
     std::lock_guard<std::mutex> lock(mutex_);
     // actual number of bytes read
     int32_t numBytesRead{0};
@@ -44,9 +44,9 @@ CANMessage SocketCANDevice<CANSocket>::getMessage() {
         // put any data on the `canFrame`.
         can_frame errorFrame;
         memset(&errorFrame, 0, sizeof(can_frame));
-        return CANMessage(errorFrame);
+        return SocketCANMessage(errorFrame);
     }
-    return CANMessage{canFrame};
+    return SocketCANMessage{canFrame};
 };
 
 } // namespace can
