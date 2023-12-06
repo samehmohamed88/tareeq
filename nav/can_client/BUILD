@@ -64,17 +64,6 @@ cc_library(
 )
 
 cc_library(
-    name = "usb_can_adapter",
-    srcs = ["UsbCANAdapter.cc"],
-    hdrs = ["UsbCANAdapter.h"],
-    visibility = ["//visibility:private"],
-    deps = [
-        "@units",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
     name = "lib_usb_device_interface",
     hdrs = ["LibUsbDeviceInterface.h"],
     linkopts = ["-lusb-1.0"],
@@ -146,8 +135,25 @@ cc_library(
 )
 
 cc_library(
+    name = "can_exception",
+    hdrs = [
+        "exceptions/CANCloseException.h",
+        "exceptions/CANException.h",
+        "exceptions/CANInitException.h",
+        "exceptions/InvalidSocketException.h",
+    ],
+    deps = [],
+)
+
+cc_library(
     name = "socket_can_interface",
     hdrs = ["SocketCANDeviceInterface.h"],
+    deps = [],
+)
+
+cc_library(
+    name = "socket_can_message",
+    hdrs = ["SocketCANMessage.h"],
     deps = [],
 )
 
@@ -161,7 +167,7 @@ cc_library(
 cc_library(
     name = "buffered_can_client",
     hdrs = [
-        "BufferedCANClient.h",
+        "CANClient.h",
     ],
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [

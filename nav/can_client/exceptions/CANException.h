@@ -1,10 +1,10 @@
 /**
- * @file CANCloseException.hpp
+ * @file CANException.hpp
  * @author Simon Cahill (simonc@online.de)
- * @brief Contains the implementation of an exception that may be thrown when an error occurs while closing a CAN socket.
+ * @brief Contains the implementation of a general-purpose exception which may be thrown when an error occurs when performing IO on a CAN socket.
  * @version 0.1
  * @date 2020-07-02
- *
+ * 
  * @copyright Copyright (c) 2020 Simon Cahill
  *
  *  Copyright 2020 Simon Cahill
@@ -29,19 +29,22 @@
 
 namespace nav {
 namespace can {
+namespace exception {
 
 /// @brief An exception that may be thrown when an error occurs while closing a CAN socket.
-class CANCloseException: public std::exception {
-public:
-    CANCloseException(std::string message): _message(message) {}
-    ~CANCloseException() {}
+class CANException: public std::exception {
+public: // +++ Constructor / Destructor +++
+    CANException(std::string message, int32_t socket) : _socket(socket) , _message(message) {}
 
+    ~CANException() {}
 public:
     const char* what() { return _message.c_str(); }
-
+    const int32_t getSocket() const { return _socket; }
 private:
+    int32_t _socket;
     std::string _message;
 };
 
+} // namespace exceptions
 } // namespace can
 } // namespace nav

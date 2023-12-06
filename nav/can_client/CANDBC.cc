@@ -11,7 +11,7 @@
 namespace nav {
 namespace can {
 
-std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMessageByAddress(uint32_t address) {
+std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByAddress(uint32_t address) {
     const auto it = messagesAddressMap_.find(address);
     if (it != messagesAddressMap_.end()) {
         return std::cref(it->second);
@@ -20,7 +20,7 @@ std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMe
     }
 }
 
-std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMessageByName(std::string messageName) {
+std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByName(std::string messageName) {
     const auto it = messagesNameMap_.find(messageName);
     if (it != messagesNameMap_.end()) {
         return std::cref(it->second);
@@ -29,7 +29,7 @@ std::optional<std::reference_wrapper<const CANDBC::MessageSchema>> CANDBC::getMe
     }
 }
 
-std::optional<std::reference_wrapper<const std::vector<CANDBC::SignalSchema>>> CANDBC::getSignalSchemasByAddress(uint32_t address) {
+std::optional<std::reference_wrapper<const std::vector<SignalSchema>>> CANDBC::getSignalSchemasByAddress(uint32_t address) {
     const auto it = messagesAddressMap_.find(address);
     if (it != messagesAddressMap_.end()) {
         return it->second.signals;

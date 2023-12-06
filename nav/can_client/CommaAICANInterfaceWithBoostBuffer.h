@@ -431,7 +431,7 @@ bool CommaAICANInterfaceWithBoostBuffer<Device>::receiveMessages(std::vector<uin
     }
 
     for (auto &dataFrame : canDataFrames_) {
-        CANMessage canMessage;
+        CANDBCMessage canMessage;
         canMessage.address = dataFrame.address;
         canMessage.canBus = dataFrame.canBus;
 

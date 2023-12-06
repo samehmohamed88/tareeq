@@ -12,8 +12,8 @@ namespace nav {
         public:
             SocketCANDeviceImpl(std::string interfaceName);
             void initDevice();
-            ssize_t read(int fd, void *buf, size_t count) const override;
-            ssize_t write(int fd, const void *buf, size_t count) const override;
+            ssize_t readSocket(void *buf, size_t count) const override;
+            ssize_t writeToSocket(const void *buf, size_t count) const override;
             int close(int fd) const override;
         private:
             /// The bit mask used to filter CAN messages
@@ -22,13 +22,6 @@ namespace nav {
             int32_t canProtocol_;
             /// The CAN socket file descriptor
             int32_t socketFd_;
-            //// The size of the message queue read by waitForMessages()
-            int32_t queueSize_;
-
-            /// Mutex for thread-safety.
-            std::mutex lock_;
-            std::mutex lockSend_;
-
             /// The CAN interface used for communication (e.g. can0, can1, ...)
             std::string interfaceName_;
         };
