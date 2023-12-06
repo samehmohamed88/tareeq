@@ -58,6 +58,10 @@ const std::string &CANDBCSignalSchema::getName() const {
     return name_;
 }
 
+void CANDBCSignalSchema::setName(std::string name) {
+    name_ = name;
+}
+
 const std::string &CANDBCSignalSchema::getMessageName() const {
     return messageName_;
 }

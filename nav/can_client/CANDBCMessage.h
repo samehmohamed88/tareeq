@@ -14,6 +14,16 @@ public:
     const std::string& getName() const;
     double getValue() const;
 private:
+public:
+    uint64_t getTimestampNanoSeconds() const;
+
+    void setTimestampNanoSeconds(uint64_t timestampNanoSeconds);
+
+    void setName(const std::string &name);
+
+    void setValue(double value);
+
+private:
     uint64_t timestampNanoSeconds;
     std::string name_;
     double value_;  // latest value
@@ -31,6 +41,18 @@ private:
     uint32_t address_;
     std::string name_;
     CANBus canBus_;
+public:
+    void setAddress(uint32_t address);
+
+    void setName(const std::string &name);
+
+    CANBus getCanBus() const;
+
+    void setCanBus(CANBus canBus);
+
+    void setSignals(const std::vector<CANDBCSignal> &signals);
+
+private:
     std::vector<CANDBCSignal> signals_;
 };
 

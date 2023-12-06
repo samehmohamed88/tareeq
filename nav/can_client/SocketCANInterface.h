@@ -4,7 +4,7 @@
 
 namespace nav {
     namespace can {
-        class SocketCANDeviceInterface {
+        class SocketCANInterface {
         public:
             virtual ssize_t readSocket(void *buf, size_t count) const;
             virtual ssize_t writeToSocket(const void *buf, size_t count) const;

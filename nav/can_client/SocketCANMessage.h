@@ -37,13 +37,13 @@ public:
 
 public:
     const bool isValid() const { return (rawFrame_.can_dlc != 0 && rawFrame_.can_id != 0); }
-    const uint32_t getCanId() const { return canId_; }
+    const uint32_t getCanId() const ;
 
-    const std::vector<uint8_t> getFrameData() const { return frameData_; }
+    const std::vector<uint8_t> getFrameData() const;
 
-    const can_frame getRawFrame() const { return rawFrame_; }
+    const can_frame getRawFrame() const;
 
-    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &candbcMessage);
+    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &canDBCMessage, std::vector<uint8_t> frameData_);
 
 private:
     uint32_t canId_;

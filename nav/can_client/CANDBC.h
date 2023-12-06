@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nav/can_client/SubaruGlobalCANDBC.h"
+#include "nav/can_client/CANDBCMessage.h"
 #include "nav/can_client/CANDBCMessageSchema.h"
 #include "nav/can_client/CANDBCSignalSchema.h"
 
@@ -209,7 +210,7 @@ private:
                 DBC_ASSERT(signalSchema.getLeastSignificantBit() < (64 * 8) && signalSchema.getMostSignificantBit() < (64 * 8), "Signal out of bounds: " << line);
 
                 // Check for duplicate signal names
-                DBC_ASSERT(signalNameSetMap[address].find(signalSchema.getName()) == signalNameSetMap[address].end(), "Duplicate signal name: " << signalSchema.name);
+                DBC_ASSERT(signalNameSetMap[address].find(signalSchema.getName()) == signalNameSetMap[address].end(), "Duplicate signal name: " << signalSchema.getName());
                 signalNameSetMap[address].insert(signalSchema.getName());
 
                 // now we store a const reference to the SignalSchema in a name to signal map
@@ -244,20 +245,20 @@ private:
 
                 auto &signals = signalAddressMap[address];
                 for (auto signal : signals) {
-                    if (signal.name == name) {
-                        signal.valueDescription_ = SignalSchema::ValueDescription{
+                    if (signal.getName() == name) {
+                        signal.setValueDescription(CANDBCSignalSchema::ValueDescription{
                                 name,
                                 address,
                                 valueDefinitions
-                        };
+                        });
                     }
                 }
             }
         }
         // we now create a map to find messages by name as well as ID
         for (auto& [key, message] : messagesAddressMap_) {
-            message.signals = signalAddressMap[key];
-            messagesNameMap_[message.name] = message;
+            message.setSignals(signalAddressMap[key]);
+            messagesNameMap_[message.getName()] = message;
         }
     }
 

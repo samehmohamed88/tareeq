@@ -1,4 +1,6 @@
 #include "nav/can_client/CANDBC.h"
+#include "nav/can_client/CANDBCMessageSchema.h"
+#include "nav/can_client/CANDBCSignalSchema.h"
 
 #include <vector>
 #include <cstdint>
@@ -11,7 +13,7 @@
 namespace nav {
 namespace can {
 
-std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByAddress(uint32_t address) {
+std::optional<std::reference_wrapper<const CANDBCMessageSchema>> CANDBC::getMessageByAddress(uint32_t address) {
     const auto it = messagesAddressMap_.find(address);
     if (it != messagesAddressMap_.end()) {
         return std::cref(it->second);
@@ -20,7 +22,7 @@ std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByA
     }
 }
 
-std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByName(std::string messageName) {
+std::optional<std::reference_wrapper<const CANDBCMessageSchema>> CANDBC::getMessageByName(std::string messageName) {
     const auto it = messagesNameMap_.find(messageName);
     if (it != messagesNameMap_.end()) {
         return std::cref(it->second);
@@ -29,10 +31,10 @@ std::optional<std::reference_wrapper<const MessageSchema>> CANDBC::getMessageByN
     }
 }
 
-std::optional<std::reference_wrapper<const std::vector<SignalSchema>>> CANDBC::getSignalSchemasByAddress(uint32_t address) {
+std::optional<std::reference_wrapper<const std::vector<CANDBCSignalSchema>>> CANDBC::getSignalSchemasByAddress(uint32_t address) {
     const auto it = messagesAddressMap_.find(address);
     if (it != messagesAddressMap_.end()) {
-        return it->second.signals;
+        return it->second.getSignals();
     } else {
         return std::nullopt; // Represents an empty optional
     }

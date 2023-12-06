@@ -29,9 +29,15 @@ cc_library(
     name = "can_database",
     srcs = [
         "CANDBC.cc",
+        "CANDBCMessage.cc",
+        "CANDBCMessageSchema.cc",
+        "CANDBCSignalSchema.cc",
     ],
     hdrs = [
         "CANDBC.h",
+        "CANDBCMessage.h",
+        "CANDBCMessageSchema.h",
+        "CANDBCSignalSchema.h",
         ":subaru_global_can_dbc",
     ],
     alwayslink = True,
@@ -147,7 +153,7 @@ cc_library(
 
 cc_library(
     name = "socket_can_interface",
-    hdrs = ["SocketCANDeviceInterface.h"],
+    hdrs = ["SocketCANInterface.h"],
     deps = [],
 )
 
@@ -159,8 +165,8 @@ cc_library(
 
 cc_library(
     name = "socket_can_device",
-    srcs = ["SocketCANDeviceImpl.cc"],
-    hdrs = ["SocketCANDeviceImpl.h"],
+    srcs = ["SocketCANInterfaceImpl.cc"],
+    hdrs = ["SocketCANInterfaceImpl.h"],
     deps = [":socket_can_interface"],
 )
 

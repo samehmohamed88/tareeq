@@ -16,7 +16,7 @@ public:
     void setName(std::string name);
     uint32_t getAddress();
     void setAddress(uint32_t address);
-    uint32_t getSize();
+    uint32_t getSize() const;
     void setSize(uint32_t size);
     std::optional<std::reference_wrapper<const CANDBCSignalSchema>> getSignalSchemaByName(std::string signalName) const;
 private:

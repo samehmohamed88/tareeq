@@ -1,4 +1,4 @@
-#include "nav/can_client/SocketCANDeviceImpl.h"
+#include "nav/can_client/SocketCANInterfaceImpl.h"
 #include "nav/can_client/exceptions/CANInitException.h"
 #include "nav/can_client/exceptions/CANCloseException.h"
 
@@ -17,7 +17,7 @@
 namespace nav {
     namespace can {
 
-        void SocketCANDeviceImpl::initDevice() {
+        void SocketCANInterfaceImpl::initDevice() {
             struct sockaddr_can address;
             struct ifreq ifaceRequest;
             int64_t fdOptions = 0;
@@ -61,15 +61,15 @@ namespace nav {
 
         }
 
-        ssize_t SocketCANDeviceImpl::readSocket(void *buf, size_t count) const {
+        ssize_t SocketCANInterfaceImpl::readSocket(void *buf, size_t count) const {
             return read(socketFd_, buf, count);
         }
 
-        ssize_t SocketCANDeviceImpl::writeToSocket(const void *buf, size_t count) const {
+        ssize_t SocketCANInterfaceImpl::writeToSocket(const void *buf, size_t count) const {
             return write(socketFd_, buf, count);
         }
 
-        int SocketCANDeviceImpl::close(int fd) const {
+        int SocketCANInterfaceImpl::close(int fd) const {
             return close(fd);
         }
     }

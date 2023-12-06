@@ -19,7 +19,7 @@ void CANDBCMessageSchema::setName(std::string name) {
     name_ = name;
 }
 
-uint32_t CANDBCMessageSchema::getSize() {
+uint32_t CANDBCMessageSchema::getSize() const {
     return size_;
 }
 
@@ -28,8 +28,8 @@ void CANDBCMessageSchema::setSize(uint32_t size) {
 }
 
 std::optional<std::reference_wrapper<const CANDBCSignalSchema>> CANDBCMessageSchema::getSignalSchemaByName(std::string signalName) const {
-    const auto it = signalNameToSignalMap.find(signalName);
-    if (it != signalNameToSignalMap.end()) {
+    const auto it = signalNameToSignalMap_.find(signalName);
+    if (it != signalNameToSignalMap_.end()) {
         return std::cref(it->second);
     } else {
         return std::nullopt; // Represents an empty optional

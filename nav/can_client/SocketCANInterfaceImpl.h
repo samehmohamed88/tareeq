@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nav/can_client/SocketCANDeviceInterface.h"
+#include "nav/can_client/SocketCANInterface.h"
 
 #include <string>
 #include <mutex>
@@ -8,9 +8,9 @@
 
 namespace nav {
     namespace can {
-        class SocketCANDeviceImpl : SocketCANDeviceInterface {
+        class SocketCANInterfaceImpl : SocketCANInterface {
         public:
-            SocketCANDeviceImpl(std::string interfaceName);
+            SocketCANInterfaceImpl(std::string interfaceName);
             void initDevice();
             ssize_t readSocket(void *buf, size_t count) const override;
             ssize_t writeToSocket(const void *buf, size_t count) const override;
