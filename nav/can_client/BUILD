@@ -145,6 +145,33 @@ cc_library(
     alwayslink = True,
 )
 
+cc_library(
+    name = "socket_can_interface",
+    hdrs = ["SocketCANDeviceInterface.h"],
+    deps = [],
+)
+
+cc_library(
+    name = "socket_can_device",
+    srcs = ["SocketCANDeviceImpl.cc"],
+    hdrs = ["SocketCANDeviceImpl.h"],
+    deps = [":socket_can_interface"],
+)
+
+cc_library(
+    name = "buffered_can_client",
+    hdrs = [
+        "BufferedCANClient.h",
+    ],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":can_database",
+        "@boost",
+        "@units",
+    ],
+    alwayslink = True,
+)
+
 #install(
 #    name = "install",
 #    data = [
