@@ -54,7 +54,8 @@ SocketCANMessage SocketCANDevice<CANSocket>::getMessage() {
 
 template <class CANSocket>
 void SocketCANDevice<CANSocket>::sendMessage(const can_frame &frameToSend) {
-    int numBytesWritten = socket_->write(&frameToSend, sizeof(frameToSend));
+//    int numBytesWritten = socket_->writeToSocket(&frameToSend, sizeof(frameToSend));
+    socket_->writeToSocket(&frameToSend, sizeof(frameToSend));
 }
 
 template <class CANSocket>

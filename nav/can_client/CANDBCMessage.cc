@@ -3,6 +3,18 @@
 namespace nav {
 namespace can {
 
+CANDBCSignal::CANDBCSignal(std::string name, double value) :
+    name_{std::move(name)}
+    , value_{value}
+{}
+
+CANDBCMessage::CANDBCMessage(uint32_t address, std::string name, CANBus canBus, std::vector<CANDBCSignal> signals) :
+    address_{address}
+    , name_{std::move(name)}
+    , canBus_{canBus}
+    , signals_{std::move(signals)}
+{}
+
 const std::string &CANDBCSignal::getName() const {
     return name_;
 }

@@ -76,7 +76,6 @@ template <class CANDeviceMessage>
 void CANClient<CANDevice>::getMessages() {
     CANDeviceMessage canDeviceMessage = canDevice_->getMessage();
     if (canDeviceMessage.isValid()) {
-        CANDBCMessage message;
         CANDBCMessage canMessage;
         canMessage.setAddress(canDeviceMessage.getAddress());
 //        canMessage.canBus = canDeviceMessage.canBus;
@@ -212,7 +211,7 @@ bool CANClient<CANDevice>:: sendMessage(const CANDBCMessage &message) {
         // assert we did the conversion back successfully
         assert(rawData.size() == CANDBC::dataLengthCodeToNumBytes[dataLengthCode]);
 
-        CANDeviceMessage messageToSend = canDevice_->fromCANDBCMessage(message, rawData);
+        CANDeviceMessage messageToSend = CANDeviceMessage::fromCANDBCMessage(message, rawData);
         canDevice_->sendMessage(messageToSend);
 
 //        CANHeader canHeader{};
@@ -244,6 +243,7 @@ bool CANClient<CANDevice>:: sendMessage(const CANDBCMessage &message) {
 //            bufferLength = 0;
 //            return transferData;
         }
+    return true;
 }
 
 } // namespace can

@@ -11,6 +11,8 @@ enum class CANBus;
 
 class CANDBCSignal {
 public:
+    CANDBCSignal() = default;
+    CANDBCSignal(std::string name, double value);
     const std::string& getName() const;
     double getValue() const;
 private:
@@ -33,6 +35,8 @@ private:
 
 class CANDBCMessage {
 public:
+    CANDBCMessage() = default;
+    CANDBCMessage(uint32_t address, std::string name, CANBus canBus, std::vector<CANDBCSignal> signals);
     uint32_t getAddress() const;
     const std::string& getName() const;
     const CANBus& getCANBus() const;
@@ -41,6 +45,7 @@ private:
     uint32_t address_;
     std::string name_;
     CANBus canBus_;
+    std::vector<CANDBCSignal> signals_;
 public:
     void setAddress(uint32_t address);
 
@@ -51,9 +56,6 @@ public:
     void setCanBus(CANBus canBus);
 
     void setSignals(const std::vector<CANDBCSignal> &signals);
-
-private:
-    std::vector<CANDBCSignal> signals_;
 };
 
 } // namespace can

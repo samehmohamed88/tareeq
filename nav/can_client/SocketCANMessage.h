@@ -49,7 +49,10 @@ public:
 
     const can_frame getRawFrame() const;
 
-    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &canDBCMessage, std::vector<uint8_t> frameData_);
+    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &canDBCMessage, std::vector<uint8_t> frameData) {
+        SocketCANMessage message{canDBCMessage.getAddress(), frameData};
+        return message;
+    }
 
 private:
     uint32_t canId_;

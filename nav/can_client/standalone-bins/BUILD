@@ -24,6 +24,7 @@ cc_binary(
         "//nav/can_client:can_database",
         "//nav/can_client:socket_can_device",
         "//nav/can_client:socket_can_inteface_impl",
+        "//nav/can_client:socket_can_message",
         "@boost",
     ],
 )
@@ -39,6 +40,20 @@ cc_binary(
         "//nav/can_client:lib_usb_device",
         "//nav/can_client:lib_usb_device_interface",
         "//nav/can_client:usb_device",
+        "@boost",
+    ],
+)
+
+cc_binary(
+    name = "socketcan_send_steering_message",
+    srcs = ["SocketCANSendSteeringCommand.cc"],
+    linkopts = ["-pthread"],
+    deps = [
+        "//nav/can_client:buffered_can_client",
+        "//nav/can_client:can_database",
+        "//nav/can_client:socket_can_device",
+        "//nav/can_client:socket_can_inteface_impl",
+        "//nav/can_client:socket_can_message",
         "@boost",
     ],
 )
