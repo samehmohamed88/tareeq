@@ -199,7 +199,7 @@ bool CANClient<CANDevice>:: sendMessage(const CANDBCMessage &message) {
         if (checksumSignalSchemaRef.has_value()) {
             const auto& checksumSignalSchema = checksumSignalSchemaRef.value().get();
 
-            // use the Subaru checksum calculation copies from Comma AI
+            // use the Subaru checksum calculation copied from Comma AI
             unsigned int checksum = checksumSignalSchema.calcSubaruChecksum(message.getAddress(), rawData);
 
             // pack the checksum into the output buffer

@@ -25,9 +25,9 @@ bool EXIT = false;
 
 // dont send steering command right away
 // but send everything else
-bool DO_SEND = false;
+bool DO_SEND = true;
 
-int COUNTER = 0;
+int COUNTER = 1;
 
 bool IN_CAR = true;
 
@@ -78,18 +78,24 @@ std::vector<CANDBCMessage> ProcessMessages(std::vector<CANDBCMessage> &messages)
     return messageToSend;
 }
 
-void CreateAndSendSteeringMessage(CANClient<SocketCANDevice<SocketCANInterfaceImpl>>& canDevice) {
+bool CreateAndSendSteeringMessage(CANClient<SocketCANDevice<SocketCANInterfaceImpl>>& canDevice, bool positive) {
     std::vector<CANDBCSignal> signals{};
 
     signals.push_back(CANDBCSignal{"SET_1",1});
 
-    signals.push_back(CANDBCSignal{"LKAS_Output",9.0});
-
+    if (positive) {
+        signals.push_back(CANDBCSignal{"LKAS_Output",9.0});
+        positive = false;
+    } else {
+        signals.push_back(CANDBCSignal{"LKAS_Output",-9.0});
+        positive = true;
+    }
     signals.push_back(CANDBCSignal{"LKAS_Request",1});
 
-    CANDBCMessage message =CANDBCMessage{290,"ES_LKAS", can::CANBus::CAMERA_BUS, std::move(signals)};
+    CANDBCMessage message = CANDBCMessage{290,"ES_LKAS", can::CANBus::CAMERA_BUS, std::move(signals)};
 
     canDevice.sendMessage<SocketCANMessage>(message);
+    return positive;
 }
 
 std::thread CreateReceiveThread(CANClient<SocketCANDevice<SocketCANInterfaceImpl>>& canDevice) {
@@ -104,24 +110,24 @@ std::thread CreateReceiveThread(CANClient<SocketCANDevice<SocketCANInterfaceImpl
 }
 
 std::thread CreateSendThread(CANClient<SocketCANDevice<SocketCANInterfaceImpl>>& canDevice) {
-    std::vector<uint8_t> chunck{};
+    bool positive = true;
     auto thread = std::thread([&]{
         while (!EXIT) {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             auto messages = canDevice.getQueuedMessagesAndClearQueue();
             auto messagesToSend = ProcessMessages(messages);
-//            canDevice.sendMessages(messages);
             ++COUNTER;
             if (COUNTER % 5 == 0 && DO_SEND) {
                 // let's send a steering command
-                CreateAndSendSteeringMessage(canDevice);
+                positive = CreateAndSendSteeringMessage(canDevice, positive);
+            }
+            if (COUNTER % 500 == 0) {
+                EXIT = true;
             }
         }
     });
     return thread;
 }
-
-
 
 int main() {
 
@@ -131,15 +137,12 @@ int main() {
 
     auto canDevice = CANClient<SocketCANDevice<SocketCANInterfaceImpl>>{std::move(socket), std::move(canDBC)};
 
-//    auto sendThread = CreateSendThread(canDevice);
-//    auto receiveThread = CreateReceiveThread(canDevice);
-//
-//    sendThread.join();
-//    receiveThread.join();
-//
-//    if (COUNTER % 10000 == 0) {
-//        EXIT = true;
-//    }
+    auto sendThread = CreateSendThread(canDevice);
+    auto receiveThread = CreateReceiveThread(canDevice);
+
+    sendThread.join();
+    receiveThread.join();
+
 
     return 0;
 }
