@@ -2,6 +2,7 @@
 #include "nav/can_client/SocketCANInterface.h"
 #include "nav/can_client/exceptions/CANInitException.h"
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <linux/can.h>
 #include <net/if.h>
@@ -20,13 +21,13 @@ SocketCANInterfaceImpl::SocketCANInterfaceImpl(std::string interfaceName) :
 void SocketCANInterfaceImpl::initDevice() {
     struct sockaddr_can address;
     struct ifreq ifaceRequest;
-//            int64_t fdOptions = 0;
+            int64_t fdOptions = 0;
     int32_t tmpReturn;
 
     memset(&address, 0, sizeof(sizeof(struct sockaddr_can)));
     memset(&ifaceRequest, 0, sizeof(sizeof(struct ifreq)));
 
-    socketFd_ = socket(PF_CAN, SOCK_RAW, canProtocol_);
+    socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
     if (socketFd_ == -1) {
         throw exception::CANInitException(formatString("FAILED to initialise socketcan! Error: %d => %s", errno, strerror(errno)));
@@ -37,9 +38,9 @@ void SocketCANInterfaceImpl::initDevice() {
         throw exception::CANInitException(formatString("FAILED to perform IO control operation on socket %s! Error: %d => %s", interfaceName_.c_str(), errno,
                                             strerror(errno)));
     }
-//            fdOptions = fcntl(socketFd_, F_GETFL);
-//            fdOptions |= O_NONBLOCK;
-//            tmpReturn = fcntl(socketFd_, F_SETFL, fdOptions);
+    fdOptions = fcntl(socketFd_, F_GETFL);
+    fdOptions |= O_NONBLOCK;
+    tmpReturn = fcntl(socketFd_, F_SETFL, fdOptions);
 
     address.can_family = PF_CAN;
     address.can_ifindex = ifaceRequest.ifr_ifindex;
@@ -62,7 +63,8 @@ void SocketCANInterfaceImpl::initDevice() {
 }
 
 ssize_t SocketCANInterfaceImpl::readSocket(void *buf, size_t count) const {
-    return read(socketFd_, buf, count);
+    int numBytes =  read(socketFd_, buf, count);
+    return numBytes;
 }
 
 ssize_t SocketCANInterfaceImpl::writeToSocket(const void *buf, size_t count) const {

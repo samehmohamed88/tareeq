@@ -47,8 +47,11 @@ std::thread CreateWriteFileThread(CANClient<SocketCANDevice<SocketCANInterfaceIm
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             auto messages = canDevice.getQueuedMessagesAndClearQueue();
             for (auto const& message : messages) {
-                parsedData << message.getName() << ",";
-                parsedData << std::to_string(static_cast<int>(message.getCanBus()));
+                parsedData << message.getName();
+//                parsedData << std::to_string(static_cast<int>(message.getCanBus()));
+                for (auto const &signal : message.getSignals()) {
+                    parsedData << "," << signal.getName() << "," << signal.getValue();
+                }
                 parsedData << "\n";
             }
         }
@@ -62,6 +65,9 @@ std::thread CreateReceiveThread(CANClient<SocketCANDevice<SocketCANInterfaceImpl
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             canDevice.getMessages<SocketCANMessage>();
             ++COUNTER;
+            if (COUNTER % 10 == 0) {
+                EXIT = true;
+            }
         }
     });
     return thread;
@@ -81,7 +87,5 @@ int main() {
 
     receiveThread.join();
     saveThread.join();
-    if (COUNTER % 100 == 0) {
-        EXIT = true;
-    }
+
 }
