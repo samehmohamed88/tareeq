@@ -81,13 +81,13 @@ void CANClient<CANDevice>::getMessages() {
         canMessage.setAddress(canDeviceMessage.getAddress());
 //        canMessage.canBus = canDeviceMessage.canBus;
 
-        auto const &signalsRef = canDatabase_->getSignalSchemasByAddress(canDeviceMessage.address);
+        auto const &signalsRef = canDatabase_->getSignalSchemasByAddress(canDeviceMessage.getAddress());
         if (signalsRef.has_value()) {
             auto const &signalSchemas = signalsRef.value().get();
             // we create a vector of CANDBCSignals and then std::move it to the message at the end
             std::vector<CANDBCSignal> canSignals{};
             canSignals.reserve(signalSchemas.size());
-            canMessage.setName(signalSchemas[0].messageName);
+            canMessage.setName(signalSchemas[0].getMessageName());
 
             for (CANDBCSignalSchema const &signalSchema: signalSchemas) {
                 int64_t tmp = signalSchema.parseValue(canDeviceMessage.getFrameData());
@@ -97,7 +97,7 @@ void CANClient<CANDevice>::getMessages() {
                 }
                 bool checksum_failed = false;
                 if (!ignoreChecksum) {
-                    if (signalSchema.calcSubaruChecksum(canDeviceMessage.address, canDeviceMessage.getFrameData()) != tmp) {
+                    if (signalSchema.calcSubaruChecksum(canDeviceMessage.getAddress(), canDeviceMessage.getFrameData()) != tmp) {
                         checksum_failed = true;
                     }
                 }
@@ -109,7 +109,7 @@ void CANClient<CANDevice>::getMessages() {
 //                }
                 if (checksum_failed || counter_failed) {
                     AERROR << "Message checks failed: "
-                           << canDeviceMessage.address
+                           << canDeviceMessage.getAddress()
                            << " checksum failed " << checksum_failed
                            << " counter failed " << counter_failed;
                     continue;
@@ -213,7 +213,7 @@ bool CANClient<CANDevice>:: sendMessage(const CANDBCMessage &message) {
         assert(rawData.size() == CANDBC::dataLengthCodeToNumBytes[dataLengthCode]);
 
         CANDeviceMessage messageToSend = canDevice_->fromCANDBCMessage(message, rawData);
-        canDevice_->send
+        canDevice_->sendMessage(messageToSend);
 
 //        CANHeader canHeader{};
 //        canHeader.addr = message.address;
@@ -243,10 +243,8 @@ bool CANClient<CANDevice>:: sendMessage(const CANDBCMessage &message) {
 //                    std::make_unique<int>(0));
 //            bufferLength = 0;
 //            return transferData;
-//        }
+        }
 }
 
 } // namespace can
 } // namespace nav
-
-

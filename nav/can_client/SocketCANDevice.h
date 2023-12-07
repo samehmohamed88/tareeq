@@ -25,7 +25,7 @@ private:
 
 template <class CANSocket>
 SocketCANDevice<CANSocket>::SocketCANDevice(std::unique_ptr<CANSocket> socket) :
-    socket_{socket}
+    socket_{std::move(socket)}
 {
     socket_->initDevice();
 }

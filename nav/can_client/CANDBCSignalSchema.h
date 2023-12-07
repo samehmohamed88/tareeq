@@ -29,7 +29,7 @@ public:
     bool isLittleEndian() const;
     const SignalType &getSignalType() const;
     uint8_t calcSubaruChecksum(uint32_t address, const std::vector<uint8_t> &d) const;
-    int64_t parseValue(const std::vector<uint8_t> &messageData);
+    int64_t parseValue(const std::vector<uint8_t> &messageData) const;
 
     void setName(std::string name);
 

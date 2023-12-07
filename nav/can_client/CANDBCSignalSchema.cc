@@ -16,7 +16,7 @@ uint8_t CANDBCSignalSchema::calcSubaruChecksum(uint32_t address, const std::vect
     return s & 0xFF;
 };
 
-int64_t CANDBCSignalSchema::parseValue(const std::vector<uint8_t> &messageData) {
+int64_t CANDBCSignalSchema::parseValue(const std::vector<uint8_t> &messageData) const {
     int64_t ret = 0;
     int i = mostSignificantBit_ / 8;
     int bits = size_;

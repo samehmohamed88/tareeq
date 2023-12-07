@@ -16,6 +16,19 @@ cc_binary(
 )
 
 cc_binary(
+    name = "socketcan_read_can_messages",
+    srcs = ["SocketCANReadCANMessages.cc"],
+    linkopts = ["-pthread"],
+    deps = [
+        "//nav/can_client:buffered_can_client",
+        "//nav/can_client:can_database",
+        "//nav/can_client:socket_can_device",
+        "//nav/can_client:socket_can_inteface_impl",
+        "@boost",
+    ],
+)
+
+cc_binary(
     name = "send_and_receive_steering_message",
     srcs = ["SendAndReceieveSteeringCommandCANMessage.cc"],
     linkopts = ["-pthread"],

@@ -1,4 +1,5 @@
 #include "nav/can_client/SocketCANMessage.h"
+#include "nav/can_client/CANDBCMessage.h"
 
 namespace nav {
 namespace can {

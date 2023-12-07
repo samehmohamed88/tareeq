@@ -148,26 +148,43 @@ cc_library(
         "exceptions/CANInitException.h",
         "exceptions/InvalidSocketException.h",
     ],
+    visibility = ["//nav/can_client:__subpackages__"],
     deps = [],
 )
 
 cc_library(
     name = "socket_can_interface",
     hdrs = ["SocketCANInterface.h"],
-    deps = [],
+    visibility = ["//nav/can_client:__subpackages__"],
 )
 
 cc_library(
     name = "socket_can_message",
+    srcs = ["SocketCANMessage.cc"],
     hdrs = ["SocketCANMessage.h"],
-    deps = [],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [":can_database"],
+)
+
+cc_library(
+    name = "socket_can_inteface_impl",
+    srcs = ["SocketCANInterfaceImpl.cc"],
+    hdrs = ["SocketCANInterfaceImpl.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":can_exception",
+        ":socket_can_interface",
+    ],
 )
 
 cc_library(
     name = "socket_can_device",
-    srcs = ["SocketCANInterfaceImpl.cc"],
-    hdrs = ["SocketCANInterfaceImpl.h"],
-    deps = [":socket_can_interface"],
+    hdrs = ["SocketCANDevice.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":socket_can_message",
+        "//cyber/common:log",
+    ],
 )
 
 cc_library(
@@ -178,6 +195,7 @@ cc_library(
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [
         ":can_database",
+        "//cyber/common:log",
         "@boost",
         "@units",
     ],
