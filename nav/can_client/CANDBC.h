@@ -1,6 +1,9 @@
 #pragma once
 
 #include "nav/can_client/SubaruGlobalCANDBC.h"
+#include "nav/can_client/CANDBCMessage.h"
+#include "nav/can_client/CANDBCMessageSchema.h"
+#include "nav/can_client/CANDBCSignalSchema.h"
 
 #include <vector>
 #include <cstdint>
@@ -68,10 +71,10 @@ public:
         return std::move(std::make_unique<CANDBC>(CANDBC()));
     }
 
-    std::optional<std::reference_wrapper<const MessageSchema>> getMessageByAddress(uint32_t address);
-    std::optional<std::reference_wrapper<const MessageSchema>> getMessageByName(std::string messageName);
+    std::optional<std::reference_wrapper<const CANDBCMessageSchema>> getMessageByAddress(uint32_t address);
+    std::optional<std::reference_wrapper<const CANDBCMessageSchema>> getMessageByName(std::string messageName);
 
-    std::optional<std::reference_wrapper<const std::vector<SignalSchema>>> getSignalSchemasByAddress(uint32_t address);
+    std::optional<std::reference_wrapper<const std::vector<CANDBCSignalSchema>>> getSignalSchemasByAddress(uint32_t address);
 public:
 
     /// This is taken from CommaAI openpilot
@@ -96,8 +99,8 @@ private:
     std::regex valSplitRegExp_{R"([\"]+)"};  // split on "
 
     std::string name_ = std::string("Subaru Forester 2020");
-    std::map<uint32_t, MessageSchema> messagesAddressMap_;
-    std::map<std::string , MessageSchema> messagesNameMap_;
+    std::map<uint32_t, CANDBCMessageSchema> messagesAddressMap_;
+    std::map<std::string , CANDBCMessageSchema> messagesNameMap_;
 
     std::string& trim(std::string& s, const char* t = " \t\n\r\f\v");
     bool startswith(const std::string& str, const char* prefix);
@@ -125,7 +128,7 @@ private:
         std::set<uint32_t> addressSet;
         std::set<std::string> messageNameSet;
         std::map<uint32_t, std::set<std::string>> signalNameSetMap;
-        std::map<uint32_t, std::vector<SignalSchema>> signalAddressMap;
+        std::map<uint32_t, std::vector<CANDBCSignalSchema>> signalAddressMap;
         std::setlocale(LC_NUMERIC, "C");
 
         // used to find big endian LSB from MSB and size
@@ -149,21 +152,21 @@ private:
                 DBC_ASSERT(ret, "bad BO: " << line);
 
                 address = std::stoul(match[1].str());
-                auto result = messagesAddressMap_.emplace(address, MessageSchema{});
+                auto result = messagesAddressMap_.emplace(address, CANDBCMessageSchema{});
 
                 if (result.second) { // Check if insertion took place
-                    MessageSchema& message = result.first->second;
-                    message.address = std::stoul(match[1].str());  // could be hex
-                    message.name = match[2].str();
-                    message.size = std::stoul(match[3].str());
+                    CANDBCMessageSchema& message = result.first->second;
+                    message.setAddress(std::stoul(match[1].str()));  // could be hex
+                    message.setName(match[2].str());
+                    message.setSize(std::stoul(match[3].str()));
 
                     // check for duplicates
-                    DBC_ASSERT(addressSet.find(address) == addressSet.end(), "Duplicate message address: " << address << " (" << message.name << ")");
+                    DBC_ASSERT(addressSet.find(address) == addressSet.end(), "Duplicate message address: " << address << " (" << message.getName() << ")");
                     addressSet.insert(address);
 
                     if (!allow_duplicate_message_name) {
-                        DBC_ASSERT(messageNameSet.find(message.name) == messageNameSet.end(), "Duplicate message name: " << message.name);
-                        messageNameSet.insert(message.name);
+                        DBC_ASSERT(messageNameSet.find(message.getName()) == messageNameSet.end(), "Duplicate message name: " << message.getName());
+                        messageNameSet.insert(message.getName());
                     }
                 }
             } else if (startswith(line, "SG_ ")) {
@@ -174,48 +177,49 @@ private:
                     DBC_ASSERT(ret, "bad SG: " << line);
                     offset = 1;
                 }
-                SignalSchema& signalSchema = signalAddressMap[address].emplace_back();
-                signalSchema.name = match[1].str();
-                signalSchema.messageName = messagesAddressMap_[address].name;
-                signalSchema.startBit = std::stoi(match[offset + 2].str());
-                signalSchema.size = std::stoi(match[offset + 3].str());
-                signalSchema.isLittleEndian = std::stoi(match[offset + 4].str()) == 1;
-                signalSchema.is_signed = match[offset + 5].str() == "-";
-                signalSchema.factor = std::stod(match[offset + 6].str());
-                signalSchema.offset = std::stod(match[offset + 7].str());
+                CANDBCSignalSchema& signalSchema = signalAddressMap[address].emplace_back();
+                signalSchema.setName(match[1].str());
+                signalSchema.setMessageName(messagesAddressMap_[address].getName());
+                signalSchema.setStartBit(std::stoi(match[offset + 2].str()));
+                signalSchema.setSize(std::stoi(match[offset + 3].str()));
+                signalSchema.setIsLittleEndian(std::stoi(match[offset + 4].str()) == 1);
+                signalSchema.setIsSigned(match[offset + 5].str() == "-");
+                signalSchema.setFactor(std::stod(match[offset + 6].str()));
+                signalSchema.setOffset(std::stod(match[offset + 7].str()));
 
-                if (signalSchema.name == "CHECKSUM") {
-                    DBC_ASSERT(ChecksumState::checksumSize == -1 || signalSchema.size == ChecksumState::checksumSize, "CHECKSUM is not " << ChecksumState::checksumSize << " bits long");
-                    DBC_ASSERT(ChecksumState::checksumStartBit == -1 || (signalSchema.startBit % 8) == ChecksumState::checksumStartBit, " CHECKSUM starts at wrong bit");
-                    DBC_ASSERT(signalSchema.isLittleEndian == ChecksumState::littleEndian, "CHECKSUM has wrong endianness");
-                    signalSchema.type = SignalType::CHECKSUM;
-                } else if (signalSchema.name == "COUNTER") {
-                    DBC_ASSERT(ChecksumState::counterSize == -1 || signalSchema.size == ChecksumState::counterSize, "COUNTER is not " << ChecksumState::counterSize << " bits long");
-                    DBC_ASSERT(ChecksumState::counterStartBit == -1 || (signalSchema.startBit % 8) == ChecksumState::counterStartBit, "COUNTER starts at wrong bit");
-                    DBC_ASSERT(ChecksumState::littleEndian == signalSchema.isLittleEndian, "COUNTER has wrong endianness");
-                    signalSchema.type = SignalType::COUNTER;
+                if (signalSchema.getName() == "CHECKSUM") {
+                    DBC_ASSERT(ChecksumState::checksumSize == -1 || signalSchema.getSize() == ChecksumState::checksumSize, "CHECKSUM is not " << ChecksumState::checksumSize << " bits long");
+                    DBC_ASSERT(ChecksumState::checksumStartBit == -1 || (signalSchema.getStartBit() % 8) == ChecksumState::checksumStartBit, " CHECKSUM starts at wrong bit");
+                    DBC_ASSERT(signalSchema.isLittleEndian() == ChecksumState::littleEndian, "CHECKSUM has wrong endianness");
+                    signalSchema.setType(SignalType::CHECKSUM);
+                } else if (signalSchema.getName() == "COUNTER") {
+                    DBC_ASSERT(ChecksumState::counterSize == -1 || signalSchema.getSize() == ChecksumState::counterSize, "COUNTER is not " << ChecksumState::counterSize << " bits long");
+                    DBC_ASSERT(ChecksumState::counterStartBit == -1 || (signalSchema.getStartBit() % 8) == ChecksumState::counterStartBit, "COUNTER starts at wrong bit");
+                    DBC_ASSERT(ChecksumState::littleEndian == signalSchema.isLittleEndian(), "COUNTER has wrong endianness");
+                    signalSchema.setType(SignalType::COUNTER);
                 }
 
-                if (signalSchema.isLittleEndian) {
-                    signalSchema.leastSignificantBit = signalSchema.startBit;
-                    signalSchema.mostSignificantBit = signalSchema.startBit + signalSchema.size - 1;
+                if (signalSchema.isLittleEndian()) {
+                    signalSchema.setLeastSignificantBit(signalSchema.getStartBit());
+                    signalSchema.setMostSignificantBit(signalSchema.getStartBit() + signalSchema.getSize() - 1);
                 } else {
-                    auto it = std::find(bigEndianBits.begin(), bigEndianBits.end(), signalSchema.startBit);
-                    signalSchema.leastSignificantBit = bigEndianBits[(it - bigEndianBits.begin()) + signalSchema.size - 1];
-                    signalSchema.mostSignificantBit = signalSchema.startBit;
+                    auto it = std::find(bigEndianBits.begin(), bigEndianBits.end(), signalSchema.getStartBit());
+                    signalSchema.setLeastSignificantBit(bigEndianBits[(it - bigEndianBits.begin()) + signalSchema.getSize() - 1]);
+                    signalSchema.setMostSignificantBit(signalSchema.getStartBit());
                 }
-                DBC_ASSERT(signalSchema.leastSignificantBit < (64 * 8) && signalSchema.mostSignificantBit < (64 * 8), "Signal out of bounds: " << line);
+                DBC_ASSERT(signalSchema.getLeastSignificantBit() < (64 * 8) && signalSchema.getMostSignificantBit() < (64 * 8), "Signal out of bounds: " << line);
 
                 // Check for duplicate signal names
-                DBC_ASSERT(signalNameSetMap[address].find(signalSchema.name) == signalNameSetMap[address].end(), "Duplicate signal name: " << signalSchema.name);
-                signalNameSetMap[address].insert(signalSchema.name);
+                DBC_ASSERT(signalNameSetMap[address].find(signalSchema.getName()) == signalNameSetMap[address].end(), "Duplicate signal name: " << signalSchema.getName());
+                signalNameSetMap[address].insert(signalSchema.getName());
 
                 // now we store a const reference to the SignalSchema in a name to signal map
                 // for quick lookup during CAN Send/Receive operations
-                std::string signalSchemaName = signalSchema.name;
-                SignalSchema signalSchema1 = signalSchema;
-                auto& signalNameToSignalMap = messagesAddressMap_[address].signalNameToSignalMap;
-                signalNameToSignalMap.emplace(std::move(signalSchemaName), std::move(signalSchema1));
+                std::string signalSchemaName = signalSchema.getName();
+                CANDBCSignalSchema signalSchema1 = signalSchema;
+//                auto& signalNameToSignalMap = messagesAddressMap_[address].getSignalNameToSignalMap();
+//                signalNameToSignalMap.emplace(std::move(signalSchemaName), std::move(signalSchema1));
+                messagesAddressMap_[address].moveSignalSchemaToMap(std::move(signalSchemaName), std::move(signalSchema1));
 
             } else if (startswith(line, "VAL_ ")) {
                 // new signal value/definition
@@ -241,20 +245,20 @@ private:
 
                 auto &signals = signalAddressMap[address];
                 for (auto signal : signals) {
-                    if (signal.name == name) {
-                        signal.valueDescription_ = SignalSchema::ValueDescription{
+                    if (signal.getName() == name) {
+                        signal.setValueDescription(CANDBCSignalSchema::ValueDescription{
                                 name,
                                 address,
                                 valueDefinitions
-                        };
+                        });
                     }
                 }
             }
         }
         // we now create a map to find messages by name as well as ID
         for (auto& [key, message] : messagesAddressMap_) {
-            message.signals = signalAddressMap[key];
-            messagesNameMap_[message.name] = message;
+            message.setSignals(signalAddressMap[key]);
+            messagesNameMap_[message.getName()] = message;
         }
     }
 

@@ -3,6 +3,18 @@
 namespace nav {
 namespace can {
 
+CANDBCSignal::CANDBCSignal(std::string name, double value) :
+    name_{std::move(name)}
+    , value_{value}
+{}
+
+CANDBCMessage::CANDBCMessage(uint32_t address, std::string name, CANBus canBus, std::vector<CANDBCSignal> signals) :
+    address_{address}
+    , name_{std::move(name)}
+    , canBus_{canBus}
+    , signals_{std::move(signals)}
+{}
+
 const std::string &CANDBCSignal::getName() const {
     return name_;
 }
@@ -11,7 +23,23 @@ double CANDBCSignal::getValue() const {
     return value_;
 }
 
-const std::string &CANDBCMessage::getName() const {
+uint64_t CANDBCSignal::getTimestampNanoSeconds() const {
+    return timestampNanoSeconds;
+}
+
+void CANDBCSignal::setTimestampNanoSeconds(uint64_t timestampNanoSeconds) {
+    CANDBCSignal::timestampNanoSeconds = timestampNanoSeconds;
+}
+
+void CANDBCSignal::setName(const std::string &name) {
+    name_ = name;
+}
+
+void CANDBCSignal::setValue(double value) {
+    value_ = value;
+}
+
+    const std::string &CANDBCMessage::getName() const {
     return name_;
 }
 
@@ -25,6 +53,26 @@ const CANBus &CANDBCMessage::getCANBus() const {
 
 const std::vector<CANDBCSignal> &CANDBCMessage::getSignals() const {
     return signals_;
+}
+
+void CANDBCMessage::setAddress(uint32_t address) {
+    address_ = address;
+}
+
+void CANDBCMessage::setName(const std::string &name) {
+    name_ = name;
+}
+
+CANBus CANDBCMessage::getCanBus() const {
+    return canBus_;
+}
+
+void CANDBCMessage::setCanBus(CANBus canBus) {
+    canBus_ = canBus;
+}
+
+void CANDBCMessage::setSignals(const std::vector<CANDBCSignal> &signals) {
+    signals_ = signals;
 }
 
 } // namespace can

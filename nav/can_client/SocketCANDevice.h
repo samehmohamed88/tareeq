@@ -15,6 +15,9 @@ public:
     SocketCANDevice(std::unique_ptr<CANSocket> socket);
     SocketCANMessage getMessage();
     void sendMessage(uint32_t address, std::vector<uint8_t> rawData);
+    void sendMessage(SocketCANMessage messageToSend);
+private:
+    void sendMessage(const can_frame &frameToSend);
 private:
     std::unique_ptr<CANSocket> socket_;
     std::mutex mutex_;
@@ -22,8 +25,8 @@ private:
 
 template <class CANSocket>
 SocketCANDevice<CANSocket>::SocketCANDevice(std::unique_ptr<CANSocket> socket) :
-    socket_{socket}
-    {
+    socket_{std::move(socket)}
+{
     socket_->initDevice();
 }
 
@@ -48,6 +51,23 @@ SocketCANMessage SocketCANDevice<CANSocket>::getMessage() {
     }
     return SocketCANMessage{canFrame};
 };
+
+template <class CANSocket>
+void SocketCANDevice<CANSocket>::sendMessage(const can_frame &frameToSend) {
+//    int numBytesWritten = socket_->writeToSocket(&frameToSend, sizeof(frameToSend));
+    socket_->writeToSocket(&frameToSend, sizeof(frameToSend));
+}
+
+template <class CANSocket>
+void SocketCANDevice<CANSocket>::sendMessage(uint32_t address, std::vector<uint8_t> rawData) {
+//    socket_->
+}
+
+template <class CANSocket>
+void SocketCANDevice<CANSocket>::sendMessage(SocketCANMessage messageToSend) {
+    sendMessage(messageToSend.getRawFrame());
+}
+
 
 } // namespace can
 } // namespace nav

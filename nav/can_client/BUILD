@@ -11,13 +11,6 @@ genrule(
     cmd = "(echo 'constexpr char subaruGlobalCANDBC[] = R\"delimiter(' && cat $(SRCS) && echo ')delimiter\";' ) > $@",
 )
 
-cc_binary(
-    name = "libpanda_component.so",
-    linkshared = True,
-    linkstatic = True,
-    deps = [":panda_component_inner"],
-)
-
 cc_library(
     name = "device_enum_classes",
     hdrs = ["DeviceInfo.h"],
@@ -29,36 +22,16 @@ cc_library(
     name = "can_database",
     srcs = [
         "CANDBC.cc",
+        "CANDBCMessage.cc",
+        "CANDBCMessageSchema.cc",
+        "CANDBCSignalSchema.cc",
     ],
     hdrs = [
         "CANDBC.h",
+        "CANDBCMessage.h",
+        "CANDBCMessageSchema.h",
+        "CANDBCSignalSchema.h",
         ":subaru_global_can_dbc",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
-    name = "comma_ai_can_adapter",
-    hdrs = [
-        "CommaAICANInterface.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        ":device_enum_classes",
-        "@boost",
-    ],
-    alwayslink = True,
-)
-
-cc_library(
-    name = "panda_component_inner",
-    srcs = ["panda_component.cc"],
-    hdrs = ["panda_component.h"],
-    visibility = ["//visibility:private"],
-    deps = [
-        "//cyber",
-        "//modules/common_msgs/control_msgs:control_cmd_cc_proto",
     ],
     alwayslink = True,
 )
@@ -142,26 +115,43 @@ cc_library(
         "exceptions/CANInitException.h",
         "exceptions/InvalidSocketException.h",
     ],
+    visibility = ["//nav/can_client:__subpackages__"],
     deps = [],
 )
 
 cc_library(
     name = "socket_can_interface",
-    hdrs = ["SocketCANDeviceInterface.h"],
-    deps = [],
+    hdrs = ["SocketCANInterface.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
 )
 
 cc_library(
     name = "socket_can_message",
+    srcs = ["SocketCANMessage.cc"],
     hdrs = ["SocketCANMessage.h"],
-    deps = [],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [":can_database"],
+)
+
+cc_library(
+    name = "socket_can_inteface_impl",
+    srcs = ["SocketCANInterfaceImpl.cc"],
+    hdrs = ["SocketCANInterfaceImpl.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":can_exception",
+        ":socket_can_interface",
+    ],
 )
 
 cc_library(
     name = "socket_can_device",
-    srcs = ["SocketCANDeviceImpl.cc"],
-    hdrs = ["SocketCANDeviceImpl.h"],
-    deps = [":socket_can_interface"],
+    hdrs = ["SocketCANDevice.h"],
+    visibility = ["//nav/can_client:__subpackages__"],
+    deps = [
+        ":socket_can_message",
+        "//cyber/common:log",
+    ],
 )
 
 cc_library(
@@ -172,6 +162,7 @@ cc_library(
     visibility = ["//nav/can_client:__subpackages__"],
     deps = [
         ":can_database",
+        "//cyber/common:log",
         "@boost",
         "@units",
     ],

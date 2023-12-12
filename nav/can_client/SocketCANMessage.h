@@ -36,14 +36,23 @@ public:
     virtual ~SocketCANMessage() {}
 
 public:
+
+    uint32_t getAddress() const {
+        return canId_;
+    }
+
     const bool isValid() const { return (rawFrame_.can_dlc != 0 && rawFrame_.can_id != 0); }
-    const uint32_t getCanId() const { return canId_; }
 
-    const std::vector<uint8_t> getFrameData() const { return frameData_; }
+    const uint32_t getCanId() const ;
 
-    const can_frame getRawFrame() const { return rawFrame_; }
+    const std::vector<uint8_t> getFrameData() const;
 
-    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &candbcMessage);
+    const can_frame getRawFrame() const;
+
+    static SocketCANMessage fromCANDBCMessage(const CANDBCMessage &canDBCMessage, std::vector<uint8_t> frameData) {
+        SocketCANMessage message{canDBCMessage.getAddress(), frameData};
+        return message;
+    }
 
 private:
     uint32_t canId_;
