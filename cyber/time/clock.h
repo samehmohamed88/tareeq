@@ -33,7 +33,7 @@ using ::apollo::cyber::proto::ClockMode;
 /**
  * @class Clock
  * @brief a singleton clock that can be used to get the current
- * timestamp. The source can be either system(cyber) clock or a mocks clock.
+ * timestamp. The source can be either system(cyber) clock or a mock clock.
  * Mock clock is for testing purpose mainly.
  */
 class Clock {
@@ -60,8 +60,8 @@ class Clock {
   static double NowInSeconds();
 
   /**
-   * @brief This is for mocks clock mode only. It will set the timestamp
-   * for the mocks clock.
+   * @brief This is for mock clock mode only. It will set the timestamp
+   * for the mock clock.
    */
   static void SetNow(const Time& now);
 
@@ -78,8 +78,8 @@ class Clock {
   static ClockMode mode();
 
   /**
-   * @brief This is for mocks clock mode only. It will set the timestamp
-   * for the mocks clock with UNIX timestamp in seconds.
+   * @brief This is for mock clock mode only. It will set the timestamp
+   * for the mock clock with UNIX timestamp in seconds.
    */
   static void SetNowInSeconds(const double seconds) {
     Clock::SetNow(Time(seconds));

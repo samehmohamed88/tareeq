@@ -522,9 +522,9 @@ def _find_tensorrt_config(base_paths, required_version):
     library_path = _find_library(base_paths, "nvinfer", tensorrt_version)
 
     return {
-        "tensorrt_version": "7.3.2",
-        "tensorrt_include_dir": "/usr/local/include",
-        "tensorrt_library_dir": "/usr/local/lib",
+        "tensorrt_version": tensorrt_version,
+        "tensorrt_include_dir": os.path.dirname(header_path),
+        "tensorrt_library_dir": os.path.dirname(library_path),
     }
 
 
@@ -620,10 +620,10 @@ def find_cuda_config():
         nccl_version = os.environ.get("TF_NCCL_VERSION", "")
         result.update(_find_nccl_config(nccl_paths, nccl_version))
 
-    # if "tensorrt" in libraries:
-    #     tensorrt_paths = _get_legacy_path("TENSORRT_INSTALL_PATH", base_paths)
-    #     tensorrt_version = os.environ.get("TF_TENSORRT_VERSION", "")
-    #     result.update(_find_tensorrt_config(tensorrt_paths, tensorrt_version))
+    if "tensorrt" in libraries:
+        tensorrt_paths = _get_legacy_path("TENSORRT_INSTALL_PATH", base_paths)
+        tensorrt_version = os.environ.get("TF_TENSORRT_VERSION", "")
+        result.update(_find_tensorrt_config(tensorrt_paths, tensorrt_version))
 
     for k, v in result.items():
         if k.endswith("_dir") or k.endswith("_path"):
