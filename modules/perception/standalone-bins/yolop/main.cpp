@@ -1,6 +1,9 @@
 #include "yolov5.hpp"
 #include "zedcam.hpp"
+#include "utils.h"
+
 #include <csignal>
+#define HAVE_CUDA  1
 
 static volatile bool keep_running = true;
 
