@@ -56,7 +56,7 @@ restart_stopped_container
 
 docker exec \
     -u "${DOCKER_USER}" \
-    -e HISTFILE=/apollo/.dev_bash_hist \
+    -e HISTFILE=/nav/.dev_bash_hist \
     -it "${DEV_CONTAINER}" \
     /bin/bash
 

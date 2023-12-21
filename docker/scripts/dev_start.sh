@@ -40,14 +40,14 @@ volumes="${volumes} -v /media:/media \
     -v /etc/localtime:/etc/localtime:ro \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
-    --volume=${HOME}/CLION/clion-2022.3.3:/home/$USER/clion \
-    --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$USER/.java/.userPrefs \
-    --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$USER/.cache/JetBrains \
-    --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$USER/.local/share/JetBrains \
-    --volume=${HOME}/.dockerConfig/jetbrains/config:/home/$USER/.config/JetBrains \
-    --volume=${HOME}/.ideavimrc:/home/$USER/.ideavimrc \
+    --volume=${HOME}/CLION/clion-2022.3.3:/home/$NAVUSER/clion \
+    --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$NAVUSER/.java/.userPrefs \
+    --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$NAVUSER/.cache/JetBrains \
+    --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$NAVUSER/.local/share/JetBrains \
+    --volume=${HOME}/.dockerConfig/jetbrains/config:/home/$NAVUSER/.config/JetBrains \
+    --volume=${HOME}/.ideavimrc:/home/$NAVUSER/.ideavimrc \
     --volume=/media:/media \
-    --volume=${HOME}/.fonts:/home/$USER/.fonts"
+    --volume=${HOME}/.fonts:/home/$NAVUSER/.fonts"
 
 SHM_SIZE="2G"
 DEV_IMAGE="${DOCKER_REPO}:${VERSION_X86_64}"
@@ -79,9 +79,7 @@ ${DOCKER_RUN_CMD} -itd \
     -e USE_GPU_HOST="${USE_GPU_HOST}" \
     -e NVIDIA_VISIBLE_DEVICES=all \
     -e NVIDIA_DRIVER_CAPABILITIES=compute,video,graphics,utility \
-    ${MAP_VOLUMES_CONF} \
-    ${OTHER_VOLUMES_CONF} \
-    ${local_volumes} \
+    ${volumes} \
     --net host \
     -w /nav \
     --add-host "${DEV_INSIDE}:127.0.0.1" \
