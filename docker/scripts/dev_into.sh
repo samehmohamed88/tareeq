@@ -15,9 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-DOCKER_USER="${USER}"
-DEV_CONTAINER_PREFIX='apollo_dev_'
-DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${USER}"
+DOCKER_USER="nav"
+DEV_CONTAINER_PREFIX='nav_dev_'
+DEV_CONTAINER="${DEV_CONTAINER_PREFIX}nav"
 
 function parse_arguments {
     local container_name=''

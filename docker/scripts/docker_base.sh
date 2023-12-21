@@ -16,7 +16,7 @@
 # limitations under the License.
 ###############################################################################
 TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-source "${TOP_DIR}/scripts/apollo.bashrc"
+source "${TOP_DIR}/scripts/nav.bashrc"
 
 unset TOP_DIR
 
@@ -119,7 +119,7 @@ function download_tegra_lib() {
         bash -c "cd ~ && wget -nv ${tegra_lib_url} && tar -xzvf ~/tegra.tar.gz -C /usr/lib/aarch64-linux-gnu/ > /dev/null"
 }
 
-function stop_all_apollo_containers() {
+function stop_all_nav_containers() {
     local force="$1"
     local running_containers
     # add a special field `...` as a separator
@@ -130,7 +130,7 @@ function stop_all_apollo_containers() {
         owner="${container%%...*}"
         name="${container##*...}"
         # only stop containers created by current user
-        if [[ ("${owner}" == "${USER}") && ("${name}" =~ apollo_.*) ]]; then
+        if [[ ("${owner}" == "${USER}") && ("${name}" =~ nav_.*) ]]; then
             info "Now stop container ${name} ..."
             if docker stop "${name}" >/dev/null; then
                 if [[ "${force}" == "-f" || "${force}" == "--force" ]]; then
@@ -146,12 +146,12 @@ function stop_all_apollo_containers() {
 
 # Check whether user has agreed license agreement
 function check_agreement() {
-    local agreement_record="${HOME}/.apollo_agreement.txt"
+    local agreement_record="${HOME}/.nav_agreement.txt"
     if [[ -e "${agreement_record}" ]]; then
         return 0
     fi
     local agreement_file
-    agreement_file="${APOLLO_ROOT_DIR}/scripts/AGREEMENT.txt"
+    agreement_file="${NAV_ROOT_DIR}/scripts/AGREEMENT.txt"
     if [[ ! -f "${agreement_file}" ]]; then
         error "AGREEMENT ${agreement_file} does not exist."
         exit 1
@@ -176,7 +176,7 @@ or type any other key to exit:"
 
 export -f geo_specific_config
 export -f determine_gpu_use_host
-export -f stop_all_apollo_containers remove_container_if_exists
+export -f stop_all_nav_containers remove_container_if_exists
 export -f check_agreement
 export USE_GPU_HOST
 export DOCKER_RUN_CMD
