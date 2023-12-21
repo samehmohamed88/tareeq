@@ -90,5 +90,6 @@ ${DOCKER_RUN_CMD} -itd \
     --shm-size "${SHM_SIZE}" \
     --pid=host \
     -v /dev/null:/dev/raw1394 \
+    --gpus all \
     "${DEV_IMAGE}" \
     /bin/bash
