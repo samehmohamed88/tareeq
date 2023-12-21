@@ -17,7 +17,7 @@ RUN sudo bash /opt/nav/installers/install_python.sh
 RUN bash /opt/nav/installers/install_pytorch.sh
 RUN sudo bash /opt/nav/installers/install_zed_sdk.sh
 
-RUN apt-get -y clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get -y clean \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 WORKDIR /nav
