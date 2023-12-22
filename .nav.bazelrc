@@ -1,7 +1,7 @@
-startup --output_user_root="/nav/.cache/bazel"
-common --distdir="/nav/.cache/distdir"
-common --repository_cache="/nav/.cache/repos"
-build --disk_cache="/nav/.cache/build"
+#startup --output_user_root="$HOME/.cache/bazel"
+#common --distdir="$HOME/.cache/distdir"
+#common --repository_cache="$HOME/.cache/repos"
+#build --disk_cache="$HOME/.cache/build"
 
 build --action_env PYTHON_BIN_PATH="/usr/bin/python3"
 build --action_env PYTHON_LIB_PATH="/usr/lib/python3/dist-packages"
