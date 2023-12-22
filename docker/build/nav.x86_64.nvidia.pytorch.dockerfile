@@ -1,6 +1,6 @@
 FROM nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
 
-ARG USERID=1000
+ARG USERID=$USERID
 ARG USERNAME=nav
 
 ENV DEBIAN_FRONTEND noninteractive    # export DEBIAN_FRONTEND="noninteractive"

@@ -40,6 +40,7 @@ volumes="${volumes} -v /media:/media \
     -v /etc/localtime:/etc/localtime:ro \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
+    -v ${CURR_DIR}/../../:/nav
     --volume=${HOME}/CLION/clion-2022.3.3:/home/$NAVUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$NAVUSER/.java/.userPrefs \
     --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$NAVUSER/.cache/JetBrains \

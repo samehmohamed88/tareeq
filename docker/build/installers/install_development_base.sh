@@ -11,4 +11,8 @@ apt-get -y update \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   && sudo usermod -a -G root,dialout,adm,cdrom,sudo,audio,dip,video,plugdev $USERNAME \
   && rm -rf /var/lib/apt/lists/* \
-  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc
+  && echo "source /usr/share/bash-completion/completions/git" >> /home/$USERNAME/.bashrc \
+  && wget https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 \
+  && mv bazelisk-linux-amd64 /usr/local/bin/bazel \
+  && chmod +x /usr/local/bin/bazel
+
