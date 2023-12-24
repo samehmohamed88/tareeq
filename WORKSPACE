@@ -1,6 +1,16 @@
 workspace(name = "nav")
+#
+#new_local_repository(
+#    name = "third_party_prebuilt_libs",
+#    build_file_content = "",
+#    path = "third_party/binaries",
+#)
+#
+#load("@third_party_prebuilt_libs//:repos.bzl", "load_prebuild_repos")
+#
+#load_prebuild_repos()
 
-load("//third_party:workspace.bzl", "initialize_third_party")
+load("//third_party:repos.bzl", "initialize_third_party")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 initialize_third_party()
