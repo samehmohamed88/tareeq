@@ -7,7 +7,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "NvInfer.h"
-#include "yololayer.h"
+#include "examples/yolop/yololayer.h"
 
 using namespace nvinfer1;
 

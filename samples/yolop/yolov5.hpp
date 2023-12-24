@@ -2,9 +2,9 @@
 #define YOLOV5_H_
 
 #include <chrono>
-#include "cuda_utils.h"
-#include "logging.h"
-#include "utils.h"
+#include "examples/yolop/cuda_utils.h"
+#include "examples/yolop/logging.h"
+#include "examples/yolop/utils.h"
 //#include "calibrator.h"
 
 #define USE_FP16  // set USE_INT8 or USE_FP16 or USE_FP32

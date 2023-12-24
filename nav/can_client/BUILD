@@ -77,33 +77,33 @@ filegroup(
     ],
 )
 
-cc_library(
-    name = "comma_ai_can_interface_simple_deque",
-    hdrs = [
-        "CommaAICANInterfaceWithSimplyDeque.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        ":device_enum_classes",
-        "@boost",
-    ],
-    alwayslink = True,
-)
+#cc_library(
+#    name = "comma_ai_can_interface_simple_deque",
+#    hdrs = [
+#        "CommaAICANInterfaceWithSimplyDeque.h",
+#    ],
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        ":device_enum_classes",
+#        "@boost",
+#    ],
+#    alwayslink = True,
+#)
 
-cc_library(
-    name = "comma_ai_can_interface_boost_buffer",
-    hdrs = [
-        "CommaAICANInterfaceWithBoostBuffer.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        ":device_enum_classes",
-        "@boost",
-    ],
-    alwayslink = True,
-)
+#cc_library(
+#    name = "comma_ai_can_interface_boost_buffer",
+#    hdrs = [
+#        "CommaAICANInterfaceWithBoostBuffer.h",
+#    ],
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        ":device_enum_classes",
+#        "@boost",
+#    ],
+#    alwayslink = True,
+#)
 
 cc_library(
     name = "can_exception",
@@ -152,18 +152,17 @@ cc_library(
     ],
 )
 
-cc_library(
-    name = "buffered_can_client",
-    hdrs = [
-        "CANClient.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        "//cyber/common:log",
-        "@boost",
-        "@units",
-    ],
-    alwayslink = True,
-)
-
+#cc_library(
+#    name = "buffered_can_client",
+#    hdrs = [
+#        "CANClient.h",
+#    ],
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        "//cyber/common:log",
+#        "@boost",
+#        "@units",
+#    ],
+#    alwayslink = True,
+#)

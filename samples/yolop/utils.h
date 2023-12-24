@@ -14,7 +14,7 @@
 #endif
 
 #include <iostream>
-#include "common.hpp"
+#include "examples/yolop/common.hpp"
 
 #define SHOW_IMG
 

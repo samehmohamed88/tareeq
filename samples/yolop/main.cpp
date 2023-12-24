@@ -1,6 +1,6 @@
-#include "yolov5.hpp"
-#include "zedcam.hpp"
-#include "utils.h"
+#include "examples/yolop/yolov5.hpp"
+#include "examples/yolop/zedcam.hpp"
+#include "examples/yolop/utils.h"
 
 #include <csignal>
 #define HAVE_CUDA  1

@@ -80,7 +80,7 @@ set(CUDA_NVCC_FLAGS_MINSIZEREL  ; )
 set(CUDA_NVCC_FLAGS_RELWITHDEBINFO  ; )
 set(nvcc_flags -m64;--std;c++11;-Dmyplugins_EXPORTS) # list
 set(CUDA_NVCC_INCLUDE_DIRS [==[/usr/local/cuda/include;/apollo/modules/perception/standalone-bins/yolop/include;/opt/apollo/sysroot/include/opencv4;/usr/local/cuda-10.2/include;/usr/include/aarch64-linux-gnu;/usr/local/zed/include;/usr/local/cuda/include]==]) # list (needs to be in lua quotes to address backslashes)
-string(REPLACE "\\" "/" CUDA_NVCC_INCLUDE_DIRS "${CUDA_NVCC_INCLUDE_DIRS}")
+string(REPLACE "\\" "." CUDA_NVCC_INCLUDE_DIRS "${CUDA_NVCC_INCLUDE_DIRS}")
 set(CUDA_NVCC_COMPILE_DEFINITIONS [==[]==]) # list (needs to be in lua quotes see #16510 ).
 set(format_flag "-c") # string
 set(cuda_language_flag ) # list
