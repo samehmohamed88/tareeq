@@ -1,5 +1,4 @@
-#ifndef YOLOV5_COMMON_H_
-#define YOLOV5_COMMON_H_
+#pragma once
 
 #include <fstream>
 #include <map>
@@ -7,7 +6,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "NvInfer.h"
-#include "examples/yolop/yololayer.h"
+#include "yololayer.h"
 
 using namespace nvinfer1;
 
@@ -284,7 +283,7 @@ ILayer* preprocess_layer(INetworkDefinition *network, std::map<std::string, Weig
     auto padding = network->addPaddingNd(*rescale->getOutput(0),
                                         DimsHW{ (Yolo::INPUT_H - Yolo::IMG_H) / 2, (Yolo::INPUT_W - Yolo::IMG_W) / 2 },
                                         DimsHW{ (Yolo::INPUT_H - Yolo::IMG_H) / 2, (Yolo::INPUT_W - Yolo::IMG_W) / 2 });
-    
+
     assert(padding);
     return padding;
 
@@ -312,7 +311,7 @@ std::vector<float> getAnchors(std::map<std::string, Weights>& weightMap)
             anchors_yolo.push_back(const_cast<float*>(tempAnchors)[i]);
         }
     }
-    
+
     return anchors_yolo;
 }
 
@@ -355,5 +354,3 @@ IPluginV2Layer* addYoLoLayer(INetworkDefinition *network, std::map<std::string, 
     auto yolo = network->addPluginV2(inputTensors_yolo, 3, *pluginObj);
     return yolo;
 }
-#endif
-

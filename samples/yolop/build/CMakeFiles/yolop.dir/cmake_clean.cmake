@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/yolop.dir/main.cpp.o"
+  "CMakeFiles/yolop.dir/yolop.cpp.o"
+  "CMakeFiles/yolop.dir/yolop.cpp.o.d"
   "yolop"
   "yolop.pdb"
 )

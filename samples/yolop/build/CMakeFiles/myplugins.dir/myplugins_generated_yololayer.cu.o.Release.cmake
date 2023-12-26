@@ -57,19 +57,19 @@ if(NOT generated_file)
 endif()
 
 # Set these up as variables to make reading the generated file easier
-set(CMAKE_COMMAND "/opt/apollo/sysroot/bin/cmake") # path
-set(source_file "/apollo/modules/perception/standalone-bins/yolop/yololayer.cu") # path
-set(NVCC_generated_dependency_file "/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir//myplugins_generated_yololayer.cu.o.NVCC-depend") # path
-set(cmake_dependency_file "/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir//myplugins_generated_yololayer.cu.o.depend") # path
-set(CUDA_make2cmake "/opt/apollo/sysroot/share/cmake-3.19/Modules/FindCUDA/make2cmake.cmake") # path
-set(CUDA_parse_cubin "/opt/apollo/sysroot/share/cmake-3.19/Modules/FindCUDA/parse_cubin.cmake") # path
+set(CMAKE_COMMAND "/usr/bin/cmake") # path
+set(source_file "/home/sameh/tensorrtx/yolop/yololayer.cu") # path
+set(NVCC_generated_dependency_file "/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir//myplugins_generated_yololayer.cu.o.NVCC-depend") # path
+set(cmake_dependency_file "/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir//myplugins_generated_yololayer.cu.o.depend") # path
+set(CUDA_make2cmake "/usr/share/cmake-3.22/Modules/FindCUDA/make2cmake.cmake") # path
+set(CUDA_parse_cubin "/usr/share/cmake-3.22/Modules/FindCUDA/parse_cubin.cmake") # path
 set(build_cubin OFF) # bool
 set(CUDA_HOST_COMPILER "/usr/bin/cc") # path
 # We won't actually use these variables for now, but we need to set this, in
 # order to force this file to be run again if it changes.
-set(generated_file_path "/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir//.") # path
-set(generated_file_internal "/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir//./myplugins_generated_yololayer.cu.o") # path
-set(generated_cubin_file_internal "/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir//./myplugins_generated_yololayer.cu.o.cubin.txt") # path
+set(generated_file_path "/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir//.") # path
+set(generated_file_internal "/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir//./myplugins_generated_yololayer.cu.o") # path
+set(generated_cubin_file_internal "/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir//./myplugins_generated_yololayer.cu.o.cubin.txt") # path
 
 set(CUDA_NVCC_EXECUTABLE "/usr/local/cuda/bin/nvcc") # path
 set(CUDA_NVCC_FLAGS  ;; ) # list
@@ -79,8 +79,8 @@ set(CUDA_NVCC_FLAGS_DEBUG  ; )
 set(CUDA_NVCC_FLAGS_MINSIZEREL  ; )
 set(CUDA_NVCC_FLAGS_RELWITHDEBINFO  ; )
 set(nvcc_flags -m64;--std;c++11;-Dmyplugins_EXPORTS) # list
-set(CUDA_NVCC_INCLUDE_DIRS [==[/usr/local/cuda/include;/apollo/modules/perception/standalone-bins/yolop/include;/opt/apollo/sysroot/include/opencv4;/usr/local/cuda-10.2/include;/usr/include/aarch64-linux-gnu;/usr/local/zed/include;/usr/local/cuda/include]==]) # list (needs to be in lua quotes to address backslashes)
-string(REPLACE "\\" "." CUDA_NVCC_INCLUDE_DIRS "${CUDA_NVCC_INCLUDE_DIRS}")
+set(CUDA_NVCC_INCLUDE_DIRS [==[/usr/local/cuda/include;/home/sameh/tensorrtx/yolop/include;/usr/local/include/opencv4;/usr/local/cuda-10.2/include;/usr/include/aarch64-linux-gnu;/usr/local/cuda/include]==]) # list (needs to be in lua quotes to address backslashes)
+string(REPLACE "\\" "/" CUDA_NVCC_INCLUDE_DIRS "${CUDA_NVCC_INCLUDE_DIRS}")
 set(CUDA_NVCC_COMPILE_DEFINITIONS [==[]==]) # list (needs to be in lua quotes see #16510 ).
 set(format_flag "-c") # string
 set(cuda_language_flag ) # list
@@ -188,7 +188,7 @@ cuda_execute_process(
 # For CUDA 2.3 and below, -G -M doesn't work, so remove the -G flag
 # for dependency generation and hope for the best.
 set(depends_CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS}")
-set(CUDA_VERSION 10.2)
+set(CUDA_VERSION 12.3)
 if(CUDA_VERSION VERSION_LESS "3.0")
   # Note that this will remove all occurrences of -G.
   list(REMOVE_ITEM depends_CUDA_NVCC_FLAGS "-G")

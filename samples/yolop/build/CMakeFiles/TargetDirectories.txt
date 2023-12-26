@@ -1,5 +1,4 @@
-/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/rebuild_cache.dir
-/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/myplugins.dir
-/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/yolov5.dir
-/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/edit_cache.dir
-/apollo/modules/perception/standalone-bins/yolop/build/CMakeFiles/yolop.dir
+/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir
+/home/sameh/tensorrtx/yolop/build/CMakeFiles/yolop.dir
+/home/sameh/tensorrtx/yolop/build/CMakeFiles/edit_cache.dir
+/home/sameh/tensorrtx/yolop/build/CMakeFiles/rebuild_cache.dir

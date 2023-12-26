@@ -1,6 +1,4 @@
-#ifndef TRTX_CUDA_UTILS_H_
-#define TRTX_CUDA_UTILS_H_
-
+#pragma once
 #include <cuda_runtime_api.h>
 
 #ifndef CUDA_CHECK
@@ -13,6 +11,4 @@
         }\
     }
 #endif  // CUDA_CHECK
-
-#endif  // TRTX_CUDA_UTILS_H_
 
