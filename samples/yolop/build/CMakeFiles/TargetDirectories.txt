@@ -1,4 +1,0 @@
-/home/sameh/tensorrtx/yolop/build/CMakeFiles/myplugins.dir
-/home/sameh/tensorrtx/yolop/build/CMakeFiles/yolop.dir
-/home/sameh/tensorrtx/yolop/build/CMakeFiles/edit_cache.dir
-/home/sameh/tensorrtx/yolop/build/CMakeFiles/rebuild_cache.dir
