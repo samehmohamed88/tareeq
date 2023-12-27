@@ -1,6 +1,4 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
-load("//tools/install:install.bzl", "install")
-load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -79,33 +77,33 @@ filegroup(
     ],
 )
 
-cc_library(
-    name = "comma_ai_can_interface_simple_deque",
-    hdrs = [
-        "CommaAICANInterfaceWithSimplyDeque.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        ":device_enum_classes",
-        "@boost",
-    ],
-    alwayslink = True,
-)
+#cc_library(
+#    name = "comma_ai_can_interface_simple_deque",
+#    hdrs = [
+#        "CommaAICANInterfaceWithSimplyDeque.h",
+#    ],
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        ":device_enum_classes",
+#        "@boost",
+#    ],
+#    alwayslink = True,
+#)
 
-cc_library(
-    name = "comma_ai_can_interface_boost_buffer",
-    hdrs = [
-        "CommaAICANInterfaceWithBoostBuffer.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        ":device_enum_classes",
-        "@boost",
-    ],
-    alwayslink = True,
-)
+#cc_library(
+#    name = "comma_ai_can_interface_boost_buffer",
+#    hdrs = [
+#        "CommaAICANInterfaceWithBoostBuffer.h",
+#    ],
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        ":device_enum_classes",
+#        "@boost",
+#    ],
+#    alwayslink = True,
+#)
 
 cc_library(
     name = "can_exception",
@@ -154,34 +152,17 @@ cc_library(
     ],
 )
 
-cc_library(
-    name = "buffered_can_client",
-    hdrs = [
-        "CANClient.h",
-    ],
-    visibility = ["//nav/can_client:__subpackages__"],
-    deps = [
-        ":can_database",
-        "//cyber/common:log",
-        "@boost",
-        "@units",
-    ],
-    alwayslink = True,
-)
-
-#install(
-#    name = "install",
-#    data = [
-#        ":conf",
+#cc_library(
+#    name = "buffered_can_client",
+#    hdrs = [
+#        "CANClient.h",
 #    ],
-#    # We want to install channel_*_writer into runtime_dest
-#    # rather than bin/
-#    runtime_dest = "cyber/examples/common_component_example",
-#    targets = [
-#        ":channel_prediction_writer",
-#        ":channel_test_writer",
-#        ":libcommon_component_example.so",
+#    visibility = ["//nav/can_client:__subpackages__"],
+#    deps = [
+#        ":can_database",
+#        "//cyber/common:log",
+#        "@boost",
+#        "@units",
 #    ],
+#    alwayslink = True,
 #)
-
-cpplint()

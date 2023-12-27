@@ -1,0 +1,47 @@
+workspace(name = "rules_cuda_examples")
+
+local_repository(
+    name = "rules_cuda",
+    path = "../",
+)
+
+######################
+# rules_bazel setup  #
+######################
+# Fetches the rules_bazel dependencies and initializes the cuda toolchain.
+# If you want to have a different version of some dependency,
+# you should fetch it *before* calling this.
+
+load("@rules_cuda//cuda:repositories.bzl", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
+
+rules_cuda_dependencies()
+
+register_detected_cuda_toolchains()
+
+#################################
+# Dependencies for nccl example #
+#################################
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "nccl",
+    add_prefix = "nccl",
+    build_file = "@rules_cuda_examples//nccl:nccl.BUILD",
+    sha256 = "0de8aed51bf95c96c14bc801ba840eb5b5df527e7105b1f42a58ad5d4d617678",
+    strip_prefix = "nccl-4365458757e4107ecbf629b2fd6e0e19a5d237c2",
+    urls = ["https://github.com/nvidia/nccl/archive/4365458757e4107ecbf629b2fd6e0e19a5d237c2.tar.gz"],
+)
+
+http_archive(
+    name = "nccl-tests",
+    add_prefix = "nccl-tests",
+    build_file = "@rules_cuda_examples//nccl:nccl-tests.BUILD",
+    patch_args = [
+        "--directory=nccl-tests",
+        "-p1",
+    ],
+    patches = ["@rules_cuda_examples//nccl:nccl-tests-clang.patch"],
+    sha256 = "fe0bdc0fdfba75a9326b32381ce486b99aa5e6189181fbf92baa4f6153961c3f",
+    strip_prefix = "nccl-tests-6c46206a478203b6453035fe0d40dc6418acd089",
+    urls = ["https://github.com/nvidia/nccl-tests/archive/6c46206a478203b6453035fe0d40dc6418acd089.tar.gz"],
+)
