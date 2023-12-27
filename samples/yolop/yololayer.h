@@ -1,10 +1,12 @@
 #ifndef _YOLO_LAYER_H
 #define _YOLO_LAYER_H
 
+#include "macros.h"
+
+#include <NvInfer.h>
+
 #include <vector>
 #include <string>
-#include "NvInfer.h"
-#include "macros.h"
 
 namespace Yolo
 {
