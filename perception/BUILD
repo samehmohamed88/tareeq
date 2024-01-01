@@ -17,7 +17,7 @@ cc_library(
         #        "sl_win_avg.cpp",
     ],
     hdrs = [
-        "StereoLabTypes.h",
+        #        "StereoLabTypes.h",
         "ZedCameraComponent.h",
         #        "sl_logging.hpp",
         #        "sl_tools.hpp",
@@ -39,7 +39,8 @@ cc_library(
         #        "@ros2_image_common//:image_transport",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rclcpp//:rclcpp_components",
-        #        "@zed",
+        "@ros2_diagnostics//:cpp_diagnostic_updater",
+        "@zed",
         #        "@zed_interfaces//:cpp_zed_interfaces",
     ],
 )
