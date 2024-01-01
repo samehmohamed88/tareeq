@@ -85,5 +85,5 @@ tools/FlameGraph
 *.deb
 .clwb
 core
-modules/perception/production/
+perception/production/
 build/

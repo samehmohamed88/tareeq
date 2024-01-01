@@ -27,4 +27,4 @@ build:tensorrt --action_env TF_NEED_TENSORRT=1
 build:teleop --define WITH_TELEOP=true
 
 # Build Nav with C++ 20 features.
-build --cxxopt=-std=c++20
+build --cxxopt=-std=c++17
