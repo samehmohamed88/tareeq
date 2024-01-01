@@ -56,6 +56,7 @@ ros2_cpp_library(
     visibility = ["//visibility:public"],
     deps = [
         ":cpp_robot_localization",
+        "@boost//:accumulators",
         "@ros2_angles",
         "@ros2_common_interfaces//:cpp_diagnostic_msgs",
         "@ros2_diagnostics//:cpp_diagnostic_updater",
