@@ -189,25 +189,25 @@ void ZedCameraComponent::getGeneralParams()
     RCLCPP_INFO_STREAM(get_logger(), " * [DYN] Publish framerate [Hz]:  " << publishFrameRate_);
 }
 
-void ZedCameraComponent::callback_updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper & stat)
+void ZedCameraComponent::callback_updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper& diagnosticStatus)
 {
 
-//    DEBUG_COMM("*** Update Diagnostic ***");
+    RCLCPP_DEBUG(get_logger(),"*** Update Diagnostic ***");
 
     if (connectionStatus_ != sl::ERROR_CODE::SUCCESS) {
-        stat.summary(diagnostic_msgs::msg::DiagnosticStatus::ERROR, sl::toString(connectionStatus_).c_str());
+        diagnosticStatus.summary(diagnostic_msgs::msg::DiagnosticStatus::ERROR, sl::toString(connectionStatus_).c_str());
         return;
     }
 
     if (grabStatus_ == sl::ERROR_CODE::SUCCESS) {
         double freq = 1. / grabPeriodMean_sec_->getAvg();
         double freq_perc = 100. * freq / publishFrameRate_;
-        stat.addf("Capture", "Mean Frequency: %.1f Hz (%.1f%%)", freq, freq_perc);
+        diagnosticStatus.addf("Capture", "Mean Frequency: %.1f Hz (%.1f%%)", freq, freq_perc);
 
         double frame_proc_sec = elapsedPeriodMean_sec_->getAvg();
         //double frame_grab_period = 1. / mCamGrabFrameRate;
         double frame_grab_period = 1. / publishFrameRate_;
-        stat.addf(
+        diagnosticStatus.addf(
             "Capture", "Tot. Processing Time: %.6f sec (Max. %.3f sec)", frame_proc_sec,
             frame_grab_period);
 
@@ -217,32 +217,32 @@ void ZedCameraComponent::callback_updateDiagnostic(diagnostic_updater::Diagnosti
         }
 
         if (systemOverloadCount_ >= 10) {
-            stat.summary(
+            diagnosticStatus.summary(
                 diagnostic_msgs::msg::DiagnosticStatus::WARN,
                 "System overloaded. Consider reducing 'general.pub_frame_rate' or 'general.grab_resolution'");
         } else {
             systemOverloadCount_ = 0;
-            stat.summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "Camera grabbing");
+            diagnosticStatus.summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "Camera grabbing");
         }
 
-        stat.add("Input mode", "Live Camera");
+        diagnosticStatus.add("Input mode", "Live Camera");
 
     } else {
-        stat.summaryf(
+        diagnosticStatus.summaryf(
             diagnostic_msgs::msg::DiagnosticStatus::ERROR, "Camera error: %s",
             sl::toString(grabStatus_).c_str());
     }
 
     if (cameraModel_ == sl::MODEL::ZED2 || cameraModel_ == sl::MODEL::ZED2i) {
-        stat.addf("Left CMOS Temp.", "%.1f °C", temperatureLeft_);
-        stat.addf("Right CMOS Temp.", "%.1f °C", temperatureRight_);
+        diagnosticStatus.addf("Left CMOS Temp.", "%.1f °C", temperatureLeft_);
+        diagnosticStatus.addf("Right CMOS Temp.", "%.1f °C", temperatureRight_);
 
         if (temperatureLeft_ > 70.f || temperatureRight_ > 70.f) {
-            stat.summary(diagnostic_msgs::msg::DiagnosticStatus::WARN, "High Camera temperature");
+            diagnosticStatus.summary(diagnostic_msgs::msg::DiagnosticStatus::WARN, "High Camera temperature");
         }
     } else {
-        stat.add("Left CMOS Temp.", "N/A");
-        stat.add("Right CMOS Temp.", "N/A");
+        diagnosticStatus.add("Left CMOS Temp.", "N/A");
+        diagnosticStatus.add("Right CMOS Temp.", "N/A");
     }
 }
 
