@@ -6,6 +6,8 @@
 
 #include <sl/Camera.hpp>
 
+#include <deque>
+
 namespace nav {
 namespace perception {
 
@@ -41,6 +43,28 @@ private:
         /// Custom Rescale Factor
         CUSTOM
     };
+    class WindowAverage
+    {
+    public:
+        explicit WindowAverage(size_t win_size = 15);
+        ~WindowAverage();
+
+          double setNewSize(size_t win_size);
+          double addValue(double val);
+          /// @brief Get the current average of the stored values
+          /// @return average of the stored values
+          double getAvg();
+
+          inline size_t size() {return mVals.size();}
+    private:
+          size_t mWinSize;
+          /// The values in the queue used to calculate the windowed average
+          std::deque<double> mVals;
+          /// The updated sum of the values in the queue
+          double mSumVals = 0.0;
+
+          std::mutex mQueueMux;
+    };
 
     /// Default camera model
     sl::MODEL cameraModel_ = sl::MODEL::ZED;
@@ -65,6 +89,17 @@ private:
 
     /// Diagnostic Updater
     diagnostic_updater::Updater diagnosticUpdater_;
+
+    /// Begin Diagnostic
+    const float NOT_VALID_TEMP = -273.15f;
+    sl::ERROR_CODE grabStatus_;
+    sl::ERROR_CODE connectionStatus_;
+    std::unique_ptr<WindowAverage> grabPeriodMean_sec_;
+    std::unique_ptr<WindowAverage> elapsedPeriodMean_sec_;
+    int systemOverloadCount_ = 0;
+    float temperatureLeft_ = NOT_VALID_TEMP;
+    float temperatureRight_ = NOT_VALID_TEMP;
+
 };
 } // namespace perception
 } // namespace nav
