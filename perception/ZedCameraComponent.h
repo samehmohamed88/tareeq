@@ -17,13 +17,16 @@
 namespace nav {
 namespace perception {
 
-class ZedCameraComponent : public component::Component
+class ZedCameraComponent : public rclcpp::Node
 {
 public:
     explicit ZedCameraComponent(const rclcpp::NodeOptions& options);
 
-    bool Init() override;
-    void Run() override;
+//    bool Init() override;
+//    void Run() override;
+
+    bool Init();
+    void Run();
 private:
     /// Initialization Functions
 //    void initParameters();
@@ -52,7 +55,7 @@ private:
     /// TODO: apply video settings
     // void applyVideoSettings();
 
-    rclcpp::Time slTime2Ros(sl::Timestamp t, rcl_clock_type_t clock_type);
+    rclcpp::Time slTime2Ros(sl::Timestamp t, rcl_clock_type_t clock_type = RCL_ROS_TIME);
 
 private:
     /// @brief Video/Depth topic resolution

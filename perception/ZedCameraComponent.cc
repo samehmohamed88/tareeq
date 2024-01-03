@@ -6,6 +6,7 @@
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/distortion_models.hpp>
 #include <image_transport/camera_publisher.hpp>
+#include <image_transport/image_transport.hpp>
 #include <diagnostic_updater/diagnostic_updater.hpp>
 #include <sl/Camera.hpp>
 
@@ -26,9 +27,10 @@ namespace perception {
 #define ROS_MEAS_UNITS sl::UNIT::METER
 
 ZedCameraComponent::ZedCameraComponent(const rclcpp::NodeOptions& options)
-    : component::Component("", options)
-    , diagnosticUpdater_(this)
-    , grabFreqTimer_(get_clock())
+    : rclcpp::Node("ZedCameraComponent", options)
+    , diagnosticUpdater_{this}
+    , videoQos_{1}
+    , grabFreqTimer_{get_clock()}
 {}
 
 bool ZedCameraComponent::Init()
@@ -215,7 +217,7 @@ bool ZedCameraComponent::startCamera()
     zed_.grab();
 
     // Initialize timestamp to avoid wrong initial data
-    frameTimestamp_ = sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::IMAGE));
+    frameTimestamp_ = slTime2Ros(zed_.getTimestamp(sl::TIME_REFERENCE::IMAGE));
 
     // ----> Initialize Diagnostic statistics
     elapsedPeriodMean_sec_ = std::make_unique<WindowAverage>(cameraGrabFrameRate_);
@@ -294,138 +296,14 @@ void ZedCameraComponent::threadFunc_zedGrab()
         frameCount_++;
 
         // ----> Timestamp
-        mFrameTimestamp = sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::IMAGE));
+        frameTimestamp_ = slTime2Ros(zed_.getTimestamp(sl::TIME_REFERENCE::IMAGE));
         // <---- Timestamp
 
-        if (!mSimMode) {
-            if (mGnssFusionEnabled && mGnssFixNew) {
-                mGnssFixNew = false;
-
-                rclcpp::Time real_frame_ts =
-                    sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::IMAGE));
-                DEBUG_STREAM_GNSS("GNSS synced frame ts: " << real_frame_ts.nanoseconds() << " nsec");
-                float dT_sec =
-                    (static_cast<float>(real_frame_ts.nanoseconds()) -
-                     static_cast<float>(mGnssTimestamp.nanoseconds())) / 1e9;
-                DEBUG_STREAM_GNSS(
-                    "DeltaT: " << dT_sec << " sec [" <<
-                    std::fixed << std::setprecision(9) <<
-                    static_cast<float>(real_frame_ts.nanoseconds()) / 1e9 << "-" <<
-                    static_cast<float>(mGnssTimestamp.nanoseconds()) / 1e9 << "]");
-
-                if (dT_sec < 0.0) {
-                    RCLCPP_WARN_STREAM(
-                        get_logger(), "GNSS sensor and ZED Timestamps are not good. dT = "
-                                          << dT_sec << " sec");
-                }
-            }
-        }
-
-        // ----> Check recording status
-        mRecMutex.lock();
-        if (mRecording) {
-            mRecStatus = mZed.getRecordingStatus();
-
-            if (!mRecStatus.status) {
-                rclcpp::Clock steady_clock(RCL_STEADY_TIME);
-                RCLCPP_ERROR_THROTTLE(get_logger(), steady_clock, 1000.0, "Error saving frame to SVO");
-            }
-        }
-        mRecMutex.unlock();
-        // <---- Check recording status
-
-        // ----> Retrieve Image/Depth data if someone has subscribed to
-        // Retrieve data if there are subscriber to topics
-        if (areVideoDepthSubscribed()) {
-            DEBUG_STREAM_VD("Retrieving video/depth data");
-            retrieveVideoDepth();
-
-            rclcpp::Time pub_ts;
-            publishVideoDepth(pub_ts);
-
-            if (!sl_tools::isZED(mCamRealModel) && mVdPublishing && pub_ts != TIMEZERO_ROS) {
-                if (mSensCameraSync || mSvoMode || mSimMode) {
-                    publishSensorsData(pub_ts);
-                }
-            }
-
-            mVdPublishing = true;
-        } else {
-            mVdPublishing = false;
-        }
-        // <---- Retrieve Image/Depth data if someone has subscribed to
-
-        // ----> Retrieve the point cloud if someone has subscribed to
-        if (!mDepthDisabled) {
-            size_t cloudSubnumber = 0;
-            try {
-                cloudSubnumber = count_subscribers(mPubCloud->get_topic_name());
-            } catch (...) {
-                rcutils_reset_error();
-                DEBUG_STREAM_PC("threadFunc_zedGrab: Exception while counting point cloud subscribers");
-                continue;
-            }
-
-            if (cloudSubnumber > 0) {
-                // Run the point cloud conversion asynchronously to avoid slowing down
-                // all the program
-                // Retrieve raw pointCloud data if latest Pointcloud is ready
-                std::unique_lock<std::mutex> pc_lock(mPcMutex, std::defer_lock);
-
-                if (pc_lock.try_lock()) {
-                    DEBUG_STREAM_PC("Retrieving point cloud");
-                    mZed.retrieveMeasure(mMatCloud, sl::MEASURE::XYZBGRA, sl::MEM::CPU, mMatResol);
-
-                    // Signal Pointcloud thread that a new pointcloud is ready
-                    mPcDataReadyCondVar.notify_one();
-                    mPcDataReady = true;
-                    mPcPublishing = true;
-                }
-            } else {
-                mPcPublishing = false;
-            }
-        }
-        // <---- Retrieve the point cloud if someone has subscribed to
-
-        // ----> Localization processing
-        if (!mDepthDisabled) {
-            if (mPosTrackingStarted) {
-                if (!mSvoPause) {
-                    processOdometry();
-                    processPose();
-                    if (mGnssFusionEnabled) {
-                        processGeoPose();
-                    }
-                }
-
-                // Publish `odom` and `map` TFs at the grab frequency
-                // RCLCPP_INFO(get_logger(), "Publishing TF -> threadFunc_zedGrab");
-                publishTFs(mFrameTimestamp);
-            }
-        }
-        // <---- Localization processing
-
-        if (!mDepthDisabled) {
-            mObjDetMutex.lock();
-            if (mObjDetRunning) {
-                processDetectedObjects(mFrameTimestamp);
-            }
-            mObjDetMutex.unlock();
-        }
-
-        if (!mDepthDisabled) {
-            mBodyTrkMutex.lock();
-            if (mBodyTrkRunning) {
-                processBodies(mFrameTimestamp);
-            }
-            mBodyTrkMutex.unlock();
-        }
-
         // Diagnostic statistics update
-        double mean_elab_sec = mElabPeriodMean_sec->addValue(grabElabTimer.toc());
+        double meanElapsedSec = elapsedPeriodMean_sec_->addValue(grabElapsedTimer.toc());
     }
 
-    DEBUG_STREAM_COMM("Grab thread finished");
+    RCLCPP_DEBUG_STREAM(get_logger(), "Grab thread finished");
 }
 
 
