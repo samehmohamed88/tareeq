@@ -20,3 +20,12 @@ cc_library(
         "@ros2_rclcpp//:rclcpp_components",
     ],
 )
+
+cc_library(
+    name = "StopWatch",
+    srcs = ["StopWatch.cc"],
+    hdrs = ["StopWatch.h"],
+    deps = [
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

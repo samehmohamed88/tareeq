@@ -26,6 +26,7 @@ cc_library(
     ],
     deps = [
         "//component:Component",
+        "//component:StopWatch",
         #        "@geographic_info//:cpp_geographic_msgs",
         #        "@robot_localization//:robot_localization_package",
         #        "@ros2_angles",
@@ -37,7 +38,9 @@ cc_library(
         #        "@ros2_diagnostics//:cpp_diagnostic_updater",
         #        "@ros2_geometry2//:tf2_ros",
         #        "@ros2_image_common//:image_transport",
+        "@ros2_sensor_msgs",
         "@ros2_rclcpp//:rclcpp",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
         "@ros2_rclcpp//:rclcpp_components",
         "@ros2_diagnostics//:cpp_diagnostic_updater",
         "@zed",

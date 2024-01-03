@@ -1,12 +1,26 @@
 #include "perception/ZedCameraComponent.h"
-
+#include "component/StopWatch.h"
 #include "component/Component.h"
-#include "rclcpp/node_options.hpp"
 
+#include <rclcpp/node_options.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
 #include <sl/Camera.hpp>
+
+#include <chrono>
+
+using namespace std::chrono_literals;
+//using namespace std::placeholders;
 
 namespace nav {
 namespace perception {
+
+#ifndef DEG2RAD
+#define DEG2RAD 0.017453293
+#define RAD2DEG 57.295777937
+#endif
+
+#define ROS_COORDINATE_SYSTEM sl::COORDINATE_SYSTEM::RIGHT_HANDED_Z_UP_X_FWD
+#define ROS_MEAS_UNITS sl::UNIT::METER
 
 ZedCameraComponent::ZedCameraComponent(const rclcpp::NodeOptions& options)
     : component::Component("", options)
@@ -16,7 +30,7 @@ ZedCameraComponent::ZedCameraComponent(const rclcpp::NodeOptions& options)
 bool ZedCameraComponent::Init()
 {
     // Parameters initialization
-    initParameters();
+    getGeneralParams();
 
     // ----> Diagnostic initialization
     diagnosticUpdater_.add("ZED Diagnostic", this, &ZedCameraComponent::callback_updateDiagnostic);
@@ -24,13 +38,10 @@ bool ZedCameraComponent::Init()
     diagnosticUpdater_.setHardwareID(hw_id);
     // <---- Diagnostic initialization
 
-    // Services initialization
-    initServices();
-
     // ----> Start camera
-//    if (!startCamera()) {
-//        exit(EXIT_FAILURE);
-//    }
+    if (!startCamera()) {
+        exit(EXIT_FAILURE);
+    }
     // <---- Start camera
 
     // Dynamic parameters callback
@@ -38,6 +49,275 @@ bool ZedCameraComponent::Init()
 //        add_on_set_parameters_callback(std::bind(&ZedCameraComponent::callback_paramChange, this, _1));
     return true;
 }
+
+bool ZedCameraComponent::startCamera()
+{
+    RCLCPP_INFO(get_logger(), "***** STARTING CAMERA *****");
+
+    // ----> SDK version
+    RCLCPP_INFO(
+        get_logger(), "ZED SDK Version: %d.%d.%d - Build %s", ZED_SDK_MAJOR_VERSION, ZED_SDK_MINOR_VERSION,
+        ZED_SDK_PATCH_VERSION, ZED_SDK_BUILD_ID);
+    // <---- SDK version
+
+    // ----> TF2 Transform
+//    mTfBuffer = std::make_unique<tf2_ros::Buffer>(get_clock());
+//    mTfListener =
+//        std::make_unique<tf2_ros::TransformListener>(*mTfBuffer);  // Start TF Listener thread
+//    mTfBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(this);
+    // <---- TF2 Transform
+
+    // ----> ZED configuration
+    RCLCPP_INFO(get_logger(), "*** CAMERA OPENING ***");
+    initParameters_.camera_fps = cameraGrabFrameRate_;
+    initParameters_.grab_compute_capping_fps = static_cast<float>(publishFrameRate_);
+    initParameters_.camera_resolution = static_cast<sl::RESOLUTION>(cameraResolution_);
+
+    if (cameraSerialNumber_ > 0) {
+        initParameters_.input.setFromSerialNumber(cameraSerialNumber_);
+    }
+
+    initParameters_.coordinate_system = ROS_COORDINATE_SYSTEM;
+    initParameters_.coordinate_units = ROS_MEAS_UNITS;
+    initParameters_.sdk_verbose = verbose_;
+    initParameters_.camera_image_flip = cameraFlip_;
+
+    initParameters_.camera_disable_self_calib = !cameraSelfCalibrate_;
+    initParameters_.enable_image_enhancement = true;
+    initParameters_.enable_right_side_measure = false;
+
+    initParameters_.async_grab_camera_recovery = true; // Camera recovery is handled asynchronously to provide information about this status
+    // <---- ZED configuration
+
+    // ----> Try to connect to a camera
+    component::StopWatch connectTimer(get_clock());
+
+    threadStop_ = false;
+
+    while (1) {
+        rclcpp::sleep_for(500ms);
+
+        connectionStatus_ = zed_.open(initParameters_);
+
+        if (connectionStatus_ == sl::ERROR_CODE::SUCCESS) {
+            RCLCPP_DEBUG_STREAM(get_logger(), "Opening successful");
+            break;
+        }
+
+        RCLCPP_WARN(get_logger(), "Error opening camera: %s", sl::toString(connectionStatus_).c_str());
+
+        if (connectionStatus_ == sl::ERROR_CODE::CAMERA_DETECTION_ISSUE )
+        {
+            RCLCPP_INFO(get_logger(), "Please verify the camera connection");
+        }
+
+        if (!rclcpp::ok() || threadStop_) {
+            RCLCPP_INFO(get_logger(), "ZED activation interrupted by user.");
+            return false;
+        }
+
+        if (connectTimer.toc() > maxReconnectAttempts_ * cameraTimeoutSec_) {
+            RCLCPP_ERROR(get_logger(), "Camera detection timeout");
+            return false;
+        }
+        rclcpp::sleep_for(std::chrono::seconds(cameraTimeoutSec_));
+    }
+    // ----> Try to connect to a camera
+
+    // ----> Camera information
+    sl::CameraInformation cameraInfo = zed_.getCameraInformation();
+
+    float realFps = cameraInfo.camera_configuration.fps;
+    if (realFps != static_cast<float>(cameraGrabFrameRate_)) {
+        RCLCPP_WARN_STREAM(
+            get_logger(), "!!! `general.grab_frame_rate` value is not valid: '" <<
+                              cameraGrabFrameRate_ << "'. Automatically replaced with '" << realFps <<
+                              "'. Please fix the parameter !!!");
+        cameraGrabFrameRate_ = realFps;
+    }
+
+    // Camera model
+    cameraModel_ = cameraInfo.camera_model;
+    RCLCPP_INFO_STREAM(get_logger(), " * Camera Model  -> " << sl::toString(cameraModel_).c_str());
+    cameraSerialNumber_ = cameraInfo.serial_number;
+
+    RCLCPP_INFO_STREAM(get_logger(), " * Serial Number -> " << cameraSerialNumber_);
+#if (ZED_SDK_MINOR_VERSION == 0 && ZED_SDK_PATCH_VERSION >= 6)
+    RCLCPP_INFO_STREAM(
+        get_logger(),
+        " * Focal Lenght -> " << cameraInfo.camera_configuration.calibration_parameters.left_cam.focal_length_metric <<
+            " mm");
+#endif
+
+    RCLCPP_INFO_STREAM(
+        get_logger(),
+        " * Input\t -> " << sl::toString(zed_.getCameraInformation().input_type).c_str());
+
+    // Firmwares
+    cameraFwVersion_ = cameraInfo.camera_configuration.firmware_version;
+    RCLCPP_INFO_STREAM(get_logger(), " * Camera FW Version  -> " << cameraFwVersion_);
+
+    cameraFrameWidth_ = cameraInfo.camera_configuration.resolution.width;
+    cameraFrameHeight_ = cameraInfo.camera_configuration.resolution.height;
+    RCLCPP_INFO_STREAM(
+        get_logger(), " * Camera grab frame size -> " << cameraFrameWidth_ << "x" << cameraFrameHeight_);
+
+    int publishWidth, publishHeight;
+    publishWidth = static_cast<int>(std::round(cameraFrameWidth_ / customDownscaleFactor_));
+    publishHeight = static_cast<int>(std::round(cameraFrameHeight_ / customDownscaleFactor_));
+
+    if (publishWidth > cameraFrameWidth_ || publishHeight > cameraFrameHeight_) {
+        RCLCPP_WARN_STREAM(
+            get_logger(),
+            "The publishing resolution (" <<
+                publishWidth << "x" << publishWidth <<
+                ") cannot be higher than the grabbing resolution (" <<
+                cameraFrameWidth_ << "x" << cameraFrameHeight_ <<
+                "). Using grab resolution for output messages.");
+        publishWidth = cameraFrameWidth_;
+        publishHeight = cameraFrameHeight_;
+    }
+
+    matrixResolution_ = sl::Resolution(publishWidth, publishHeight);
+    RCLCPP_INFO_STREAM(
+        get_logger(), " * Publishing frame size  -> " << matrixResolution_.width << "x" << matrixResolution_.height);
+    // <---- Camera information
+
+    // ----> Camera Info messages
+    rgbCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+    leftCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+    rightCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+    rgbCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+    leftCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+    rightCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
+
+    setTFCoordFrameNames();  // Requires mZedRealCamModel available only after camera opening
+
+    fillCamInfo(mZed, mLeftCamInfoMsg, mRightCamInfoMsg, mLeftCamOptFrameId, mRightCamOptFrameId);
+    fillCamInfo(
+        mZed, mLeftCamInfoRawMsg, mRightCamInfoRawMsg, mLeftCamOptFrameId, mRightCamOptFrameId, true);
+    mRgbCamInfoMsg = mLeftCamInfoMsg;
+    mRgbCamInfoRawMsg = mLeftCamInfoRawMsg;
+    mDepthCamInfoMsg = mLeftCamInfoMsg;
+    // <---- Camera Info messages
+
+    initPublishers();  // Requires mZedRealCamModel available only after camera
+                      // opening
+    initSubscribers();
+
+    // Disable AEC_AGC and Auto Whitebalance to trigger it if user set it to
+    // automatic
+    if (!mSvoMode && !mSimMode) {
+        mZed.setCameraSettings(sl::VIDEO_SETTINGS::AEC_AGC, 0);
+        mZed.setCameraSettings(sl::VIDEO_SETTINGS::WHITEBALANCE_AUTO, 0);
+        // Force parameters with a dummy grab
+        mZed.grab();
+    }
+
+    // Initialialized timestamp to avoid wrong initial data
+    // ----> Timestamp
+    if (mSvoMode) {
+        mFrameTimestamp = sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::CURRENT));
+    } else if (mSimMode) {
+        if (mUseSimTime) {
+            mFrameTimestamp = get_clock()->now();
+        } else {
+            mFrameTimestamp = sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::IMAGE));
+        }
+    } else {
+        mFrameTimestamp = sl_tools::slTime2Ros(mZed.getTimestamp(sl::TIME_REFERENCE::IMAGE));
+    }
+    // <---- Timestamp
+
+    // ----> Initialize Diagnostic statistics
+    mElabPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mGrabPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mVideoDepthPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mVideoDepthElabMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mPcPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mPcProcMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mObjDetPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mObjDetElabMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mBodyTrkPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mBodyTrkElabMean_sec = std::make_unique<sl_tools::WinAvg>(mCamGrabFrameRate);
+    mImuPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mBaroPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mMagPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mPubFusedCloudPeriodMean_sec = std::make_unique<sl_tools::WinAvg>(mPcPubRate);
+    mPubOdomTF_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mPubPoseTF_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mPubImuTF_sec = std::make_unique<sl_tools::WinAvg>(mSensPubRate);
+    mGnssFix_sec = std::make_unique<sl_tools::WinAvg>(10);
+    // <---- Initialize Diagnostic statistics
+
+    if (mGnssFusionEnabled) {
+        DEBUG_GNSS("Initialize Fusion module");
+        // ----> Initialize Fusion module
+
+        // Fusion parameters
+        mFusionInitParams.coordinate_system = ROS_COORDINATE_SYSTEM;
+        mFusionInitParams.coordinate_units = ROS_MEAS_UNITS;
+        mFusionInitParams.verbose = mVerbose != 0;
+        mFusionInitParams.output_performance_metrics = true;
+        mFusionInitParams.timeout_period_number = 20; // TODO(Walter) Evaluate this: mCamGrabFrameRate * mCamTimeoutSec;
+
+        // Fusion initialization
+        sl::FUSION_ERROR_CODE fus_err = mFusion.init(mFusionInitParams);
+        if (fus_err != sl::FUSION_ERROR_CODE::SUCCESS) {
+            RCLCPP_ERROR_STREAM(
+                get_logger(), "Error initializing the Fusion module: " << sl::toString(
+                                                                              fus_err).c_str() << ".");
+            exit(EXIT_FAILURE);
+        }
+        DEBUG_GNSS(" Fusion params OK");
+
+        mFusionConfig =
+            std::make_shared<sl::FusionConfiguration>();
+
+        if (mSimMode) {
+            //TODO(Walter) Modify when support for streaming input is added in the SDK
+            //mFusionConfig->input_type.setFromStream(mSimAddr, mSimPort);
+            mFusionConfig->input_type.setFromSerialNumber(mCamSerialNumber);
+            mFusionConfig->communication_parameters.setForSharedMemory();
+        } else if (mSvoMode) {
+            mFusionConfig->input_type.setFromSVOFile(mSvoFilepath.c_str());
+            mFusionConfig->communication_parameters.setForSharedMemory();
+        } else {
+            mFusionConfig->input_type.setFromSerialNumber(mCamSerialNumber);
+            mFusionConfig->communication_parameters.setForSharedMemory();
+        }
+        mFusionConfig->serial_number = mCamSerialNumber;
+        mFusionConfig->pose = sl::Transform::identity();
+
+        DEBUG_GNSS(" Fusion communication params OK");
+
+        // Camera identifier
+        mCamUuid.sn = mCamSerialNumber;
+
+        // Enable camera publishing to Fusion
+        mZed.startPublishing(mFusionConfig->communication_parameters);
+        DEBUG_GNSS(" Camera publishing OK");
+
+        // Fusion subscribe to camera data
+        fus_err = mFusion.subscribe(
+            mCamUuid, mFusionConfig->communication_parameters,
+            mFusionConfig->pose);
+        if (fus_err != sl::FUSION_ERROR_CODE::SUCCESS) {
+            RCLCPP_ERROR_STREAM(
+                get_logger(), "Error initializing the Fusion module: " << sl::toString(fus_err).c_str());
+            exit(EXIT_FAILURE);
+        }
+        DEBUG_GNSS(" Fusion subscribing OK");
+        DEBUG_GNSS("Fusion module ready");
+        // <---- Initialize Fusion module
+    }
+
+    // Init and start threads
+    initThreads();
+
+    return true;
+}  // namespace stereolabs
+
 
 template<typename T>
 void ZedCameraComponent::getParam(std::string paramName, T defValue, T& outVal, std::string log_info, bool dynamic)
