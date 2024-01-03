@@ -41,6 +41,7 @@ cc_library(
         "@ros2_sensor_msgs",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_image_common//:image_transport",
         "@ros2_rclcpp//:rclcpp_components",
         "@ros2_diagnostics//:cpp_diagnostic_updater",
         "@zed",

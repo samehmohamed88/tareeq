@@ -6,10 +6,12 @@
 #include <rclcpp/node_options.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/msg/image.hpp>
+#include <image_transport/camera_publisher.hpp>
 #include <diagnostic_updater/diagnostic_updater.hpp>
 
 #include <sl/Camera.hpp>
 
+#include <thread>
 #include <deque>
 
 namespace nav {
@@ -28,6 +30,12 @@ private:
 //    void initServices();
     bool startCamera();
     void initThreads();
+    void initPublishers();
+    void setupCameraInfoMessages(
+            sl::Camera & zed,
+            std::shared_ptr<sensor_msgs::msg::CameraInfo> leftCamInfoMsg,
+            std::shared_ptr<sensor_msgs::msg::CameraInfo> rightCamInfoMsg, std::string leftFrameId,
+            std::string rightFrameId, bool rawParam = false);
 
     void getGeneralParams();
     /// End Initialization Functions
@@ -38,6 +46,13 @@ private:
         bool dynamic = false);
 
     void callback_updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper & stat);
+    // ----> Thread functions
+    uint64_t frameCount_ = 0;
+    void threadFunc_zedGrab();
+    /// TODO: apply video settings
+    // void applyVideoSettings();
+
+    rclcpp::Time slTime2Ros(sl::Timestamp t, rcl_clock_type_t clock_type);
 
 private:
     /// @brief Video/Depth topic resolution
@@ -109,6 +124,8 @@ private:
     const float NOT_VALID_TEMP = -273.15f;
     sl::ERROR_CODE grabStatus_;
     sl::ERROR_CODE connectionStatus_;
+    /// Main grab thread
+    std::thread grabThread_;
     std::unique_ptr<WindowAverage> grabPeriodMean_sec_;
     std::unique_ptr<WindowAverage> elapsedPeriodMean_sec_;
     int systemOverloadCount_ = 0;
@@ -135,6 +152,26 @@ private:
     CameraInfoMessage leftCameraInfoRawMessage_;
     CameraInfoMessage rightCameraInfoRawMessage_;
     // <---- Messages
+
+    // ----> Topics
+    std::string topicRoot_ = "~/";
+    // <---- Topics
+
+    // QoS parameters
+    // https://github.com/ros2/ros2/wiki/About-Quality-of-Service-Settings
+    rclcpp::QoS videoQos_;
+
+    // ----> Publishers
+    image_transport::CameraPublisher publishRgb_;
+    image_transport::CameraPublisher publishRawRgb_;
+    image_transport::CameraPublisher publishLeft_;
+    image_transport::CameraPublisher publishRawLeft_;
+    image_transport::CameraPublisher publishRight_;
+    image_transport::CameraPublisher publishRawRight_;
+
+    component::StopWatch grabFreqTimer_;
+
+    rclcpp::Time frameTimestamp_;
 
 };
 } // namespace perception
