@@ -370,12 +370,12 @@ void ZedCameraComponent::retrieveVideo() {
     }
     if (rightNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
-                     mZed.retrieveImage(matrixRightImage_, sl::VIEW::RIGHT, sl::MEM::CPU, matrixResolution_);
+                     zed_.retrieveImage(matrixRightImage_, sl::VIEW::RIGHT, sl::MEM::CPU, matrixResolution_);
         mSdkGrabTS = matrixRightImage_.timestamp;
     }
     if (rightRawNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
-                     mZed.retrieveImage(
+                     zed_.retrieveImage(
                              matrixRightImageRaw_, sl::VIEW::RIGHT_UNRECTIFIED, sl::MEM::CPU, matrixResolution_);
         mSdkGrabTS = matrixRightImageRaw_.timestamp;
     }
