@@ -21,12 +21,12 @@ source "${CURR_DIR}/docker_base.sh"
 NAVUSER="nav"
 CACHE_ROOT_DIR="$USER/.cache"
 
-DOCKER_REPO="nav"
+DOCKER_REPO="sameh4/nav"
 DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='nav_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${NAVUSER}"
 
-VERSION_X86_64="ubuntu_2204_x86_64.nvidia.pytorch"
+VERSION_X86_64="ubuntu_2204_x86_64.nvidia.pytorch.01.2024"
 
 info "Remove existing Apollo Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}

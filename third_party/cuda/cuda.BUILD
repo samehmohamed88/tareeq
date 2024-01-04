@@ -17,7 +17,7 @@ cc_library(
     srcs = [
         "targets/x86_64-linux/lib/libcudart.so",
         "targets/x86_64-linux/lib/libcudart.so.12",
-        "targets/x86_64-linux/lib/libcudart.so.12.1.105",
+        "targets/x86_64-linux/lib/libcudart.so.12.2.140",
     ],
     deps = [
         "headers",
@@ -29,10 +29,10 @@ cc_library(
     srcs = [
         "targets/x86_64-linux/lib/libcublas.so",
         "targets/x86_64-linux/lib/libcublas.so.12",
-        "targets/x86_64-linux/lib/libcublas.so.12.1.3.1",
+        "targets/x86_64-linux/lib/libcublas.so.12.2.5.6",
         "targets/x86_64-linux/lib/libcublasLt.so",
         "targets/x86_64-linux/lib/libcublasLt.so.12",
-        "targets/x86_64-linux/lib/libcublasLt.so.12.1.3.1",
+        "targets/x86_64-linux/lib/libcublasLt.so.12.2.5.6",
     ],
     deps = [
         "headers",
@@ -44,7 +44,7 @@ cc_library(
 #    srcs = [
 #        "targets/x86_64-linux/lib/libcufft.so",
 #        "targets/x86_64-linux/lib/libcufft.so.11",
-#        "targets/x86_64-linux/lib/libcufft.so.11.0.2.54",
+#        "targets/x86_64-linux/lib/libcufft.so.11.0.8.103",
 #    ],
 #    deps = [
 #        "headers",
@@ -55,8 +55,8 @@ cc_library(
 #    name = "cuinj64",
 #    srcs = [
 #        "targets/x86_64-linux/lib/libcuinj64.so",
-#        "targets/x86_64-linux/lib/libcuinj64.so.12.1",
-#        "targets/x86_64-linux/lib/libcuinj64.so.12.1.105",
+#        "targets/x86_64-linux/lib/libcuinj64.so.12.2",
+#        "targets/x86_64-linux/lib/libcuinj64.so.12.2.142",
 #    ],
 #    deps = [
 #        "headers",
@@ -68,7 +68,7 @@ cc_library(
 #    srcs = [
 #        "extras/CUPTI/lib64/libcupti.so",
 #        "extras/CUPTI/lib64/libcupti.so.12",
-#        "extras/CUPTI/lib64/libcupti.so.2023.1.1",
+#        "extras/CUPTI/lib64/libcupti.so.2023.2.2",
 #    ],
 #    hdrs = glob(["extras/CUPTI/include/**"]),
 #    includes = ["extras/CUPTI/include"],
@@ -83,7 +83,7 @@ cc_library(
 #    srcs = [
 #        "targets/x86_64-linux/lib/libcurand.so",
 #        "targets/x86_64-linux/lib/libcurand.so.10",
-#        "targets/x86_64-linux/lib/libcurand.so.10.3.2.106",
+#        "targets/x86_64-linux/lib/libcurand.so.10.3.3.141",
 #    ],
 #    deps = [
 #        "headers",
@@ -107,7 +107,7 @@ cc_library(
 #    srcs = [
 #        "targets/x86_64-linux/lib/libcusparse.so",
 #        "targets/x86_64-linux/lib/libcusparse.so.12",
-#        "targets/x86_64-linux/lib/libcusparse.so.12.1.0.106",
+#        "targets/x86_64-linux/lib/libcusparse.so.12.2.0.106",
 #    ],
 #    deps = [
 #        "headers",
@@ -131,7 +131,7 @@ cc_library(
 #    srcs = [
 #        "targets/x86_64-linux/lib/libnvrtc.so",
 #        "targets/x86_64-linux/lib/libnvrtc.so.12",
-#        "targets/x86_64-linux/lib/libnvrtc.so.12.1.105",
+#        "targets/x86_64-linux/lib/libnvrtc.so.12.2.105",
 #    ],
 #    deps = [
 #        "headers",
@@ -143,10 +143,10 @@ cc_library(
 #    srcs = [
 #        "targets/x86_64-linux/lib/libnppc.so",
 #        "targets/x86_64-linux/lib/libnppc.so.12",
-#        "targets/x86_64-linux/lib/libnppc.so.12.1.0.40",
+#        "targets/x86_64-linux/lib/libnppc.so.12.2.0.40",
 #        "targets/x86_64-linux/lib/libnppig.so",
 #        "targets/x86_64-linux/lib/libnppig.so.12",
-#        "targets/x86_64-linux/lib/libnppig.so.12.1.0.40",
+#        "targets/x86_64-linux/lib/libnppig.so.12.2.0.40",
 #    ],
 #    deps = [
 #        ":headers",

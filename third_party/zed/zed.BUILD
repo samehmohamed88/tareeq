@@ -9,4 +9,7 @@ cc_library(
     ],
     hdrs = glob(["include/**/*"]),
     includes = ["include"],
+    deps = [
+        "@cuda//:headers"
+    ]
 )
