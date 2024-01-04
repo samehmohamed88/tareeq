@@ -178,6 +178,16 @@ private:
     component::StopWatch grabFreqTimer_;
 
     rclcpp::Time frameTimestamp_;
+    bool rgbSubscribed_;
+    size_t rgbNumberSubscribed_;
+    size_t rgbRawNumberSubscribed_;
+    size_t leftNumberSubscribed_;
+    size_t leftRawNumberSubscribed_;
+    size_t rightNumberSubscribed_;
+    size_t rightRawNumberSubscribed_;
+
+    sl::Mat matrixLeftImage_, matrixLefImageRaw_;
+    sl::Mat matrixRightImage_, matrixRightImageRaw_;
 
 };
 } // namespace perception

@@ -323,61 +323,116 @@ void ZedCameraComponent::threadFunc_zedGrab()
 
 bool ZedCameraComponent::areVideoSubscribed() {
     rgbNumberSubscribed_ = 0;
-    rgbNumberSubscribed_ = 0;
+    rgbRawNumberSubscribed_ = 0;
     leftNumberSubscribed_ = 0;
-    leftNumberSubscribed_ = 0;
+    leftRawNumberSubscribed_ = 0;
     rightNumberSubscribed_ = 0;
-    rightNumberSubscribed_ = 0;
+    rightRawNumberSubscribed_ = 0;
 
     try {
-        mRgbSubnumber = mPubRgb.getNumSubscribers();
-        mRgbRawSubnumber = mPubRawRgb.getNumSubscribers();
-        mRgbGraySubnumber = mPubRgbGray.getNumSubscribers();
-        mRgbGrayRawSubnumber = mPubRawRgbGray.getNumSubscribers();
-        mLeftSubnumber = mPubLeft.getNumSubscribers();
-        mLeftRawSubnumber = mPubRawLeft.getNumSubscribers();
-        mLeftGraySubnumber = mPubLeftGray.getNumSubscribers();
-        mLeftGrayRawSubnumber = mPubRawLeftGray.getNumSubscribers();
-        mRightSubnumber = mPubRight.getNumSubscribers();
-        mRightRawSubnumber = mPubRawRight.getNumSubscribers();
-        mRightGraySubnumber = mPubRightGray.getNumSubscribers();
-        mRightGrayRawSubnumber = mPubRawRightGray.getNumSubscribers();
-        mStereoSubnumber = mPubStereo.getNumSubscribers();
-        mStereoRawSubnumber = mPubRawStereo.getNumSubscribers();
+        rgbNumberSubscribed_ = publishRgb_.getNumSubscribers();
+        rgbRawNumberSubscribed_ = publishRawRgb_.getNumSubscribers();
+        leftNumberSubscribed_ = publishLeft_.getNumSubscribers();
+        leftRawNumberSubscribed_ = publishRawLeft_.getNumSubscribers();
+        rightNumberSubscribed_ = publishRight_.getNumSubscribers();
+        rightRawNumberSubscribed_ = publishRawRight_.getNumSubscribers();
 
-        if (!mDepthDisabled) {
-            mDepthSubnumber = mPubDepth.getNumSubscribers();
-            mDepthInfoSubnumber = count_subscribers(mPubDepthInfo->get_topic_name());
-            mConfMapSubnumber = count_subscribers(mPubConfMap->get_topic_name());
-            mDisparitySubnumber = count_subscribers(mPubDisparity->get_topic_name());
-        }
     } catch (...) {
         rcutils_reset_error();
-        DEBUG_STREAM_VD("publishImages: Exception while counting subscribers");
-        return 0;
+        RCLCPP_DEBUG_STREAM(get_logger(), "publishImages: Exception while counting subscribers");
+        return false;
     }
 
-    return (mRgbSubnumber +
-            mRgbRawSubnumber +
-            mRgbGraySubnumber +
-            mRgbGrayRawSubnumber +
-            mLeftSubnumber +
-            mLeftRawSubnumber +
-            mLeftGraySubnumber +
-            mLeftGrayRawSubnumber +
-            mRightSubnumber +
-            mRightRawSubnumber +
-            mRightGraySubnumber +
-            mRightGrayRawSubnumber +
-            mStereoSubnumber +
-            mStereoRawSubnumber +
-            mDepthSubnumber +
-            mConfMapSubnumber +
-            mDisparitySubnumber +
-            mDepthInfoSubnumber) > 0;
+    return (rgbNumberSubscribed_ +
+            rgbRawNumberSubscribed_ +
+            leftNumberSubscribed_ +
+            leftRawNumberSubscribed_ +
+            rightNumberSubscribed_ +
+            rightRawNumberSubscribed_) > 0;
 }
 void ZedCameraComponent::retrieveVideo() {
+    bool retrieved = false;
+    rgbSubscribed_ = false;
 
+    // ----> Retrieve all required data
+    RCLCPP_DEBUG_STREAM(get_logger(), "Retrieving Video Data");
+    if (rgbNumberSubscribed_ + leftNumberSubscribed_ > 0) {
+        retrieved |= sl::ERROR_CODE::SUCCESS ==
+                     zed_.retrieveImage(mMatLeft, sl::VIEW::LEFT, sl::MEM::CPU, matrixResolution_);
+        mSdkGrabTS = mMatLeft.timestamp;
+        mRgbSubscribed = true;
+    }
+    if (mRgbRawSubnumber + mLeftRawSubnumber + mStereoRawSubnumber > 0) {
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveImage(mMatLeftRaw, sl::VIEW::LEFT_UNRECTIFIED, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatLeftRaw.timestamp;
+    }
+    if (mRightSubnumber + mStereoSubnumber > 0) {
+        retrieved |= sl::ERROR_CODE::SUCCESS ==
+                     mZed.retrieveImage(mMatRight, sl::VIEW::RIGHT, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatRight.timestamp;
+    }
+    if (mRightRawSubnumber + mStereoRawSubnumber > 0) {
+        retrieved |= sl::ERROR_CODE::SUCCESS ==
+                     mZed.retrieveImage(
+                             mMatRightRaw, sl::VIEW::RIGHT_UNRECTIFIED, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatRightRaw.timestamp;
+    }
+    if (mRgbGraySubnumber + mLeftGraySubnumber > 0) {
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveImage(mMatLeftGray, sl::VIEW::LEFT_GRAY, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatLeftGray.timestamp;
+    }
+    if (mRgbGrayRawSubnumber + mLeftGrayRawSubnumber > 0) {
+        retrieved |= sl::ERROR_CODE::SUCCESS == mZed.retrieveImage(
+                mMatLeftRawGray, sl::VIEW::LEFT_UNRECTIFIED_GRAY,
+                sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatLeftRawGray.timestamp;
+    }
+    if (mRightGraySubnumber > 0) {
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveImage(mMatRightGray, sl::VIEW::RIGHT_GRAY, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatRightGray.timestamp;
+    }
+    if (mRightGrayRawSubnumber > 0) {
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveImage(
+                        mMatRightRawGray, sl::VIEW::RIGHT_UNRECTIFIED_GRAY, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatRightRawGray.timestamp;
+    }
+    DEBUG_STREAM_VD("Video Data retrieved");
+    DEBUG_STREAM_VD("Retrieving Depth Data");
+    if (mDepthSubnumber > 0 || mDepthInfoSubnumber > 0) {
+        DEBUG_STREAM_VD("Retrieving Depth");
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveMeasure(mMatDepth, sl::MEASURE::DEPTH, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatDepth.timestamp;
+    }
+    if (mDisparitySubnumber > 0) {
+        DEBUG_STREAM_VD("Retrieving Disparity");
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveMeasure(mMatDisp, sl::MEASURE::DISPARITY, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatDisp.timestamp;
+    }
+    if (mConfMapSubnumber > 0) {
+        DEBUG_STREAM_VD("Retrieving Confidence");
+        retrieved |=
+                sl::ERROR_CODE::SUCCESS ==
+                mZed.retrieveMeasure(mMatConf, sl::MEASURE::CONFIDENCE, sl::MEM::CPU, mMatResol);
+        mSdkGrabTS = mMatConf.timestamp;
+    }
+    if (mDepthInfoSubnumber > 0) {
+        retrieved |= sl::ERROR_CODE::SUCCESS == mZed.getCurrentMinMaxDepth(mMinDepth, mMaxDepth);
+        mSdkGrabTS = mMatConf.timestamp;
+    }
+    DEBUG_STREAM_VD("Depth Data retrieved");
+    // <---- Retrieve all required data
 }
 void ZedCameraComponent::publishVideo(rclcpp::Time & publishTimestamp){
 
