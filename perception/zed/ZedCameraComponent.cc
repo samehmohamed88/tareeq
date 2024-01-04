@@ -358,80 +358,28 @@ void ZedCameraComponent::retrieveVideo() {
     RCLCPP_DEBUG_STREAM(get_logger(), "Retrieving Video Data");
     if (rgbNumberSubscribed_ + leftNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
-                     zed_.retrieveImage(mMatLeft, sl::VIEW::LEFT, sl::MEM::CPU, matrixResolution_);
-        mSdkGrabTS = mMatLeft.timestamp;
-        mRgbSubscribed = true;
+                     zed_.retrieveImage(matrixLeftImage_, sl::VIEW::LEFT, sl::MEM::CPU, matrixResolution_);
+        mSdkGrabTS = matrixLeftImage_.timestamp;
+        rgbSubscribed_ = true;
     }
-    if (mRgbRawSubnumber + mLeftRawSubnumber + mStereoRawSubnumber > 0) {
+    if (rgbRawNumberSubscribed_ + leftRawNumberSubscribed_ > 0) {
         retrieved |=
                 sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveImage(mMatLeftRaw, sl::VIEW::LEFT_UNRECTIFIED, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatLeftRaw.timestamp;
+                zed_.retrieveImage(matrixLefImageRaw_, sl::VIEW::LEFT_UNRECTIFIED, sl::MEM::CPU, matrixResolution_);
+        mSdkGrabTS = matrixLefImageRaw_.timestamp;
     }
-    if (mRightSubnumber + mStereoSubnumber > 0) {
+    if (rightNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
-                     mZed.retrieveImage(mMatRight, sl::VIEW::RIGHT, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatRight.timestamp;
+                     mZed.retrieveImage(matrixRightImage_, sl::VIEW::RIGHT, sl::MEM::CPU, matrixResolution_);
+        mSdkGrabTS = matrixRightImage_.timestamp;
     }
-    if (mRightRawSubnumber + mStereoRawSubnumber > 0) {
+    if (rightRawNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
                      mZed.retrieveImage(
-                             mMatRightRaw, sl::VIEW::RIGHT_UNRECTIFIED, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatRightRaw.timestamp;
-    }
-    if (mRgbGraySubnumber + mLeftGraySubnumber > 0) {
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveImage(mMatLeftGray, sl::VIEW::LEFT_GRAY, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatLeftGray.timestamp;
-    }
-    if (mRgbGrayRawSubnumber + mLeftGrayRawSubnumber > 0) {
-        retrieved |= sl::ERROR_CODE::SUCCESS == mZed.retrieveImage(
-                mMatLeftRawGray, sl::VIEW::LEFT_UNRECTIFIED_GRAY,
-                sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatLeftRawGray.timestamp;
-    }
-    if (mRightGraySubnumber > 0) {
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveImage(mMatRightGray, sl::VIEW::RIGHT_GRAY, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatRightGray.timestamp;
-    }
-    if (mRightGrayRawSubnumber > 0) {
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveImage(
-                        mMatRightRawGray, sl::VIEW::RIGHT_UNRECTIFIED_GRAY, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatRightRawGray.timestamp;
+                             matrixRightImageRaw_, sl::VIEW::RIGHT_UNRECTIFIED, sl::MEM::CPU, matrixResolution_);
+        mSdkGrabTS = matrixRightImageRaw_.timestamp;
     }
     DEBUG_STREAM_VD("Video Data retrieved");
-    DEBUG_STREAM_VD("Retrieving Depth Data");
-    if (mDepthSubnumber > 0 || mDepthInfoSubnumber > 0) {
-        DEBUG_STREAM_VD("Retrieving Depth");
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveMeasure(mMatDepth, sl::MEASURE::DEPTH, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatDepth.timestamp;
-    }
-    if (mDisparitySubnumber > 0) {
-        DEBUG_STREAM_VD("Retrieving Disparity");
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveMeasure(mMatDisp, sl::MEASURE::DISPARITY, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatDisp.timestamp;
-    }
-    if (mConfMapSubnumber > 0) {
-        DEBUG_STREAM_VD("Retrieving Confidence");
-        retrieved |=
-                sl::ERROR_CODE::SUCCESS ==
-                mZed.retrieveMeasure(mMatConf, sl::MEASURE::CONFIDENCE, sl::MEM::CPU, mMatResol);
-        mSdkGrabTS = mMatConf.timestamp;
-    }
-    if (mDepthInfoSubnumber > 0) {
-        retrieved |= sl::ERROR_CODE::SUCCESS == mZed.getCurrentMinMaxDepth(mMinDepth, mMaxDepth);
-        mSdkGrabTS = mMatConf.timestamp;
-    }
-    DEBUG_STREAM_VD("Depth Data retrieved");
     // <---- Retrieve all required data
 }
 void ZedCameraComponent::publishVideo(rclcpp::Time & publishTimestamp){
