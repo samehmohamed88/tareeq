@@ -17,6 +17,9 @@
 namespace nav {
 namespace perception {
 
+#define TIMEZERO_ROS rclcpp::Time(0, 0, RCL_ROS_TIME)
+#define TIMEZERO_SYS rclcpp::Time(0, 0, RCL_SYSTEM_TIME)
+
 class ZedCameraComponent : public rclcpp::Node
 {
 public:
@@ -52,9 +55,9 @@ private:
     // ----> Thread functions
     uint64_t frameCount_ = 0;
     void threadFunc_zedGrab();
-    bool areVideoSubscribed();
-    void retrieveVideo();
-    void publishVideo(rclcpp::Time & publishTimestamp);
+    bool areVideoTopicsSubscribed();
+    void retrieveImages();
+    void publishImages(rclcpp::Time & publishTimestamp);
     /// TODO: apply video settings
     // void applyVideoSettings();
 
@@ -134,6 +137,8 @@ private:
     std::thread grabThread_;
     std::unique_ptr<WindowAverage> grabPeriodMean_sec_;
     std::unique_ptr<WindowAverage> elapsedPeriodMean_sec_;
+    std::unique_ptr<WindowAverage> videoPeriodMean_sec_;
+    std::unique_ptr<WindowAverage> videoElapsedMean_sec_;
     int systemOverloadCount_ = 0;
     float temperatureLeft_ = NOT_VALID_TEMP;
     float temperatureRight_ = NOT_VALID_TEMP;
@@ -151,10 +156,8 @@ private:
     typedef std::shared_ptr<sensor_msgs::msg::CameraInfo> CameraInfoMessage;
 
     // Camera infos
-    CameraInfoMessage rgbCameraInfoMessage_;
     CameraInfoMessage leftCameraInfoMessage_;
     CameraInfoMessage rightCameraInfoMessage_;
-    CameraInfoMessage rgbCameraInfoRawMessage_;
     CameraInfoMessage leftCameraInfoRawMessage_;
     CameraInfoMessage rightCameraInfoRawMessage_;
     // <---- Messages
@@ -168,24 +171,27 @@ private:
     rclcpp::QoS videoQos_;
 
     // ----> Publishers
-    image_transport::CameraPublisher publishRgb_;
-    image_transport::CameraPublisher publishRawRgb_;
-    image_transport::CameraPublisher publishLeft_;
-    image_transport::CameraPublisher publishRawLeft_;
-    image_transport::CameraPublisher publishRight_;
-    image_transport::CameraPublisher publishRawRight_;
+    image_transport::CameraPublisher leftImagePublisher_;
+    image_transport::CameraPublisher leftRawImagePublisher_;
+    image_transport::CameraPublisher rightImagePublisher_;
+    image_transport::CameraPublisher rightRawImagePublisher_;
 
     component::StopWatch grabFreqTimer_;
+    component::StopWatch imagePublisherFrequencyTimer_;
 
     rclcpp::Time frameTimestamp_;
-    bool rgbSubscribed_;
-    size_t rgbNumberSubscribed_;
-    size_t rgbRawNumberSubscribed_;
+    sl::Timestamp lastGrabTimestamp_ = 0;  // Used to calculate stable publish frequency
     size_t leftNumberSubscribed_;
     size_t leftRawNumberSubscribed_;
     size_t rightNumberSubscribed_;
     size_t rightRawNumberSubscribed_;
 
+    // <---- Publisher variables
+    sl::Timestamp mSdkGrabTS = 0;
+    size_t mLeftSubnumber = 0;
+    size_t mLeftRawSubnumber = 0;
+    size_t mRightSubnumber = 0;
+    size_t mRightRawSubnumber = 0;
     sl::Mat matrixLeftImage_, matrixLefImageRaw_;
     sl::Mat matrixRightImage_, matrixRightImageRaw_;
 
