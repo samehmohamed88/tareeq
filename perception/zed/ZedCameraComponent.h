@@ -62,6 +62,8 @@ private:
     // void applyVideoSettings();
 
     rclcpp::Time slTime2Ros(sl::Timestamp t, rcl_clock_type_t clock_type = RCL_ROS_TIME);
+    std::unique_ptr<sensor_msgs::msg::Image> imageToROSmsg(
+                    sl::Mat & img, std::string frameId, rclcpp::Time t);
 
 private:
     /// @brief Video/Depth topic resolution
@@ -164,6 +166,8 @@ private:
 
     // ----> Topics
     std::string topicRoot_ = "~/";
+    std::string leftCameraFrameId_;
+    std::string rightCameraFrameId_;
     // <---- Topics
 
     // QoS parameters
@@ -188,12 +192,12 @@ private:
 
     // <---- Publisher variables
     sl::Timestamp mSdkGrabTS = 0;
-    size_t mLeftSubnumber = 0;
-    size_t mLeftRawSubnumber = 0;
-    size_t mRightSubnumber = 0;
-    size_t mRightRawSubnumber = 0;
     sl::Mat matrixLeftImage_, matrixLefImageRaw_;
     sl::Mat matrixRightImage_, matrixRightImageRaw_;
+
+    void publishImageWithInfo(
+                    sl::Mat & img, image_transport::CameraPublisher & imagePublisher, CameraInfoMessage & cameraInfoMessage,
+            std::string imgFrameId, rclcpp::Time t);
 
 };
 } // namespace perception

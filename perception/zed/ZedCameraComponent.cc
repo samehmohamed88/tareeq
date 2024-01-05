@@ -5,6 +5,7 @@
 #include <rclcpp/node_options.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/distortion_models.hpp>
+#include <sensor_msgs/image_encodings.hpp>
 #include <image_transport/camera_publisher.hpp>
 #include <image_transport/image_transport.hpp>
 #include <diagnostic_updater/diagnostic_updater.hpp>
@@ -198,9 +199,12 @@ bool ZedCameraComponent::startCamera()
 
 //    setTFCoordFrameNames();  // Requires mZedRealCamModel available only after camera opening
 
-    setupCameraInfoMessages(zed_, leftCameraInfoMessage_, rightCameraInfoMessage_, cameraName_ + "_left_camera_optical_frame", cameraName_ + "_right_camera_optical_frame");
+    leftCameraFrameId_ = cameraName_ + "_left_camera_optical_frame";
+    rightCameraFrameId_ = cameraName_ + "_right_camera_optical_frame";
+
+    setupCameraInfoMessages(zed_, leftCameraInfoMessage_, rightCameraInfoMessage_, leftCameraFrameId_, rightCameraFrameId_);
     setupCameraInfoMessages(
-        zed_, leftCameraInfoRawMessage_, rightCameraInfoRawMessage_, cameraName_ + "_left_camera_optical_frame", cameraName_ + "_right_camera_optical_frame", true);
+        zed_, leftCameraInfoRawMessage_, rightCameraInfoRawMessage_, leftCameraFrameId_, rightCameraFrameId_, true);
     // <---- Camera Info messages
 
     // Requires mZedRealCamModel available only after camera opening
@@ -337,6 +341,7 @@ bool ZedCameraComponent::areVideoTopicsSubscribed() {
             rightNumberSubscribed_ +
             rightRawNumberSubscribed_) > 0;
 }
+
 void ZedCameraComponent::retrieveImages() {
     bool retrieved = false;
 
@@ -400,7 +405,7 @@ void ZedCameraComponent::publishImages(rclcpp::Time & publishTimestamp) {
     // ----> Publish the left=rgb image if someone has subscribed to
     if (leftNumberSubscribed_ > 0) {
         RCLCPP_DEBUG_STREAM(get_logger(),"leftNumberSubscribed_: " << leftNumberSubscribed_);
-        publishImageWithInfo(matrixLeftImage_, leftImagePublisher_, leftCameraInfoMessage_, mLeftCamOptFrameId, publishTimestamp);
+        publishImageWithInfo(matrixLeftImage_, leftImagePublisher_, leftCameraInfoMessage_, leftCameraFrameId_, publishTimestamp);
     }
     // <---- Publish the left=rgb image if someone has subscribed to
 
@@ -408,14 +413,14 @@ void ZedCameraComponent::publishImages(rclcpp::Time & publishTimestamp) {
     if (leftRawNumberSubscribed_ > 0) {
         RCLCPP_DEBUG_STREAM(get_logger(),"leftRawNumberSubscribed_: " << leftRawNumberSubscribed_);
         publishImageWithInfo(
-                matrixLefImageRaw_, leftRawImagePublisher_, leftCameraInfoRawMessage_, mLeftCamOptFrameId, publishTimestamp);
+                matrixLefImageRaw_, leftRawImagePublisher_, leftCameraInfoRawMessage_, leftCameraFrameId_, publishTimestamp);
     }
     // <---- Publish the left_raw=rgb_raw image if someone has subscribed to
 
     // ----> Publish the right image if someone has subscribed to
     if (rightNumberSubscribed_ > 0) {
         RCLCPP_DEBUG_STREAM(get_logger(), "mRightSubnumber: " << rightNumberSubscribed_);
-        publishImageWithInfo(matrixRightImage_, rightImagePublisher_, rightCameraInfoMessage_, mRightCamOptFrameId, publishTimestamp);
+        publishImageWithInfo(matrixRightImage_, rightImagePublisher_, rightCameraInfoMessage_, rightCameraFrameId_, publishTimestamp);
     }
     // <---- Publish the right image if someone has subscribed to
 
@@ -423,7 +428,7 @@ void ZedCameraComponent::publishImages(rclcpp::Time & publishTimestamp) {
     if (rightRawNumberSubscribed_ > 0) {
         RCLCPP_DEBUG_STREAM(get_logger(), "mRightRawSubnumber: " << rightRawNumberSubscribed_);
         publishImageWithInfo(
-                matrixRightImageRaw_, rightRawImagePublisher_, rightCameraInfoRawMessage_, mRightCamOptFrameId, publishTimestamp);
+                matrixRightImageRaw_, rightRawImagePublisher_, rightCameraInfoRawMessage_, rightCameraFrameId_, publishTimestamp);
     }
     // <---- Publish the right raw image if someone has subscribed to
 
@@ -441,6 +446,92 @@ void ZedCameraComponent::publishImages(rclcpp::Time & publishTimestamp) {
     // <---- Check publishing frequency
 
     RCLCPP_DEBUG(get_logger(), "*** Image topics published *** ");
+}
+
+std::unique_ptr<sensor_msgs::msg::Image> ZedCameraComponent::imageToROSmsg(
+        sl::Mat & img, std::string frameId, rclcpp::Time t)
+{
+    std::unique_ptr<sensor_msgs::msg::Image> imgMessage = std::make_unique<sensor_msgs::msg::Image>();
+
+    imgMessage->header.stamp = t;
+    imgMessage->header.frame_id = frameId;
+    imgMessage->height = img.getHeight();
+    imgMessage->width = img.getWidth();
+
+    int num = 1;  // for endianness detection
+    imgMessage->is_bigendian = !(*reinterpret_cast<char *>(&num) == 1);
+
+    imgMessage->step = img.getStepBytes();
+
+    size_t size = imgMessage->step * imgMessage->height;
+
+    uint8_t * data_ptr = nullptr;
+
+    sl::MAT_TYPE dataType = img.getDataType();
+
+    switch (dataType) {
+        case sl::MAT_TYPE::F32_C1: /**< float 1 channel.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC1;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float1>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C2: /**< float 2 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC2;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float2>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C3: /**< float 3 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC3;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float3>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C4: /**< float 4 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC4;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float4>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C1: /**< unsigned char 1 channel.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::MONO8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar1>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C2: /**< unsigned char 2 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_8UC2;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar2>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C3: /**< unsigned char 3 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::BGR8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar3>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C4: /**< unsigned char 4 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::BGRA8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar4>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+    }
+
+    return imgMessage;
+}
+
+
+
+void ZedCameraComponent::publishImageWithInfo(
+        sl::Mat & img, image_transport::CameraPublisher & imagePublisher, CameraInfoMessage & cameraInfoMessage,
+        std::string imgFrameId, rclcpp::Time t)
+{
+    auto image = imageToROSmsg(img, imgFrameId, t);
+    cameraInfoMessage->header.stamp = t;
+    RCLCPP_DEBUG_STREAM(get_logger(), "Publishing IMAGE message: " << t.nanoseconds() << " nsec");
+    imagePublisher.publish(std::move(image), cameraInfoMessage);
 }
 
 void ZedCameraComponent::setupCameraInfoMessages(sl::Camera& zed, std::shared_ptr<sensor_msgs::msg::CameraInfo> leftCamInfoMsg,
