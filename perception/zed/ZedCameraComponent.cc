@@ -683,7 +683,6 @@ void ZedCameraComponent::initPublishers()
     RCLCPP_INFO(get_logger(), "*** PUBLISHED TOPICS ***");
 
     // ----> Topics names definition
-    std::string rgbTopicRoot = "rgb";
     std::string rightTopicRoot = "right";
     std::string leftTopicRoot = "left";
     std::string imgTopic = "/image_rect_color";
@@ -693,8 +692,6 @@ void ZedCameraComponent::initPublishers()
     std::string leftRawTopic = topicRoot_ + leftTopicRoot + rawSuffix + imgRawTopic;
     std::string rightTopic = topicRoot_ + rightTopicRoot + imgTopic;
     std::string rightRawTopic = topicRoot_ + rightTopicRoot + rawSuffix + imgRawTopic;
-    std::string rgbTopic = topicRoot_ + rgbTopicRoot + imgTopic;
-    std::string rgbRawTopic = topicRoot_ + rgbTopicRoot + rawSuffix + imgRawTopic;
     // <---- Topics names definition
 
     // ----> Camera publishers
