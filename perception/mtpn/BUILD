@@ -8,5 +8,6 @@ cc_library(
         "@ros2_image_common//:image_transport",
         "@ros2_rclcpp//:rclcpp",
         "@ros2_rclcpp//:rclcpp_components",
+        "@ros2_vision_opencv//:cv_bridge",
     ],
 )
