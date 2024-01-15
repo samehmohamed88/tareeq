@@ -10,6 +10,7 @@ load("//third_party/zed_ros2_interfaces:workspace.bzl", zed_ros2_interfaces = "r
 load("//third_party/robot_localization:workspace.bzl", robot_localization = "repo")
 load("//third_party/zed:workspace.bzl", zed = "repo")
 load("//third_party/ros2_angles:workspace.bzl", ros2_angles = "repo")
+load("//third_party/ros2_vision_opencv:workspace.bzl", ros2_vision_opencv = "repo")
 load("//third_party/geographiclib:workspace.bzl", geographiclib = "repo")
 
 def initialize_third_party():
@@ -25,4 +26,5 @@ def initialize_third_party():
     robot_localization()
     zed()
     ros2_angles()
+    ros2_vision_opencv()
     geographiclib()

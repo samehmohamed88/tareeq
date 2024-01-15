@@ -5,6 +5,7 @@
 #include <rclcpp/node_options.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/distortion_models.hpp>
+#include <sensor_msgs/image_encodings.hpp>
 #include <image_transport/camera_publisher.hpp>
 #include <image_transport/image_transport.hpp>
 #include <diagnostic_updater/diagnostic_updater.hpp>
@@ -31,6 +32,7 @@ ZedCameraComponent::ZedCameraComponent(const rclcpp::NodeOptions& options)
     , diagnosticUpdater_{this}
     , videoQos_{1}
     , grabFreqTimer_{get_clock()}
+    , imagePublisherFrequencyTimer_{get_clock()}
 {}
 
 bool ZedCameraComponent::Init()
@@ -190,20 +192,19 @@ bool ZedCameraComponent::startCamera()
     // <---- Camera information
 
     // ----> Camera Info messages
-    rgbCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
     leftCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
     rightCameraInfoMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
-    rgbCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
     leftCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
     rightCameraInfoRawMessage_ = std::make_shared<sensor_msgs::msg::CameraInfo>();
 
 //    setTFCoordFrameNames();  // Requires mZedRealCamModel available only after camera opening
 
-    setupCameraInfoMessages(zed_, leftCameraInfoMessage_, rightCameraInfoMessage_, cameraName_ + "_left_camera_optical_frame", cameraName_ + "_right_camera_optical_frame");
+    leftCameraFrameId_ = cameraName_ + "_left_camera_optical_frame";
+    rightCameraFrameId_ = cameraName_ + "_right_camera_optical_frame";
+
+    setupCameraInfoMessages(zed_, leftCameraInfoMessage_, rightCameraInfoMessage_, leftCameraFrameId_, rightCameraFrameId_);
     setupCameraInfoMessages(
-        zed_, leftCameraInfoRawMessage_, rightCameraInfoRawMessage_, cameraName_ + "_left_camera_optical_frame", cameraName_ + "_right_camera_optical_frame", true);
-    rgbCameraInfoMessage_ = leftCameraInfoMessage_;
-    rgbCameraInfoRawMessage_ = leftCameraInfoRawMessage_;
+        zed_, leftCameraInfoRawMessage_, rightCameraInfoRawMessage_, leftCameraFrameId_, rightCameraFrameId_, true);
     // <---- Camera Info messages
 
     // Requires mZedRealCamModel available only after camera opening
@@ -301,16 +302,12 @@ void ZedCameraComponent::threadFunc_zedGrab()
 
         // ----> Retrieve Image data if someone has subscribed
         // Retrieve data if there are subscriber to topics
-        if (areVideoDepthSubscribed()) {
+        if (areVideoTopicsSubscribed()) {
             RCLCPP_DEBUG_STREAM(get_logger(), "Retrieving video/depth data");
-            retrieveVideo();
+            retrieveImages();
 
             rclcpp::Time publishTimestamp;
-            publishVideo(pub_ts);
-
-            mVdPublishing = true;
-        } else {
-            mVdPublishing = false;
+            publishImages(publishTimestamp);
         }
         // <---- Retrieve Image data if someone has subscribed
 
@@ -321,21 +318,17 @@ void ZedCameraComponent::threadFunc_zedGrab()
     RCLCPP_DEBUG_STREAM(get_logger(), "Grab thread finished");
 }
 
-bool ZedCameraComponent::areVideoSubscribed() {
-    rgbNumberSubscribed_ = 0;
-    rgbRawNumberSubscribed_ = 0;
+bool ZedCameraComponent::areVideoTopicsSubscribed() {
     leftNumberSubscribed_ = 0;
     leftRawNumberSubscribed_ = 0;
     rightNumberSubscribed_ = 0;
     rightRawNumberSubscribed_ = 0;
 
     try {
-        rgbNumberSubscribed_ = publishRgb_.getNumSubscribers();
-        rgbRawNumberSubscribed_ = publishRawRgb_.getNumSubscribers();
-        leftNumberSubscribed_ = publishLeft_.getNumSubscribers();
-        leftRawNumberSubscribed_ = publishRawLeft_.getNumSubscribers();
-        rightNumberSubscribed_ = publishRight_.getNumSubscribers();
-        rightRawNumberSubscribed_ = publishRawRight_.getNumSubscribers();
+        leftNumberSubscribed_ = leftImagePublisher_.getNumSubscribers();
+        leftRawNumberSubscribed_ = leftRawImagePublisher_.getNumSubscribers();
+        rightNumberSubscribed_ = rightImagePublisher_.getNumSubscribers();
+        rightRawNumberSubscribed_ = rightRawImagePublisher_.getNumSubscribers();
 
     } catch (...) {
         rcutils_reset_error();
@@ -343,26 +336,23 @@ bool ZedCameraComponent::areVideoSubscribed() {
         return false;
     }
 
-    return (rgbNumberSubscribed_ +
-            rgbRawNumberSubscribed_ +
-            leftNumberSubscribed_ +
+    return (leftNumberSubscribed_ +
             leftRawNumberSubscribed_ +
             rightNumberSubscribed_ +
             rightRawNumberSubscribed_) > 0;
 }
-void ZedCameraComponent::retrieveVideo() {
+
+void ZedCameraComponent::retrieveImages() {
     bool retrieved = false;
-    rgbSubscribed_ = false;
 
     // ----> Retrieve all required data
     RCLCPP_DEBUG_STREAM(get_logger(), "Retrieving Video Data");
-    if (rgbNumberSubscribed_ + leftNumberSubscribed_ > 0) {
+    if (leftNumberSubscribed_ > 0) {
         retrieved |= sl::ERROR_CODE::SUCCESS ==
                      zed_.retrieveImage(matrixLeftImage_, sl::VIEW::LEFT, sl::MEM::CPU, matrixResolution_);
         mSdkGrabTS = matrixLeftImage_.timestamp;
-        rgbSubscribed_ = true;
     }
-    if (rgbRawNumberSubscribed_ + leftRawNumberSubscribed_ > 0) {
+    if (leftRawNumberSubscribed_ > 0) {
         retrieved |=
                 sl::ERROR_CODE::SUCCESS ==
                 zed_.retrieveImage(matrixLefImageRaw_, sl::VIEW::LEFT_UNRECTIFIED, sl::MEM::CPU, matrixResolution_);
@@ -379,11 +369,169 @@ void ZedCameraComponent::retrieveVideo() {
                              matrixRightImageRaw_, sl::VIEW::RIGHT_UNRECTIFIED, sl::MEM::CPU, matrixResolution_);
         mSdkGrabTS = matrixRightImageRaw_.timestamp;
     }
-    DEBUG_STREAM_VD("Video Data retrieved");
+    RCLCPP_DEBUG_STREAM(get_logger(), "Video Data retrieved");
     // <---- Retrieve all required data
 }
-void ZedCameraComponent::publishVideo(rclcpp::Time & publishTimestamp){
 
+void ZedCameraComponent::publishImages(rclcpp::Time & publishTimestamp) {
+    RCLCPP_DEBUG(get_logger(), "*** Publish Image topics *** ");
+    component::StopWatch elapsedTimer(get_clock());
+
+    // Start processing timer for diagnostic
+    elapsedTimer.tic();
+
+    // ----> Check if a grab has been done before publishing the same images
+    if (mSdkGrabTS.data_ns == lastGrabTimestamp_.data_ns) {
+        publishTimestamp = TIMEZERO_ROS;
+        // Data not updated by a grab calling in the grab thread
+        RCLCPP_DEBUG_STREAM(get_logger(), "publishVideo: ignoring not update data");
+        return;
+    }
+
+    if (lastGrabTimestamp_.data_ns != 0) {
+        double period_sec = static_cast<double>(mSdkGrabTS.data_ns - lastGrabTimestamp_.data_ns) / 1e9;
+        RCLCPP_DEBUG_STREAM(get_logger(),
+                "VIDEO/DEPTH PUB LAST PERIOD: " << period_sec << " sec @" << 1. / period_sec << " Hz");
+
+        videoPeriodMean_sec_->addValue(period_sec);
+        RCLCPP_DEBUG_STREAM(get_logger(),
+                "VIDEO/DEPTH PUB MEAN PERIOD: " << videoPeriodMean_sec_->getAvg() << " sec @"
+                                                << 1. / videoPeriodMean_sec_->getAvg() << " Hz");
+    }
+    lastGrabTimestamp_ = mSdkGrabTS;
+    // <---- Check if a grab has been done before publishing the same images
+
+    publishTimestamp = slTime2Ros(mSdkGrabTS, get_clock()->get_clock_type());
+    // ----> Publish the left=rgb image if someone has subscribed to
+    if (leftNumberSubscribed_ > 0) {
+        RCLCPP_DEBUG_STREAM(get_logger(),"leftNumberSubscribed_: " << leftNumberSubscribed_);
+        publishImageWithInfo(matrixLeftImage_, leftImagePublisher_, leftCameraInfoMessage_, leftCameraFrameId_, publishTimestamp);
+    }
+    // <---- Publish the left=rgb image if someone has subscribed to
+
+    // ----> Publish the left_raw=rgb_raw image if someone has subscribed to
+    if (leftRawNumberSubscribed_ > 0) {
+        RCLCPP_DEBUG_STREAM(get_logger(),"leftRawNumberSubscribed_: " << leftRawNumberSubscribed_);
+        publishImageWithInfo(
+                matrixLefImageRaw_, leftRawImagePublisher_, leftCameraInfoRawMessage_, leftCameraFrameId_, publishTimestamp);
+    }
+    // <---- Publish the left_raw=rgb_raw image if someone has subscribed to
+
+    // ----> Publish the right image if someone has subscribed to
+    if (rightNumberSubscribed_ > 0) {
+        RCLCPP_DEBUG_STREAM(get_logger(), "mRightSubnumber: " << rightNumberSubscribed_);
+        publishImageWithInfo(matrixRightImage_, rightImagePublisher_, rightCameraInfoMessage_, rightCameraFrameId_, publishTimestamp);
+    }
+    // <---- Publish the right image if someone has subscribed to
+
+    // ----> Publish the right raw image if someone has subscribed to
+    if (rightRawNumberSubscribed_ > 0) {
+        RCLCPP_DEBUG_STREAM(get_logger(), "mRightRawSubnumber: " << rightRawNumberSubscribed_);
+        publishImageWithInfo(
+                matrixRightImageRaw_, rightRawImagePublisher_, rightCameraInfoRawMessage_, rightCameraFrameId_, publishTimestamp);
+    }
+    // <---- Publish the right raw image if someone has subscribed to
+
+    // Diagnostic statistic
+    videoElapsedMean_sec_->addValue(elapsedTimer.toc());
+
+    // ----> Check publishing frequency
+    double vd_period_usec = 1e6 / publishFrameRate_;
+    double elapsed_usec = imagePublisherFrequencyTimer_.toc() * 1e6;
+
+    if (elapsed_usec < vd_period_usec) {
+        rclcpp::sleep_for(std::chrono::microseconds(static_cast<int>(vd_period_usec - elapsed_usec)));
+    }
+    imagePublisherFrequencyTimer_.tic();
+    // <---- Check publishing frequency
+
+    RCLCPP_DEBUG(get_logger(), "*** Image topics published *** ");
+}
+
+std::unique_ptr<sensor_msgs::msg::Image> ZedCameraComponent::imageToROSmsg(
+        sl::Mat & img, std::string frameId, rclcpp::Time t)
+{
+    std::unique_ptr<sensor_msgs::msg::Image> imgMessage = std::make_unique<sensor_msgs::msg::Image>();
+
+    imgMessage->header.stamp = t;
+    imgMessage->header.frame_id = frameId;
+    imgMessage->height = img.getHeight();
+    imgMessage->width = img.getWidth();
+
+    int num = 1;  // for endianness detection
+    imgMessage->is_bigendian = !(*reinterpret_cast<char *>(&num) == 1);
+
+    imgMessage->step = img.getStepBytes();
+
+    size_t size = imgMessage->step * imgMessage->height;
+
+    uint8_t * data_ptr = nullptr;
+
+    sl::MAT_TYPE dataType = img.getDataType();
+
+    switch (dataType) {
+        case sl::MAT_TYPE::F32_C1: /**< float 1 channel.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC1;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float1>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C2: /**< float 2 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC2;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float2>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C3: /**< float 3 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC3;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float3>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::F32_C4: /**< float 4 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_32FC4;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::float4>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C1: /**< unsigned char 1 channel.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::MONO8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar1>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C2: /**< unsigned char 2 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::TYPE_8UC2;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar2>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C3: /**< unsigned char 3 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::BGR8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar3>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+
+        case sl::MAT_TYPE::U8_C4: /**< unsigned char 4 channels.*/
+            imgMessage->encoding = sensor_msgs::image_encodings::BGRA8;
+            data_ptr = reinterpret_cast<uint8_t *>(img.getPtr<sl::uchar4>());
+            imgMessage->data = std::vector<uint8_t>(data_ptr, data_ptr + size);
+            break;
+    }
+
+    return imgMessage;
+}
+
+
+
+void ZedCameraComponent::publishImageWithInfo(
+        sl::Mat & img, image_transport::CameraPublisher & imagePublisher, CameraInfoMessage & cameraInfoMessage,
+        std::string imgFrameId, rclcpp::Time t)
+{
+    auto image = imageToROSmsg(img, imgFrameId, t);
+    cameraInfoMessage->header.stamp = t;
+    RCLCPP_DEBUG_STREAM(get_logger(), "Publishing IMAGE message: " << t.nanoseconds() << " nsec");
+    imagePublisher.publish(std::move(image), cameraInfoMessage);
 }
 
 void ZedCameraComponent::setupCameraInfoMessages(sl::Camera& zed, std::shared_ptr<sensor_msgs::msg::CameraInfo> leftCamInfoMsg,
@@ -535,7 +683,6 @@ void ZedCameraComponent::initPublishers()
     RCLCPP_INFO(get_logger(), "*** PUBLISHED TOPICS ***");
 
     // ----> Topics names definition
-    std::string rgbTopicRoot = "rgb";
     std::string rightTopicRoot = "right";
     std::string leftTopicRoot = "left";
     std::string imgTopic = "/image_rect_color";
@@ -545,34 +692,24 @@ void ZedCameraComponent::initPublishers()
     std::string leftRawTopic = topicRoot_ + leftTopicRoot + rawSuffix + imgRawTopic;
     std::string rightTopic = topicRoot_ + rightTopicRoot + imgTopic;
     std::string rightRawTopic = topicRoot_ + rightTopicRoot + rawSuffix + imgRawTopic;
-    std::string rgbTopic = topicRoot_ + rgbTopicRoot + imgTopic;
-    std::string rgbRawTopic = topicRoot_ + rgbTopicRoot + rawSuffix + imgRawTopic;
     // <---- Topics names definition
 
     // ----> Camera publishers
-    publishRgb_ = image_transport::create_camera_publisher(this, rgbTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRgb_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRgb_.getInfoTopic());
+    leftImagePublisher_ = image_transport::create_camera_publisher(this, leftTopic, videoQos_.get_rmw_qos_profile());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << leftImagePublisher_.getTopic());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << leftImagePublisher_.getInfoTopic());
 
-    publishRawRgb_ = image_transport::create_camera_publisher(this, rgbRawTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawRgb_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawRgb_.getInfoTopic());
+    leftRawImagePublisher_ = image_transport::create_camera_publisher(this, leftRawTopic, videoQos_.get_rmw_qos_profile());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << leftRawImagePublisher_.getTopic());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << leftRawImagePublisher_.getInfoTopic());
 
-    publishLeft_ = image_transport::create_camera_publisher(this, leftTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishLeft_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishLeft_.getInfoTopic());
+    rightImagePublisher_ = image_transport::create_camera_publisher(this, rightTopic, videoQos_.get_rmw_qos_profile());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << rightImagePublisher_.getTopic());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << rightImagePublisher_.getInfoTopic());
 
-    publishRawLeft_ = image_transport::create_camera_publisher(this, leftRawTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawLeft_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawLeft_.getInfoTopic());
-
-    publishRight_ = image_transport::create_camera_publisher(this, rightTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRight_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRight_.getInfoTopic());
-
-    publishRawRight_ = image_transport::create_camera_publisher(this, rightRawTopic, videoQos_.get_rmw_qos_profile());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawRight_.getTopic());
-    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << publishRawRight_.getInfoTopic());
+    rightRawImagePublisher_ = image_transport::create_camera_publisher(this, rightRawTopic, videoQos_.get_rmw_qos_profile());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << rightRawImagePublisher_.getTopic());
+    RCLCPP_INFO_STREAM(get_logger(), "Advertised on topic: " << rightRawImagePublisher_.getInfoTopic());
     // <---- Camera publishers
 }
 
