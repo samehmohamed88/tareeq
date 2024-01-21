@@ -26,7 +26,7 @@ DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='nav_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${NAVUSER}"
 
-VERSION_X86_64="ubuntu_2204_x86_64.nvidia.pytorch.01.2024"
+VERSION_X86_64="ubuntu_2204_x86_64.nvidia.pytorch.01.15.2024"
 
 info "Remove existing Apollo Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}
@@ -41,7 +41,7 @@ volumes="${volumes} -v /media:/media \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
     -v ${CURR_DIR}/../../:/nav
-    --volume=${HOME}/CLION/clion-2022.3.3:/home/$NAVUSER/clion \
+    --volume=${HOME}/CLION/clion-2023.3.2:/home/$NAVUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$NAVUSER/.java/.userPrefs \
     --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$NAVUSER/.cache/JetBrains \
     --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$NAVUSER/.local/share/JetBrains \

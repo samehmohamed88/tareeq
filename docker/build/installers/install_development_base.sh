@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 apt-get -y update \
-  && apt-get -y install build-essential clang sudo wget libxtst6 libxt6 \
+  && apt-get -y install git cmake build-essential clang sudo wget libxtst6 libxt6 libeigen3-dev \
   && groupadd --gid $USERID $USERNAME \
   && useradd -s /bin/bash --uid $USERID --gid $USERID -m $USERNAME \
   && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME\
