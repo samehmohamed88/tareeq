@@ -51,7 +51,7 @@ vector<Vehicle> Vehicle::choose_next_state(map<int, vector<Vehicle>>& prediction
      * TODO: Your solution here.
      */
      auto successor_states = this->successor_states();
-     std::string next_state;
+//     std::string next_state;
      float min_cost = 100.0;
     vector<Vehicle> next_trajectory;
     for (const auto& possible_state: successor_states) {
@@ -60,7 +60,7 @@ vector<Vehicle> Vehicle::choose_next_state(map<int, vector<Vehicle>>& prediction
          float c = calculate_cost(v, predictions, trajectory);
          if (c < min_cost) {
             next_trajectory = trajectory;
-            next_state = possible_state;
+//            next_state = possible_state;
             min_cost = c;
          }
      }
