@@ -16,6 +16,7 @@ public:
     // HBF structs
     struct maze_s {
         int g;  // iteration
+        int f;
         double x;
         double y;
         double theta;
@@ -32,7 +33,11 @@ public:
 
     int idx(double float_num);
 
-    vector<maze_s> expand(maze_s &state);
+    double heuristic(double x, double y, vector<int> &goal);
+
+    static bool compare_maze_s(const HBF::maze_s &lhs, const HBF::maze_s &rhs);
+
+    vector<maze_s> expand(maze_s &state, vector<int> &goal);
 
     vector<maze_s> reconstruct_path(vector<vector<vector<maze_s>>> &came_from,
                                     vector<double> &start, HBF::maze_s &final);
