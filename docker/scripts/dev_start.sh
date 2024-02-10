@@ -18,15 +18,15 @@
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 source "${CURR_DIR}/docker_base.sh"
 
-NAVUSER="nav"
+tareeqUSER="tareeq"
 CACHE_ROOT_DIR="$USER/.cache"
 
-DOCKER_REPO="sameh4/nav"
+DOCKER_REPO="sameh4/tareeq"
 DEV_INSIDE="in-dev-docker"
-DEV_CONTAINER_PREFIX='nav_dev_'
-DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${NAVUSER}"
+DEV_CONTAINER_PREFIX='tareeq_dev_'
+DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${tareeqUSER}"
 
-VERSION_X86_64="ubuntu_2204_x86_64.nvidia.pytorch.01.15.2024"
+VERSION_X86_64="ubuntu_2204_x86_64.02.08.2024"
 
 info "Remove existing Apollo Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}
@@ -40,15 +40,15 @@ volumes="${volumes} -v /media:/media \
     -v /etc/localtime:/etc/localtime:ro \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
-    -v ${CURR_DIR}/../../:/nav
-    --volume=${HOME}/CLION/clion-2023.3.2:/home/$NAVUSER/clion \
-    --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$NAVUSER/.java/.userPrefs \
-    --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$NAVUSER/.cache/JetBrains \
-    --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$NAVUSER/.local/share/JetBrains \
-    --volume=${HOME}/.dockerConfig/jetbrains/config:/home/$NAVUSER/.config/JetBrains \
-    --volume=${HOME}/.ideavimrc:/home/$NAVUSER/.ideavimrc \
+    -v ${CURR_DIR}/../../:/tareeq
+    --volume=${HOME}/CLION/clion-2023.3.3:/home/$tareeqUSER/clion \
+    --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$tareeqUSER/.java/.userPrefs \
+    --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$tareeqUSER/.cache/JetBrains \
+    --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$tareeqUSER/.local/share/JetBrains \
+    --volume=${HOME}/.dockerConfig/jetbrains/config:/home/$tareeqUSER/.config/JetBrains \
+    --volume=${HOME}/.ideavimrc:/home/$tareeqUSER/.ideavimrc \
     --volume=/media:/media \
-    --volume=${HOME}/.fonts:/home/$NAVUSER/.fonts"
+    --volume=${HOME}/.fonts:/home/$tareeqUSER/.fonts"
 
 SHM_SIZE="2G"
 DEV_IMAGE="${DOCKER_REPO}:${VERSION_X86_64}"
@@ -69,7 +69,7 @@ echo $USE_GPU_HOST
 ${DOCKER_RUN_CMD} -itd \
     --privileged \
     --name "${DEV_CONTAINER}" \
-    --label "owner=${NAVUSER}" \
+    --label "owner=${tareeqUSER}" \
     -e DISPLAY="${display}" \
     -e DOCKER_USER="${user}" \
     -e USER="${user}" \
@@ -82,13 +82,13 @@ ${DOCKER_RUN_CMD} -itd \
     -e NVIDIA_DRIVER_CAPABILITIES=compute,video,graphics,utility \
     ${volumes} \
     --net host \
-    -w /nav \
+    -w /tareeq \
     --add-host "${DEV_INSIDE}:127.0.0.1" \
     --add-host "${local_host}:127.0.0.1" \
     --hostname "${DEV_INSIDE}" \
     --shm-size "${SHM_SIZE}" \
     --pid=host \
     -v /dev/null:/dev/raw1394 \
-    --gpus all \
     "${DEV_IMAGE}" \
     /bin/bash
+    # --gpus all \
