@@ -1,0 +1,16 @@
+# Define all coms in DAG streaming.
+module_config {
+    module_library : "/apollo/bazel-bin/panda/panda.so"
+    components {
+        class_name : "PandaComponent"
+        config {
+            name : "panda"
+            #readers {
+            #    channel: "/apollo/prediction"
+            #}
+            #readers {
+            #    channel: "/apollo/test"
+            #}
+        }
+      }
+    }

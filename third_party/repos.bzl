@@ -1,4 +1,5 @@
 load("//third_party/cuda:workspace.bzl", cuda = "repo")
+load("//third_party/carla:workspace.bzl", carla = "repo")
 load("//third_party/opencv:workspace.bzl", opencv = "repo")
 load("//third_party/libtorch:workspace.bzl", libtorch = "repo")
 load("//third_party/cudnn:workspace.bzl", cudnn8 = "repo")
@@ -22,9 +23,12 @@ def initialize_third_party():
     rules_ros2()
     yaml_cpp()
     geographic_info()
-    zed_ros2_interfaces()
+
+    #zed_ros2_interfaces()
     robot_localization()
-    zed()
+
+    #zed()
     ros2_angles()
     ros2_vision_opencv()
     geographiclib()
+    carla()

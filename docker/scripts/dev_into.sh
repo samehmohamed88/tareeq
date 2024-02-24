@@ -15,9 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-DOCKER_USER="nav"
-DEV_CONTAINER_PREFIX='nav_dev_'
-DEV_CONTAINER="${DEV_CONTAINER_PREFIX}nav"
+DOCKER_USER="tareeq"
+DEV_CONTAINER_PREFIX='tareeq_dev_'
+DEV_CONTAINER="${DEV_CONTAINER_PREFIX}tareeq"
 
 function parse_arguments {
     local container_name=''
@@ -56,7 +56,7 @@ restart_stopped_container
 
 docker exec \
     -u "${DOCKER_USER}" \
-    -e HISTFILE=/nav/.dev_bash_hist \
+    -e HISTFILE=/tareeq/.dev_bash_hist \
     -it "${DEV_CONTAINER}" \
     /bin/bash
 
