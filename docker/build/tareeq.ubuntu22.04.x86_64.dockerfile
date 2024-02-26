@@ -12,9 +12,9 @@ COPY installers /opt/tareeq/installers
 
 RUN bash /opt/tareeq/installers/install_development_base.sh
 
-COPY libcarla-client-library-0.9.15.tar.gz /usr/local/
-RUN tar -xf /usr/local/libcarla-client-library-0.9.15.tar.gz -C /usr/local/
-RUN rm /usr/local/libcarla-client-library-0.9.15.tar.gz
+# COPY libcarla-client-library-0.9.15.tar.gz /usr/local/
+# RUN tar -xf /usr/local/libcarla-client-library-0.9.15.tar.gz -C /usr/local/
+# RUN rm /usr/local/libcarla-client-library-0.9.15.tar.gz
 
 USER $USERNAME
 

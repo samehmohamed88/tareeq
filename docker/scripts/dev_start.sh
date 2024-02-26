@@ -26,7 +26,7 @@ DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${tareeqUSER}"
 
-VERSION_X86_64="ubuntu_2204_x86_64.02.08.2024"
+VERSION_X86_64="ubuntu_2204_x86_64.02.23.2024"
 
 info "Remove existing Apollo Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}
@@ -41,7 +41,7 @@ volumes="${volumes} -v /media:/media \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
     -v ${CURR_DIR}/../../:/tareeq
-    --volume=${HOME}/CLION/clion-2023.3.3:/home/$tareeqUSER/clion \
+    --volume=${HOME}/CLION/clion-2023.3.2:/home/$tareeqUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$tareeqUSER/.java/.userPrefs \
     --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$tareeqUSER/.cache/JetBrains \
     --volume=${HOME}/.dockerConfig/jetbrains/share:/home/$tareeqUSER/.local/share/JetBrains \
