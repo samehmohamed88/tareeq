@@ -1,0 +1,40 @@
+{
+    "waypoints": [
+        {
+          "id": 1,
+          "name": "Corner 1",
+          "coordinates": {"x": 0, "y": 0},
+          "metadata": {
+            "surface": "carpet",
+            "obstacle": "none"
+          }
+        },
+        {
+          "id": 2,
+          "name": "Corner 2",
+          "coordinates": {"x": 5, "y": 0},
+          "metadata": {
+            "surface": "carpet",
+            "obstacle": "none"
+          }
+        },
+        {
+            "id": 3,
+            "name": "Corner 3",
+            "coordinates": {"x": 5, "y": 5},
+            "metadata": {
+              "surface": "carpet",
+              "obstacle": "none"
+            }
+          },
+          {
+            "id": 4,
+            "name": "Corner 4",
+            "coordinates": {"x": 0, "y": 5},
+            "metadata": {
+              "surface": "carpet",
+              "obstacle": "none"
+            }
+          }
+      ]
+}

@@ -1,0 +1,73 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0, 0], [5, 0]
+          ]
+        },
+        "properties": {
+          "id": 1,
+          "name": "Segment 1",
+          "start_waypoint": 1,
+          "end_waypoint": 2,
+          "length": "5 meters",
+          "surface": "carpet"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [5, 0], [5, 5]
+          ]
+        },
+        "properties": {
+          "id": 1,
+          "name": "Segment 1",
+          "start_waypoint": 2,
+          "end_waypoint": 3,
+          "length": "5 meters",
+          "surface": "carpet"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [5, 5], [0, 5]
+          ]
+        },
+        "properties": {
+          "id": 1,
+          "name": "Segment 1",
+          "start_waypoint": 3,
+          "end_waypoint": 4,
+          "length": "5 meters",
+          "surface": "carpet"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [0, 5], [0, 0]
+          ]
+        },
+        "properties": {
+          "id": 1,
+          "name": "Segment 1",
+          "start_waypoint": 4,
+          "end_waypoint": 1,
+          "length": "5 meters",
+          "surface": "carpet"
+        }
+      }
+    ]
+  }

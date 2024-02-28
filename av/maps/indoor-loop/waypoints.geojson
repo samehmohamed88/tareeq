@@ -1,0 +1,57 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [0, 0]
+        },
+        "properties": {
+          "id": 1,
+          "name": "Corner 1",
+          "surface": "carpet",
+          "obstacle": "none"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [5, 0]
+        },
+        "properties": {
+          "id": 2,
+          "name": "Corner 2",
+          "surface": "carpet",
+          "obstacle": "none"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [5, 5]
+        },
+        "properties": {
+          "id": 3,
+          "name": "Corner 3",
+          "surface": "carpet",
+          "obstacle": "none"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [0, 5]
+        },
+        "properties": {
+          "id": 4,
+          "name": "Corner 4",
+          "surface": "carpet",
+          "obstacle": "none"
+        }
+      }
+    ]
+  }
