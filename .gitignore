@@ -1,6 +1,9 @@
 # Bazel
 bazel-*
 
+# rust
+target/
+
 # Temporary files
 *.pyc
 *.swp

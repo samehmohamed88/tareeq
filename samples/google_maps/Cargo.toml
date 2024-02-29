@@ -1,0 +1,11 @@
+[package]
+name = "geopackage"
+version = "0.1.0"
+edition = "2021"
+
+
+[[bin]]
+name = "example_helloworld"
+path = "src/helloworld.rs"
+
+[dependencies]

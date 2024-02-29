@@ -1,0 +1,64 @@
+{
+  "routes": [
+    {
+      "legs": [
+        {
+          "distance": {
+            "text": "15.4 m"
+          },
+          "end_address": "Waypoint_3",
+          "end_location": {
+            "x": 0,
+            "y": 5
+          },
+          "start_address": "Waypoint_1",
+          "start_location": {
+            "x": 0,
+            "y": 0
+          },
+          "steps": [
+            {
+              "distance": {
+                "text": "5 m"
+              },
+              "end_location": {
+                "x": 5,
+                "y": 0
+              },
+              "start_location": {
+                "x": 5,
+                "y": 0
+              }
+            },
+            {
+              "distance": {
+                "text": "5 m"
+              },
+              "end_location": {
+                "x": 5,
+                "y": 5
+              },
+              "start_location": {
+                "x": 5,
+                "y": 0
+              }
+            },
+            {
+              "distance": {
+                "text": "5 m"
+              },
+              "end_location": {
+                "x": 0,
+                "y": 5
+              },
+              "start_location": {
+                "x": 5,
+                "y": 5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
