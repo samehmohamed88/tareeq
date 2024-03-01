@@ -1,5 +1,5 @@
 [workspace]
 
-members = [ "av/planning", "av/routing",
+members = [ "av/planning", "av/routing", "av/localization",
     "samples/google_maps",
 ]

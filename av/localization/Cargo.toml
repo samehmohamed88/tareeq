@@ -1,0 +1,16 @@
+[package]
+name = "localization"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "chatgpt_extended_kalman_filter"
+path = "examples/chatgpt_extended_kalman_filter.rs"
+
+[[bin]]
+name = "ekf"
+path = "examples/extended_kalman_filter.rs"
+
+[dependencies]
+nalgebra = "0.29"
+rand = "0.8.5"
