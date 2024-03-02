@@ -1,29 +1,57 @@
-use nalgebra::{DMatrix, DVector, Dynamic, Matrix, OMatrix, VecStorage};
+use nalgebra::{Const, DMatrix, DVector, Dynamic, Matrix4, OMatrix};
 use std::f64::consts::PI;
 use std::os::raw::c_double;
+
+static DT: f64 = 0.1;
 
 fn deg2rad(deg: f64) -> f64 {
     deg * PI / 180.0
 }
 
-fn calc_input() -> DMatrix<f64> {
+fn calc_input() -> OMatrix<f64, Const<2>, Const<1>> {
     let v = 1.0; // [m/s]
     let yaw_rate = 0.1; // [rad/s]
-    DMatrix::from_column_slice(2, 1, &[v, yaw_rate])
+    OMatrix::from_column_slice(2, 1, &[v, yaw_rate])
     // This creates a 2-row, 1-column matrix with the values of v and yaw_rate.
 }
 
-fn observation(x_true :OMatrix<f64, Dynamic, Dynamic>, xd :OMatrix<f64, Dynamic, Dynamic>, u :DMatrix<f64>) {
-
+fn observation(
+    x_true: &OMatrix<f64, Const<4>, Const<1>>,
+    xd: &OMatrix<f64, Const<4>, Const<1>>,
+    u: &OMatrix<f64, Const<2>, Const<1>>,
+) {
+    let x_true = motion_model(x_true, u);
 }
 
-fn motion_model(x: &DVector<f64>, u: &DVector<f64>) -> DVector<f64> {
-    let dt = 0.1; // time tick [s]
-    let mut x = x.clone();
-    x[0] += u[0] * dt * x[2].cos(); // x position
-    x[1] += u[0] * dt * x[2].sin(); // y position
-    x[2] += u[1] * dt; // yaw angle
-    x // return new state
+fn motion_model(
+    x: &OMatrix<f64, Const<4>, Const<1>>,
+    u: &OMatrix<f64, Const<2>, Const<1>>,
+) -> OMatrix<f64, Const<4>, Const<1>> {
+    let f = Matrix4::new(
+        1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    );
+
+    let b: OMatrix<f64, Const<4>, Const<2>> = OMatrix::new(
+        DT * x[(2, 0)].cos(),
+        0.0,
+        DT * x[(2, 0)].sin(),
+        0.0,
+        0.0,
+        DT,
+        1.0,
+        0.0,
+    );
+
+    *(f * x + b * u)
+}
+
+fn observation_model(x :&OMatrix<f64, Dynamic, Dynamic>) -> OMatrix<f64, Const<2>, Const<1>>  {
+    let h :OMatrix<f64, Const<2>, Const<4>> = OMatrix::new(
+        1, 0, 0, 0,
+        0, 1, 0, 0
+    );
+
+    *(x * h)
 }
 
 // fn observation_model(x: &DVector<f64>) -> DVector<f64> {
@@ -70,28 +98,27 @@ fn main() {
     // Define covariance matrices
     let q_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
     // Square each element individually
-    let q = q_matrix.map(|elem :f64 | elem.powi(2));
+    let q = q_matrix.map(|elem: f64| elem.powi(2));
     println!("Q: {}", q);
 
     let r_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![1.0, 1.0]));
-    let r = r_matrix.map(|elem :f64 | elem.powi(2));
+    let r = r_matrix.map(|elem: f64| elem.powi(2));
     println!("Q: {}", r);
 
     let input_noise_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![1.0, deg2rad(30.0)]));
-    let input_noise = input_noise_matrix.map(|elem :f64 | elem.powi(2));
+    let input_noise = input_noise_matrix.map(|elem: f64| elem.powi(2));
 
     let gps_noise_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![0.5, 0.5]));
-    let gps_noise = gps_noise_matrix.map(|elem :f64 | elem.powi(2));
+    let gps_noise = gps_noise_matrix.map(|elem: f64| elem.powi(2));
 
-    let dt = 0.1;
     let sim_time = 50.0;
 
     let mut time = 0.0;
-    let mut x_estimate = DMatrix::<f64>::zeros(4, 1);
-    let mut x_true = DMatrix::<f64>::zeros(4, 1);
+    let mut x_estimate :OMatrix<f64, Const<4>, Const<1>> = OMatrix::zeros();
+    let mut x_true: OMatrix<f64, Const<4>, Const<1>> = OMatrix::zeros();
     let mut p_estimate = DMatrix::<f64>::identity(4, 4);
 
-    let x_dead_reckoning = DMatrix::<f64>::zeros(4, 1);
+    let x_dead_reckoning : OMatrix<f64, Const<4>, Const<1>> = OMatrix::zeros();
 
     // history
     let mut hx_estimate = &x_estimate;
@@ -100,11 +127,9 @@ fn main() {
     let hz = DMatrix::<f64>::zeros(2, 1);
 
     while (sim_time >= time) {
-        time += dt;
+        time += DT;
         let u = calc_input();
-
     }
-
 
     // Initial state
     // let mut x_est = DVector::from_vec(vec![0.0, 0.0, 0.0, 0.0]); // State vector [x y yaw v]'
