@@ -1,5 +1,5 @@
 use std::arch::x86_64::_fxrstor64;
-use nalgebra::{DVector, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
+use nalgebra::{Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
 use std::f64::consts::PI;
 use std::os::raw::c_double;
 
@@ -53,7 +53,7 @@ fn observation_model(x : &Matrix4x1<f64>) -> Matrix2x1<f64>  {
         0.0, 1.0, 0.0, 0.0
     );
 
-    x * h
+    h * x
 }
 
 // fn observation_model(x: &DVector<f64>) -> DVector<f64> {
@@ -98,19 +98,19 @@ fn observation_model(x : &Matrix4x1<f64>) -> Matrix2x1<f64>  {
 
 fn main() {
     // Define covariance matrices
-    let q_matrix = Matrix4::from_diagonal(&DVector::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
+    let q_matrix = Matrix4::from_diagonal(&Vector4::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
     // Square each element individually
     let q = q_matrix.map(|elem: f64| elem.powi(2));
     println!("Q: {}", q);
 
-    let r_matrix = Matrix4::from_diagonal(&DVector::from_vec(vec![1.0, 1.0]));
+    let r_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![1.0, 1.0]));
     let r = r_matrix.map(|elem: f64| elem.powi(2));
     println!("R: {}", r);
 
-    let input_noise_matrix = Matrix2::from_diagonal(&DVector::from_vec(vec![1.0, deg2rad(30.0)]));
+    let input_noise_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![1.0, deg2rad(30.0)]));
     let input_noise = input_noise_matrix.map(|elem: f64| elem.powi(2));
 
-    let gps_noise_matrix = Matrix2::from_diagonal(&DVector::from_vec(vec![0.5, 0.5]));
+    let gps_noise_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![0.5, 0.5]));
     let gps_noise = gps_noise_matrix.map(|elem: f64| elem.powi(2));
 
     let sim_time = 50.0;
@@ -128,7 +128,7 @@ fn main() {
     let mut hx_estimate = &x_estimate;
     let mut hx_true = &x_true;
     let mut hx_dead_reckoning = &x_true;
-    let hz = Matrix2x1::zeros();
+    let hz = Matrix2x1::<f64>::zeros();
 
     while (sim_time >= time) {
         time += DT;
