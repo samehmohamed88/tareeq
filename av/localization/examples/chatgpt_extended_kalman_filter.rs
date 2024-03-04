@@ -1,5 +1,5 @@
 use std::arch::x86_64::_fxrstor64;
-use nalgebra::{ArrayStorage, Const, DMatrix, DVector, Matrix4, OMatrix, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
+use nalgebra::{DVector, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
 use std::f64::consts::PI;
 use std::os::raw::c_double;
 
@@ -9,26 +9,26 @@ fn deg2rad(deg: f64) -> f64 {
     deg * PI / 180.0
 }
 
-fn calc_input() -> OMatrix<f64, Const<2>, Const<1>> {
+fn calc_input() -> Matrix2x1<f64> {
     let v = 1.0; // [m/s]
     let yaw_rate = 0.1; // [rad/s]
     // This creates a 2-row, 1-column matrix with the values of v and yaw_rate.
-    OMatrix::<f64, Const<2>, Const<1>>::from_column_slice(&[v, yaw_rate])
+    Matrix2x1::from_column_slice(&[v, yaw_rate])
 }
 
 fn observation(
-    x_true: &OMatrix<f64, Const<4>, Const<1>>,
-    xd: &OMatrix<f64, Const<4>, Const<1>>,
-    u: &OMatrix<f64, Const<2>, Const<1>>,
+    x_true: &Matrix4x1<f64>,
+    xd: &Matrix4x1<f64>,
+    u: &Matrix2x1<f64>,
 ) {
     let x_true = motion_model(x_true, u);
     // let z = observation_model(&x_true);
 }
 
 fn motion_model(
-    x: &OMatrix<f64, Const<4>, Const<1>>,
-    u: &OMatrix<f64, Const<2>, Const<1>>,
-) -> OMatrix<f64, Const<4>, Const<1>> {
+    x: &Matrix4x1<f64>,
+    u: &Matrix2x1<f64>,
+) -> Matrix4x1<f64> {
     let f = Matrix4::new(
         1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     );
@@ -47,7 +47,7 @@ fn motion_model(
     f * x + b * u
 }
 
-fn observation_model(x :&OMatrix<f64, Const<4>, Const<1>>) -> OMatrix<f64, Const<2>, Const<1>>  {
+fn observation_model(x : &Matrix4x1<f64>) -> Matrix2x1<f64>  {
     let h :Matrix2x4<f64> = Matrix2x4::new(
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0
@@ -103,14 +103,14 @@ fn main() {
     let q = q_matrix.map(|elem: f64| elem.powi(2));
     println!("Q: {}", q);
 
-    let r_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![1.0, 1.0]));
+    let r_matrix = Matrix4::from_diagonal(&DVector::from_vec(vec![1.0, 1.0]));
     let r = r_matrix.map(|elem: f64| elem.powi(2));
     println!("R: {}", r);
 
-    let input_noise_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![1.0, deg2rad(30.0)]));
+    let input_noise_matrix = Matrix2::from_diagonal(&DVector::from_vec(vec![1.0, deg2rad(30.0)]));
     let input_noise = input_noise_matrix.map(|elem: f64| elem.powi(2));
 
-    let gps_noise_matrix = DMatrix::from_diagonal(&DVector::from_vec(vec![0.5, 0.5]));
+    let gps_noise_matrix = Matrix2::from_diagonal(&DVector::from_vec(vec![0.5, 0.5]));
     let gps_noise = gps_noise_matrix.map(|elem: f64| elem.powi(2));
 
     let sim_time = 50.0;
