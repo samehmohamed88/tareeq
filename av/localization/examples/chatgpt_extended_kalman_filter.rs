@@ -21,6 +21,7 @@ fn observation(
     u: &OMatrix<f64, Const<2>, Const<1>>,
 ) {
     let x_true = motion_model(x_true, u);
+    let z = observation_model(&x_true);
 }
 
 fn motion_model(
@@ -45,7 +46,7 @@ fn motion_model(
     *(f * x + b * u)
 }
 
-fn observation_model(x :&OMatrix<f64, Dynamic, Dynamic>) -> OMatrix<f64, Const<2>, Const<1>>  {
+fn observation_model(x :&OMatrix<f64, Const<4>, Const<1>>) -> OMatrix<f64, Const<2>, Const<1>>  {
     let h :OMatrix<f64, Const<2>, Const<4>> = OMatrix::new(
         1, 0, 0, 0,
         0, 1, 0, 0
