@@ -95,7 +95,7 @@ bazel build --cuda_archs=compute_61:compute_61,sm_61
 
 Checkout the examples to see if it fits your needs.
 
-See [examples](./examples) for basic usage.
+See [examples](examples) for basic usage.
 
 See [rules_cuda_examples](https://github.com/cloudhan/rules_cuda_examples) for extended real world projects.
 
