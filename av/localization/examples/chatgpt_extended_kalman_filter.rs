@@ -22,9 +22,12 @@ fn observation(
     x_true: &Matrix4x1<f64>,
     xd: &Matrix4x1<f64>,
     u: &Matrix2x1<f64>,
-    input_noise: &Matrix2x1<f64>,
+    input_noise: &Matrix2<f64>,
     gpu_noise: &Matrix2<f64>
 ) -> (Matrix4x1<f64>, Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>) {
+
+    println!("BEFORE {}", x_true);
+
     let x_true = motion_model(x_true, u);
 
     let mut rng = thread_rng();
@@ -37,13 +40,13 @@ fn observation(
         DMatrix::from_iterator(2, 1, StandardNormal.sample_iter(&mut rng).take(2));
 
     let z_sum = observation_model(&x_true) + (gpu_noise  * gpu_random_matrix);
-    let z = z_sum.into();
+    // let z = z_sum.into();
 
-    let ud_sum = u + input_noise * input_random_matrix;
-    let ud = ud_sum.into();
-    let xd = motion_model(xd, ud);
+    let ud_sum = u + (input_noise * input_random_matrix);
+    // let ud = ud_sum.into();
+    let xd = motion_model(xd, &ud_sum);
 
-    (x_true, z, xd, ud)
+    (x_true, z_sum, xd, ud_sum)
 }
 
 fn motion_model(
@@ -122,11 +125,11 @@ fn main() {
     let q_matrix = Matrix4::from_diagonal(&Vector4::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
     // Square each element individually
     let q = q_matrix.map(|elem: f64| elem.powi(2));
-    println!("Q: {}", q);
+    // println!("Q: {}", q);
 
     let r_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![1.0, 1.0]));
     let r = r_matrix.map(|elem: f64| elem.powi(2));
-    println!("R: {}", r);
+    // println!("R: {}", r);
 
     let input_noise_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![1.0, deg2rad(30.0)]));
     let input_noise = input_noise_matrix.map(|elem: f64| elem.powi(2));
@@ -155,7 +158,8 @@ fn main() {
         time += DT;
         let u = calc_input();
         //observation(xTrue, xDR, u)
-        observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
+        let (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
+        println!("AFTER {}", x_true);
     }
 
     // Initial state
