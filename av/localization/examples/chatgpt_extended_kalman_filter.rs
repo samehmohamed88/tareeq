@@ -1,7 +1,9 @@
-use std::arch::x86_64::_fxrstor64;
-use nalgebra::{Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
+
+use nalgebra::{Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, OMatrix, U2, U1};
 use std::f64::consts::PI;
-use std::os::raw::c_double;
+use rand::distributions::Standard;
+use rand::Rng;
+
 
 static DT: f64 = 0.1;
 
@@ -20,9 +22,23 @@ fn observation(
     x_true: &Matrix4x1<f64>,
     xd: &Matrix4x1<f64>,
     u: &Matrix2x1<f64>,
-) {
+    input_noise: &Matrix2x1<f64>,
+    gpu_noise: &Matrix2<f64>
+) -> (Matrix4x1<f64>, Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>) {
     let x_true = motion_model(x_true, u);
-    // let z = observation_model(&x_true);
+
+    let mut rng = rand::thread_rng();
+    let input_random_matrix: OMatrix<f64, U2, U1> = OMatrix::from_fn(|_, _| rng.sample(Standard));
+    let gpu_random_matrix: OMatrix<f64, U2, U1> = OMatrix::from_fn(|_, _| rng.sample(Standard));
+
+    let z_sum = observation_model(&x_true) + (gpu_noise  * gpu_random_matrix);
+    let z = z_sum.generic();
+
+    let ud_sum = u + input_noise * input_random_matrix;
+    let ud = ud_sum.generic();
+    let xd = motion_model(xd, ud);
+
+    (x_true, z, xd, ud)
 }
 
 fn motion_model(
@@ -133,11 +149,13 @@ fn main() {
     while (sim_time >= time) {
         time += DT;
         let u = calc_input();
+        //observation(xTrue, xDR, u)
+        observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
     }
 
     // Initial state
-    // let mut x_est = DVector::from_vec(vec![0.0, 0.0, 0.0, 0.0]); // State vector [x y yaw v]'
-    // let mut p_est: Matrix<f64, Dynamic, Dynamic, VecStorage<f64, Dynamic, Dynamic>> = DMatrix::identity(4, 4); // State covariance matrix
+    // let mut x_est = Vector4::from_vec(vec![0.0, 0.0, 0.0, 0.0]); // State vector [x y yaw v]'
+    // let mut p_est: OMatrix<f64, U4, U4> = OMatrix::identity(); // State covariance matrix
     //
     // // Simulate sensor measurements and EKF updates
     // for _ in 0..500 { // 50 seconds with dt = 0.1
