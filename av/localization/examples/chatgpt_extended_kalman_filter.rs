@@ -1,9 +1,9 @@
 
-use nalgebra::{Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, OMatrix, U2, U1};
+use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, OMatrix, U2, U1};
 use std::f64::consts::PI;
-use rand::distributions::Standard;
-use rand::Rng;
-
+use rand::thread_rng;
+use rand::prelude::*;
+use rand_distr::StandardNormal;
 
 static DT: f64 = 0.1;
 
@@ -27,15 +27,20 @@ fn observation(
 ) -> (Matrix4x1<f64>, Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>) {
     let x_true = motion_model(x_true, u);
 
-    let mut rng = rand::thread_rng();
-    let input_random_matrix: OMatrix<f64, U2, U1> = OMatrix::from_fn(|_, _| rng.sample(Standard));
-    let gpu_random_matrix: OMatrix<f64, U2, U1> = OMatrix::from_fn(|_, _| rng.sample(Standard));
+    let mut rng = thread_rng();
+
+    let input_random_matrix: DMatrix<f64> =
+        DMatrix::from_iterator(2, 1, StandardNormal.sample_iter(&mut rng).take(2));
+
+    // let gpu_random_matrix: OMatrix<f64, U2, U1> = OMatrix::from_fn(|_, _| rng.sample(StandardNormal));
+    let gpu_random_matrix: DMatrix<f64> =
+        DMatrix::from_iterator(2, 1, StandardNormal.sample_iter(&mut rng).take(2));
 
     let z_sum = observation_model(&x_true) + (gpu_noise  * gpu_random_matrix);
-    let z = z_sum.generic();
+    let z = z_sum.into();
 
     let ud_sum = u + input_noise * input_random_matrix;
-    let ud = ud_sum.generic();
+    let ud = ud_sum.into();
     let xd = motion_model(xd, ud);
 
     (x_true, z, xd, ud)
