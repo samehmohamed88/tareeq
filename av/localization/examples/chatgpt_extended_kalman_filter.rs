@@ -1,5 +1,5 @@
 
-use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, OMatrix, U2, U1};
+use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, hcat};
 use std::f64::consts::PI;
 use rand::thread_rng;
 use rand::prelude::*;
@@ -145,9 +145,9 @@ fn main() {
     let x_dead_reckoning = Matrix4x1::<f64>::zeros();
 
     // history
-    let mut hx_estimate = &x_estimate;
-    let mut hx_true = &x_true;
-    let mut hx_dead_reckoning = &x_true;
+    let mut hx_estimate = Matrix4x1::<f64>::zeros();
+    let mut hx_true = Matrix4x1::<f64>::zeros();
+    let mut hx_dead_reckoning =  Matrix4x1::<f64>::zeros();
     let hz = Matrix2x1::<f64>::zeros();
 
     //Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>)
@@ -157,29 +157,14 @@ fn main() {
     let mut u : Matrix2x1<f64>  = Matrix2x1::<f64>::zeros();
 
     while (sim_time >= time) {
-        //println!("BEGIN LOOP {}", x_true);
         time += DT;
         u = calc_input();
-        //observation(xTrue, xDR, u)
+
         (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
         (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
         println!("AFTER {}", x_estimate);
-    }
 
-    // Initial state
-    // let mut x_est = Vector4::from_vec(vec![0.0, 0.0, 0.0, 0.0]); // State vector [x y yaw v]'
-    // let mut p_est: OMatrix<f64, U4, U4> = OMatrix::identity(); // State covariance matrix
-    //
-    // // Simulate sensor measurements and EKF updates
-    // for _ in 0..500 { // 50 seconds with dt = 0.1
-    //     let u = calc_input();
-    //     let z = observation_model(&motion_model(&x_est, &u)); // Simulate observation
-    //
-    //     let (new_x_est, new_p_est) = ekf_estimation(&x_est, &p_est, &z, &u, &q, &r);
-    //     x_est = new_x_est;
-    //     p_est = new_p_est;
-    //
-    //     // Here you would insert plotting or logging of the state
-    //     println!("State: {:?}", x_est);
-    // }
+        // hx_estimate = hx_estimate.hstack(&x_estimate);
+        hcat(hx_estimate, x_estimate);
+    }
 }
