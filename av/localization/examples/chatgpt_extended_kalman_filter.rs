@@ -1,9 +1,10 @@
 
-use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, hcat};
+use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
 use std::f64::consts::PI;
 use rand::thread_rng;
 use rand::prelude::*;
 use rand_distr::StandardNormal;
+use plotters::prelude::*;
 
 static DT: f64 = 0.1;
 
@@ -164,7 +165,54 @@ fn main() {
         (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
         println!("AFTER {}", x_estimate);
 
-        // hx_estimate = hx_estimate.hstack(&x_estimate);
-        hcat(hx_estimate, x_estimate);
+
+        let mut plt = Plot::new();
+
+// Clear the plot (similar to plt.cla())
+        plt.clear();
+
+// Plot the data points
+        plt.draw_series(
+            LineSeries::new(
+                hz.row(0).iter().zip(hz.row(1).iter()).map(|(x, y)| (*x, *y)),
+                &GREEN,
+            )
+                .point_size(1),
+        )?;
+
+// Plot the true values
+        plt.draw_series(LineSeries::new(
+            hx_true.row(0).iter().zip(hx_true.row(1).iter()).map(|(x, y)| (*x, *y)),
+            &BLUE,
+        ))?;
+
+// Plot the DR values
+        plt.draw_series(LineSeries::new(
+            hx_dead_reckoning.row(0).iter().zip(hx_dead_reckoning.row(1).iter()).map(|(x, y)| (*x, *y)),
+            &BLACK,
+        ))?;
+
+// Plot the estimated values
+        plt.draw_series(LineSeries::new(
+            hx_estimate.row(0).iter().zip(hx_estimate.row(1).iter()).map(|(x, y)| (*x, *y)),
+            &RED,
+        ))?;
+
+// Plot the covariance ellipse
+        plot_covariance_ellipse(&mut plt, x_estimate[(0, 0)], x_estimate[(1, 0)], &p_estimate);
+
+// Set equal aspect ratio (similar to plt.axis("equal"))
+        plt.set_aspect_ratio(AspectRatio::Equal);
+
+// Enable the grid (similar to plt.grid(True))
+        plt.configure(Chart::default().grid_style(GREEN.mix(0.1)).max_light_lines(3));
+
+// Pause for a short duration (similar to plt.pause(0.001))
+        std::thread::sleep(std::time::Duration::from_millis(1));
+
+// Show the plot
+        plt.show()?;
+
+
     }
 }
