@@ -80,45 +80,41 @@ fn observation_model(x : &Matrix4x1<f64>) -> Matrix2x1<f64>  {
     h * x
 }
 
-// fn observation_model(x: &DVector<f64>) -> DVector<f64> {
-//     DVector::from_vec(vec![x[0], x[1]]) // only observe x and y
-// }
-//
-// fn jacob_f(x: &DVector<f64>, u: &DVector<f64>) -> DMatrix<f64> {
-//     let dt = 0.1; // time tick [s]
-//     let v = u[0];
-//     let yaw = x[2];
-//     DMatrix::from_row_slice(4, 4, &[
-//         1.0, 0.0, -dt * v * yaw.sin(), dt * yaw.cos(),
-//         0.0, 1.0, dt * v * yaw.cos(), dt * yaw.sin(),
-//         0.0, 0.0, 1.0, 0.0,
-//         0.0, 0.0, 0.0, 1.0,
-//     ])
-// }
-//
-// fn jacob_h() -> DMatrix<f64> {
-//     DMatrix::from_row_slice(2, 4, &[
-//         1.0, 0.0, 0.0, 0.0,
-//         0.0, 1.0, 0.0, 0.0,
-//     ])
-// }
-//
-// fn ekf_estimation(x_est: &DVector<f64>, p_est: &DMatrix<f64>, z: &DVector<f64>, u: &DVector<f64>, q: &DMatrix<f64>, r: &DMatrix<f64>) -> (DVector<f64>, DMatrix<f64>) {
-//     // Predict
-//     let x_pred = motion_model(x_est, u);
-//     let j_f = jacob_f(x_est, u);
-//     let p_pred = &j_f * p_est * j_f.transpose() + q;
-//
-//     // Update
-//     let j_h = jacob_h();
-//     let z_pred = observation_model(&x_pred);
-//     let y = z - &z_pred;
-//     let s = &j_h * &p_pred * j_h.transpose() + r;
-//     let k = p_pred * j_h.transpose() * s.try_inverse().unwrap();
-//     let x_est = &x_pred + &k * y;
-//     let p_est = (DMatrix::identity(4, 4) - &k * j_h) * p_pred;
-//     (x_est, p_est)
-// }
+fn jacob_f(x: &Matrix4x1<f64>, u: &Matrix2x1<f64>) -> Matrix4<f64> {
+    let dt = 0.1; // time tick [s]
+    let v = u[0];
+    let yaw = x[2];
+    Matrix4::<f64>::from_row_slice(&[
+        1.0, 0.0, -dt * v * yaw.sin(), dt * yaw.cos(),
+        0.0, 1.0, dt * v * yaw.cos(), dt * yaw.sin(),
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0,
+    ])
+}
+
+fn jacob_h() -> Matrix2x4<f64> {
+    Matrix2x4::<f64>::from_row_slice( &[
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+    ])
+}
+
+fn ekf_estimation(x_est: &Matrix4x1<f64>, p_est: &Matrix4<f64>, z: &Matrix2x1<f64>, ud: &Matrix2x1<f64>, q: &Matrix4<f64>, r: &Matrix2<f64>) -> (Matrix4x1<f64>, Matrix4<f64>) {
+    // Predict
+    let x_pred = motion_model(x_est, ud);
+    let j_f = jacob_f(x_est, ud);
+    let p_pred = &j_f * p_est * j_f.transpose() + q;
+
+    // Update
+    let j_h = jacob_h();
+    let z_pred = observation_model(&x_pred);
+    let y = z - &z_pred;
+    let s = &j_h * &p_pred * j_h.transpose() + r;
+    let k = p_pred * j_h.transpose() * s.try_inverse().unwrap();
+    let x_est = &x_pred + &k * y;
+    let p_est = (Matrix4::identity() - &k * j_h) * p_pred;
+    (x_est, p_est)
+}
 
 fn main() {
     // Define covariance matrices
@@ -143,7 +139,7 @@ fn main() {
 
     let mut x_estimate = Matrix4x1::<f64>::zeros();
     let mut x_true= Matrix4x1::<f64>::zeros();
-    let mut p_estimate = Matrix4x1::<f64>::identity();
+    let mut p_estimate = Matrix4::<f64>::identity();
     // println!("P estimate : {}", p_estimate)
 
     let x_dead_reckoning = Matrix4x1::<f64>::zeros();
@@ -158,14 +154,16 @@ fn main() {
     let mut z_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
     let mut xd : Matrix4x1<f64> = Matrix4x1::<f64>::zeros();
     let mut ud_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
+    let mut u : Matrix2x1<f64>  = Matrix2x1::<f64>::zeros();
 
     while (sim_time >= time) {
         //println!("BEGIN LOOP {}", x_true);
         time += DT;
-        let u = calc_input();
+        u = calc_input();
         //observation(xTrue, xDR, u)
         (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
-        // println!("AFTER {}", x_true);
+        (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
+        println!("AFTER {}", x_estimate);
     }
 
     // Initial state
