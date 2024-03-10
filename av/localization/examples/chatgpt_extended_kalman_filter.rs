@@ -26,7 +26,7 @@ fn observation(
     gpu_noise: &Matrix2<f64>
 ) -> (Matrix4x1<f64>, Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>) {
 
-    println!("BEFORE {}", x_true);
+    // println!("BEFORE {}", x_true);
 
     let x_true = motion_model(x_true, u);
 
@@ -154,12 +154,18 @@ fn main() {
     let mut hx_dead_reckoning = &x_true;
     let hz = Matrix2x1::<f64>::zeros();
 
+    //Matrix2x1<f64>, Matrix4x1<f64>, Matrix2x1<f64>)
+    let mut z_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
+    let mut xd : Matrix4x1<f64> = Matrix4x1::<f64>::zeros();
+    let mut ud_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
+
     while (sim_time >= time) {
+        //println!("BEGIN LOOP {}", x_true);
         time += DT;
         let u = calc_input();
         //observation(xTrue, xDR, u)
-        let (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
-        println!("AFTER {}", x_true);
+        (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
+        // println!("AFTER {}", x_true);
     }
 
     // Initial state
