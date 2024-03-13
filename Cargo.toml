@@ -1,7 +1,6 @@
 [workspace]
 
 members = [
-#     "av/localization",
+     "av/localization",
      "samples/plotters-gtk-simple",
-#     "samples/plotters-gtk-demo",
 ]
