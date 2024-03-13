@@ -1,5 +1,7 @@
 [workspace]
 
-members = [ "av/planning", "av/routing", "av/localization",
-    "samples/google_maps", "samples/plotters",
+members = [
+#     "av/localization",
+     "samples/plotters-gtk-simple",
+#     "samples/plotters-gtk-demo",
 ]

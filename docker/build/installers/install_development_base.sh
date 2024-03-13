@@ -8,7 +8,7 @@ apt-get -y update \
   && apt-get -y install curl wget git cmake build-essential clang sudo wget libxtst6 libxt6 libeigen3-dev \
                 libxrender1 libxrender-dev libxi6 libxi-dev golang libxrandr-dev libxcursor-dev \
                 libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev \
-                libdrm-dev libgbm-dev \
+                libdrm-dev libgbm-dev libgtk-4-dev \
   && ln -s /usr/lib/x86_64-linux-gnu/libFLAC.so.8.3.0 /usr/lib/x86_64-linux-gnu/libFLAC.so.12 \
   && groupadd --gid $USERID $USERNAME \
   && useradd -s /bin/bash --uid $USERID --gid $USERID -m $USERNAME \
