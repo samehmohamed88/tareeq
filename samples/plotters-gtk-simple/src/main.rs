@@ -55,14 +55,14 @@ fn build_ui(app: &gtk::Application) -> (DrawingArea, Rc<RefCell<Vec<(f64, f64)>>
 
 fn update_data_and_redraw(drawing_area: DrawingArea, data: Rc<RefCell<Vec<(f64, f64)>>>){
     let mut x = 0f64;
-    glib::timeout_add_seconds_local(1, move || {
+    glib::timeout_add_local(std::time::Duration::from_millis(100), move || { // Updates every 100 milliseconds
         // Simulate new data
-        x += 1.0;
+        x += 0.1; // Adjust this value as needed for your simulation speed
         let y = (x / 10.0).sin();
         data.borrow_mut().push((x, y));
 
         // Keep the data vector within a reasonable size
-        if x > 10.0 {
+        if data.borrow().len() > 100 { // Assuming we want to display the last 100 points
             data.borrow_mut().remove(0);
         }
 
