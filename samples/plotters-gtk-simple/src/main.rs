@@ -1,3 +1,5 @@
+mod matrix_plot;
+
 use gtk::{glib, prelude::*, Application, ApplicationWindow, DrawingArea};
 use plotters::prelude::*;
 use plotters_cairo::CairoBackend;

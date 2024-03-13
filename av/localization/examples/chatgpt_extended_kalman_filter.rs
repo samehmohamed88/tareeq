@@ -1,12 +1,14 @@
-use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
+use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1, OMatrix};
 use std::f64::consts::PI;
 use rand::thread_rng;
 use rand::prelude::*;
 use rand_distr::StandardNormal;
 
+use gtk::{glib, prelude::*, Application, ApplicationWindow, DrawingArea};
 use plotters::prelude::*;
-use gtk::{prelude::*, DrawingArea};
 use plotters_cairo::CairoBackend;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 const DT: f64 = 0.1;
 
@@ -119,7 +121,7 @@ fn ekf_estimation(x_est: &Matrix4x1<f64>, p_est: &Matrix4<f64>, z: &Matrix2x1<f6
     (x_est, p_est)
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn run_ekf_estimate() -> (Matrix4x1<f64>, Matrix4<f64>) {
     // Define covariance matrices
     let q_matrix = Matrix4::from_diagonal(&Vector4::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
     // Square each element individually
@@ -159,56 +161,80 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut ud_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
     let mut u : Matrix2x1<f64>  = Matrix2x1::<f64>::zeros();
 
+    u = calc_input();
+    (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
+    (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
+    println!("AFTER {}", x_estimate);
 
+    (x_estimate, p_estimate)
+}
 
-    while (sim_time >= time) {
-        time += DT;
-        u = calc_input();
-
-        (x_true, z_sum, xd, ud_sum) = observation(&x_true, &x_dead_reckoning, &u, &input_noise, &gps_noise);
-        (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
-        println!("AFTER {}", x_estimate);
-
-    }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let application = Application::new(Some("com.example.Graph"), Default::default());
+    application.connect_activate(|app| {
+        let (drawing_area, data) = build_ui(app);
+        update_data_and_redraw(drawing_area, data);
+    });
+    application.run();
     Ok(())
 }
 
-fn build_ui(app: &gtk::Application) {
-    let window = gtk::ApplicationWindow::new(app);
-    // window.set_title("Sine and Cosine Graph");
+
+fn build_ui(app: &gtk::Application) -> (DrawingArea, Rc<RefCell<Matrix4x1<f64>>>){
+    let window = ApplicationWindow::new(app);
     window.set_default_size(800, 600);
 
     let drawing_area = DrawingArea::new();
     window.set_child(Some(&drawing_area));
 
-    drawing_area.set_draw_func(|_, cr, width, height| {
+    // Initialize data
+    // let data = Rc::new(RefCell::new(vec![]));
+    let (x_estimate, p_estimate) = run_ekf_estimate();
+    let data = Rc::new(RefCell::new(x_estimate));
+
+    let data_clone = data.clone();
+    drawing_area.set_draw_func(move |_, cr, width, height| {
         let root = CairoBackend::new(cr, (800, 600)).unwrap().into_drawing_area();
         root.fill(&WHITE).unwrap();
+        let data = data_clone.borrow();
 
-        let mut chart = ChartBuilder::on(&root)
-            .margin(5)
-            .x_label_area_size(30)
-            .y_label_area_size(30)
-            .build_cartesian_2d(-3.14..3.14, -1.5..1.5)
-            .unwrap();
+        if !data.is_empty() {
+            let mut chart = ChartBuilder::on(&root)
+                .margin(5)
+                .x_label_area_size(30)
+                .y_label_area_size(30)
+                .build_cartesian_2d(0f64..10f64, -1.5f64..1.5f64)
+                .unwrap();
 
-        chart.configure_mesh().draw().unwrap();
+            chart.configure_mesh().draw().unwrap();
 
-        chart
-            .draw_series(LineSeries::new(
-                (-314..314).map(|x| x as f64 / 100.0).map(|x| (x, x.sin())),
+            chart.draw_series(LineSeries::new(
+                data.iter().cloned(),
                 &RED,
-            ))
-            .unwrap();
-
-        chart
-            .draw_series(LineSeries::new(
-                (-314..314).map(|x| x as f64 / 100.0).map(|x| (x, x.cos())),
-                &BLUE,
-            ))
-            .unwrap();
+            )).unwrap();
+        }
     });
 
     window.show();
+
+    (drawing_area, data)
 }
 
+fn update_data_and_redraw(drawing_area: DrawingArea, data: Rc<RefCell<Matrix4x1<f64>>>){
+    let mut x = 0f64;
+    glib::timeout_add_local(std::time::Duration::from_millis(100), move || { // Updates every 100 milliseconds
+        // Simulate new data
+        x += 0.1; // Adjust this value as needed for your simulation speed
+        let y = (x / 10.0).sin();
+        // data.borrow_mut().push((x, y));
+
+        // Keep the data vector within a reasonable size
+        // if data.borrow().len() > 100 { // Assuming we want to display the last 100 points
+        //     data.borrow_mut().remove(0);
+        // }
+
+        drawing_area.queue_draw();
+
+        glib::Continue(true)
+    });
+}

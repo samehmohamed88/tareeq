@@ -1054,6 +1054,7 @@ name = "plotters-gtk-simple"
 version = "0.1.0"
 dependencies = [
  "gtk4",
+ "nalgebra",
  "plotters",
  "plotters-cairo",
 ]

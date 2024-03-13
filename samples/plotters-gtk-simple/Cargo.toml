@@ -3,13 +3,12 @@ name = "plotters-gtk-simple"
 version = "0.1.0"
 edition = "2018"
 
-#[dependencies]
-#gtk = { package = "gtk4", version = "0.6" }
-#plotters = "0.3.1" # Use the latest version available
-#plotters-cairo = "0.5.0" # Ensure this matches your plotters version compatibility
-#cairo-rs = "0.19.2" # Use the latest version available
+[[bin]]
+name = "matrix_plot"
+path = "src/matrix_plot.rs"
 
 [dependencies]
+nalgebra = "0.32.4"
 gtk = { package = "gtk4", version = "0.6" }
 
 [dependencies.plotters]
@@ -20,3 +19,4 @@ git = "https://github.com/plotters-rs/plotters"
 [dependencies.plotters-cairo]
 git = "https://github.com/plotters-rs/plotters-cairo"
 rev = "515ab36f59ff28f1c0db7d98b410d51a7bbf9677"
+
