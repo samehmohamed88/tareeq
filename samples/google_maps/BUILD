@@ -14,7 +14,7 @@ rust_binary(
 #
 #rust_binary(
 #    name = "number_printer",
-#    srcs = ["src/main.rs"],
+#    srcs = ["src/popup_window"],
 #    edition = "2018",
 #    deps = [
 #        "//cargo_workspace/printer",

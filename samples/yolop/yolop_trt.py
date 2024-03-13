@@ -348,7 +348,7 @@ if __name__ == "__main__":
     engine_file_path = "build/yolop.trt"
 
     print("usage: xxx <engine file> <plugin file> <image dir>")
-    print("[WARN] preaprea you image_dir, such as: samples, or /home/user/jetson/tmp/YOLOP/inference/images")
+    print("[WARN] preaprea you image_dir, such as: plotters, or /home/user/jetson/tmp/YOLOP/inference/images")
     IMAGE_DIR =  "/home/user/jetson/tmp/YOLOP/inference/images"
 
     if len(sys.argv) > 1:

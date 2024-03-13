@@ -1,12 +1,69 @@
-
 use nalgebra::{DMatrix, Vector2, Vector4, Matrix4, Matrix2, Matrix4x2, Matrix2x4, Matrix4x1, Matrix2x1};
 use std::f64::consts::PI;
 use rand::thread_rng;
 use rand::prelude::*;
 use rand_distr::StandardNormal;
 use plotters::prelude::*;
+use minifb::{Key, KeyRepeat, Window, WindowOptions};
+use plotters::prelude::*;
+use plotters_bitmap::bitmap_pixel::BGRXPixel;
+use plotters_bitmap::BitMapBackend;
+use std::collections::VecDeque;
+use std::error::Error;
+use std::time::SystemTime;
+use std::borrow::{Borrow, BorrowMut};
 
-static DT: f64 = 0.1;
+
+const DT: f64 = 0.1;
+const W: usize = 800;
+const H: usize = 600;
+
+const SAMPLE_RATE: f64 = 10_000.0;
+const FRAME_RATE: f64 = 30.0;
+
+struct BufferWrapper(Vec<u32>);
+impl Borrow<[u8]> for BufferWrapper {
+    fn borrow(&self) -> &[u8] {
+        // Safe for alignment: align_of(u8) <= align_of(u32)
+        // Safe for cast: u32 can be thought of as being transparent over [u8; 4]
+        unsafe {
+            std::slice::from_raw_parts(
+                self.0.as_ptr() as *const u8,
+                self.0.len() * 4
+            )
+        }
+    }
+}
+impl BorrowMut<[u8]> for BufferWrapper {
+    fn borrow_mut(&mut self) -> &mut [u8] {
+        // Safe for alignment: align_of(u8) <= align_of(u32)
+        // Safe for cast: u32 can be thought of as being transparent over [u8; 4]
+        unsafe {
+            std::slice::from_raw_parts_mut(
+                self.0.as_mut_ptr() as *mut u8,
+                self.0.len() * 4
+            )
+        }
+    }
+}
+impl Borrow<[u32]> for BufferWrapper {
+    fn borrow(&self) -> &[u32] {
+        self.0.as_slice()
+    }
+}
+impl BorrowMut<[u32]> for BufferWrapper {
+    fn borrow_mut(&mut self) -> &mut [u32] {
+        self.0.as_mut_slice()
+    }
+}
+
+fn get_window_title(fx: f64, fy: f64, iphase: f64) -> String {
+    format!(
+        "x={:.1}Hz, y={:.1}Hz, phase={:.1} +/-=Adjust y 9/0=Adjust x <Esc>=Exit",
+        fx, fy, iphase
+    )
+}
+
 
 fn deg2rad(deg: f64) -> f64 {
     deg * PI / 180.0
@@ -117,7 +174,7 @@ fn ekf_estimation(x_est: &Matrix4x1<f64>, p_est: &Matrix4<f64>, z: &Matrix2x1<f6
     (x_est, p_est)
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define covariance matrices
     let q_matrix = Matrix4::from_diagonal(&Vector4::from_vec(vec![0.1, 0.1, deg2rad(1.0), 1.0]));
     // Square each element individually
@@ -134,7 +191,7 @@ fn main() {
     let gps_noise_matrix = Matrix2::from_diagonal(&Vector2::from_vec(vec![0.5, 0.5]));
     let gps_noise = gps_noise_matrix.map(|elem: f64| elem.powi(2));
 
-    let sim_time = 50.0;
+    let sim_time = 5.0;
 
     let mut time = 0.0;
 
@@ -157,6 +214,50 @@ fn main() {
     let mut ud_sum : Matrix2x1<f64> = Matrix2x1::<f64>::zeros();
     let mut u : Matrix2x1<f64>  = Matrix2x1::<f64>::zeros();
 
+    let mut fx: f64 = 1.0;
+    let mut fy: f64 = 1.1;
+    let mut xphase: f64 = 0.0;
+    let mut yphase: f64 = 0.1;
+
+    let mut buf = BufferWrapper(vec![0u32; W * H]);
+
+    let mut window = Window::new(
+        &get_window_title(fx, fy, yphase - xphase),
+        W,
+        H,
+        WindowOptions::default(),
+    )?;
+    let cs = {
+        let root =
+            BitMapBackend::<BGRXPixel>::with_buffer_and_format(buf.borrow_mut(), (W as u32, H as u32))?
+                .into_drawing_area();
+        root.fill(&BLACK)?;
+
+        let mut chart = ChartBuilder::on(&root)
+            .margin(10)
+            .set_all_label_area_size(30)
+            .build_cartesian_2d(-1.2..1.2, -1.2..1.2)?;
+
+        chart
+            .configure_mesh()
+            .label_style(("sans-serif", 15).into_font().color(&GREEN))
+            .axis_style(&GREEN)
+            .draw()?;
+
+        let cs = chart.into_chart_state();
+        root.present()?;
+        cs
+    };
+
+    let mut data = VecDeque::new();
+    let start_ts = SystemTime::now();
+    let mut last_flushed = 0.0;
+
+    let epoch = SystemTime::now()
+        .duration_since(start_ts)
+        .unwrap()
+        .as_secs_f64();
+
     while (sim_time >= time) {
         time += DT;
         u = calc_input();
@@ -165,54 +266,94 @@ fn main() {
         (x_estimate, p_estimate) = ekf_estimation(&x_estimate, &p_estimate, &z_sum, &ud_sum, &q, &r);
         println!("AFTER {}", x_estimate);
 
+        // while window.is_open() && !window.is_key_down(Key::Escape) {
 
-        let mut plt = Plot::new();
 
-// Clear the plot (similar to plt.cla())
-        plt.clear();
+            if let Some((ts, _, _)) = data.back() {
+                if epoch - ts < 1.0 / SAMPLE_RATE {
+                    std::thread::sleep(std::time::Duration::from_secs_f64(epoch - ts));
+                    continue;
+                }
+                let mut ts = *ts;
+                while ts < epoch {
+                    ts += 1.0 / SAMPLE_RATE;
+                    let phase_x: f64 = 2.0 * ts * std::f64::consts::PI * fx + xphase;
+                    let phase_y: f64 = 2.0 * ts * std::f64::consts::PI * fy + yphase;
+                    data.push_back((ts, phase_x.sin(), phase_y.sin()));
+                }
+            }
 
-// Plot the data points
-        plt.draw_series(
-            LineSeries::new(
-                hz.row(0).iter().zip(hz.row(1).iter()).map(|(x, y)| (*x, *y)),
-                &GREEN,
-            )
-                .point_size(1),
-        )?;
+            let phase_x = 2.0 * epoch * std::f64::consts::PI * fx + xphase;
+            let phase_y = 2.0 * epoch * std::f64::consts::PI * fy + yphase;
+            data.push_back((epoch, phase_x.sin(), phase_y.sin()));
 
-// Plot the true values
-        plt.draw_series(LineSeries::new(
-            hx_true.row(0).iter().zip(hx_true.row(1).iter()).map(|(x, y)| (*x, *y)),
-            &BLUE,
-        ))?;
+            if epoch - last_flushed > 1.0 / FRAME_RATE {
+                {
+                    let root = BitMapBackend::<BGRXPixel>::with_buffer_and_format(
+                        buf.borrow_mut(),
+                        (W as u32, H as u32),
+                    )?
+                        .into_drawing_area();
+                    {
+                        let mut chart = cs.clone().restore(&root);
+                        chart.plotting_area().fill(&BLACK)?;
 
-// Plot the DR values
-        plt.draw_series(LineSeries::new(
-            hx_dead_reckoning.row(0).iter().zip(hx_dead_reckoning.row(1).iter()).map(|(x, y)| (*x, *y)),
-            &BLACK,
-        ))?;
+                        chart
+                            .configure_mesh()
+                            .bold_line_style(&GREEN.mix(0.2))
+                            .light_line_style(&TRANSPARENT)
+                            .draw()?;
 
-// Plot the estimated values
-        plt.draw_series(LineSeries::new(
-            hx_estimate.row(0).iter().zip(hx_estimate.row(1).iter()).map(|(x, y)| (*x, *y)),
-            &RED,
-        ))?;
+                        chart.draw_series(data.iter().zip(data.iter().skip(1)).map(
+                            |(&(e, x0, y0), &(_, x1, y1))| {
+                                PathElement::new(
+                                    vec![(x0, y0), (x1, y1)],
+                                    &GREEN.mix(((e - epoch) * 20.0).exp()),
+                                )
+                            },
+                        ))?;
+                    }
+                    root.present()?;
 
-// Plot the covariance ellipse
-        plot_covariance_ellipse(&mut plt, x_estimate[(0, 0)], x_estimate[(1, 0)], &p_estimate);
+                    let keys = window.get_keys_pressed(KeyRepeat::Yes);
+                    for key in keys {
+                        let old_fx = fx;
+                        let old_fy = fy;
+                        match key {
+                            Key::Equal => {
+                                fy += 0.1;
+                            }
+                            Key::Minus => {
+                                fy -= 0.1;
+                            }
+                            Key::Key0 => {
+                                fx += 0.1;
+                            }
+                            Key::Key9 => {
+                                fx -= 0.1;
+                            }
+                            _ => {
+                                continue;
+                            }
+                        }
+                        xphase += 2.0 * epoch * std::f64::consts::PI * (old_fx - fx);
+                        yphase += 2.0 * epoch * std::f64::consts::PI * (old_fy - fy);
+                        window.set_title(&get_window_title(fx, fy, yphase - xphase));
+                    }
+                }
 
-// Set equal aspect ratio (similar to plt.axis("equal"))
-        plt.set_aspect_ratio(AspectRatio::Equal);
+                window.update_with_buffer(buf.borrow(), W, H)?;
+                last_flushed = epoch;
+            }
 
-// Enable the grid (similar to plt.grid(True))
-        plt.configure(Chart::default().grid_style(GREEN.mix(0.1)).max_light_lines(3));
-
-// Pause for a short duration (similar to plt.pause(0.001))
-        std::thread::sleep(std::time::Duration::from_millis(1));
-
-// Show the plot
-        plt.show()?;
-
+            while let Some((e, _, _)) = data.front() {
+                if ((e - epoch) * 20.0).exp() > 0.1 {
+                    break;
+                }
+                data.pop_front();
+            }
+        // }
 
     }
+    Ok(())
 }
