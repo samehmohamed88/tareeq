@@ -1,6 +1,8 @@
+load("//third_party/opencv:workspace.bzl", opencv = "repo")
+load("//third_party/eigen3:workspace.bzl", eigen3 = "repo")
+
 #load("//third_party/cuda:workspace.bzl", cuda = "repo")
-##load("//third_party/carla:workspace.bzl", carla = "repo")
-#load("//third_party/opencv:workspace.bzl", opencv = "repo")
+#load("//third_party/carla:workspace.bzl", carla = "repo")
 #load("//third_party/libtorch:workspace.bzl", libtorch = "repo")
 #load("//third_party/cudnn:workspace.bzl", cudnn8 = "repo")
 #load("//third_party/tensorrt:workspace.bzl", tensorrt = "repo")
@@ -16,8 +18,9 @@
 load("//third_party/sfml:workspace.bzl", sfml = "repo")
 
 def initialize_third_party():
+    opencv()
+    eigen3()
     #    cuda()
-    #    opencv()
     #    libtorch()
     #    cudnn8()
     #    tensorrt()
@@ -25,13 +28,13 @@ def initialize_third_party():
     #    yaml_cpp()
     #    geographic_info()
 
-    #zed_ros2_interfaces()
+    #    zed_ros2_interfaces()
     #    robot_localization()
 
-    #zed()
+    #    zed()
     #    ros2_angles()
     #    ros2_vision_opencv()
     #    geographiclib()
 
     #    carla()
-    sfml()
+    #    sfml()

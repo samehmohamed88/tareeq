@@ -1,0 +1,9 @@
+cc_binary(
+    name = "extended_kalman_filter",
+    srcs = ["extended_kalman_filter.cpp"],
+    deps = [
+        "@eigen3",
+        "@opencv//:header",
+        "@opencv//:highgui",
+    ],
+)
