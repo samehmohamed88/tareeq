@@ -6,19 +6,16 @@
  ************************************************************************/
 
 #include<iostream>
+#include<random>
+#include<cmath>
+#include<Eigen/Eigen>
+#include<opencv2/opencv.hpp>
+#include<opencv2/core/core.hpp>
+#include<opencv2/highgui/highgui.hpp>
 
-#include <Eigen/Eigen>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
-#include <random>
-#include <cmath>
-#include <numbers>
-
-static constexpr float SIM_TIME = 50.0;
-static constexpr float  DT = 0.1;
-static constexpr float PI = std::numbers::pi;
+#define SIM_TIME 50.0
+#define DT 0.1
+#define PI 3.141592653
 
 
 // x_{t+1} = F@x_{t}+B@u_t

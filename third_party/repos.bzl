@@ -1,5 +1,6 @@
 load("//third_party/opencv:workspace.bzl", opencv = "repo")
 load("//third_party/eigen3:workspace.bzl", eigen3 = "repo")
+load("//third_party/rules_ros2:workspace.bzl", rules_ros2 = "repo")
 
 #load("//third_party/cuda:workspace.bzl", cuda = "repo")
 #load("//third_party/carla:workspace.bzl", carla = "repo")
@@ -20,11 +21,11 @@ load("//third_party/sfml:workspace.bzl", sfml = "repo")
 def initialize_third_party():
     opencv()
     eigen3()
+    rules_ros2()
     #    cuda()
     #    libtorch()
     #    cudnn8()
     #    tensorrt()
-    #    rules_ros2()
     #    yaml_cpp()
     #    geographic_info()
 
