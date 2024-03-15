@@ -158,7 +158,7 @@ void ekf_estimation(Eigen::Vector4d& xEst,
 
     auto xPred = motion_model(xEst, u);
     auto jF = jacob_F(xPred, u);
-    
+
     Eigen::Vector2d PPred = jF * PEst * jF.transpose() + Q;
 
     auto zPred = observation_model(xPred);
