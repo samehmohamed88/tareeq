@@ -20,6 +20,40 @@ static constexpr float SIM_TIME = 50.0;
 static constexpr float  DT = 0.1;
 static constexpr float PI = std::numbers::pi;
 
+auto make_Q() -> Eigen::Matrix4d {
+    // Using Eigen to define the matrix
+    Eigen::Matrix4d Q;
+
+    // Diagonal elements representing variances
+    Eigen::VectorXd variances(4);
+    variances(0) = 0.1;                  // variance of location on x-axis
+    variances(1) = 0.1;                  // variance of location on y-axis
+    variances(2) = 1.0 * std::numbers::pi / 180.0; // variance of yaw angle, converting degrees to radians
+    variances(3) = 1.0;                  // variance of velocity
+
+    // Squaring the variances for the covariance matrix
+    Q = variances.array().square().matrix().asDiagonal();
+
+    // Print the matrix, if needed
+    std::cout << "Covariance matrix Q:\n" << Q << std::endl;
+    return Q;
+}
+
+auto make_R() -> Eigen::Matrix2d {
+    // Using Eigen to define a 2x2 matrix
+    Eigen::Matrix2d R;
+
+    // Diagonal elements representing the observation variances
+    Eigen::Vector2d variances;
+    variances << 1.0, 1.0;
+
+    // Squaring the diagonal elements for the covariance matrix
+    R = variances.array().square().matrix().asDiagonal();
+
+    // Print the matrix, if needed
+    std::cout << "Observation covariance matrix R:\n" << R << std::endl;
+    return R;
+}
 
 // x_{t+1} = F@x_{t}+B@u_t
 Eigen::Vector4f motion_model(Eigen::Vector4f x, Eigen::Vector2f u){
@@ -111,116 +145,118 @@ void ellipse_drawing(
 
 int main(){
   float time=0.0;
+  auto Q = make_Q();
+  auto R = make_R();
 
-  // control input
-  Eigen::Vector2f u;
-  u<<1.0, 0.1;
-
-  // nosie control input
-  Eigen::Vector2f ud;
-
-  // observation z
-  Eigen::Vector2f z;
-
-  // dead reckoning
-  Eigen::Vector4f xDR;
-  xDR<<0.0,0.0,0.0,0.0;
-
-  // ground truth reading
-  Eigen::Vector4f xTrue;
-  xTrue<<0.0,0.0,0.0,0.0;
-
-  // Estimation
-  Eigen::Vector4f xEst;
-  xEst<<0.0,0.0,0.0,0.0;
-
-  std::vector<Eigen::Vector4f> hxDR;
-  std::vector<Eigen::Vector4f> hxTrue;
-  std::vector<Eigen::Vector4f> hxEst;
-  std::vector<Eigen::Vector2f> hz;
-
-  Eigen::Matrix4f PEst = Eigen::Matrix4f::Identity();
-
-  // Motional model covariance
-  Eigen::Matrix4f Q = Eigen::Matrix4f::Identity();
-  Q(0,0)=0.1 * 0.1;
-  Q(1,1)=0.1 * 0.1;
-  Q(2,2)=(1.0/180 * M_PI) * (1.0/180 * M_PI);
-  Q(3,3)=0.1 * 0.1;
-
-  // Observation model covariance
-  Eigen::Matrix2f  R = Eigen::Matrix2f::Identity();
-  R(0,0)=1.0;
-  R(1,1)=1.0;
-
-  // Motion model simulation error
-  Eigen::Matrix2f Qsim = Eigen::Matrix2f::Identity();
-  Qsim(0,0)=1.0;
-  Qsim(1,1)=(30.0/180 * M_PI) * (30.0/180 * M_PI);
-
-  // Observation model simulation error
-  Eigen::Matrix2f Rsim = Eigen::Matrix2f::Identity();
-  Rsim(0,0)=0.5 * 0.5;
-  Rsim(1,1)=0.5 * 0.5;
-
-  std::random_device rd{};
-  std::mt19937 gen{rd()};
-  std::normal_distribution<> gaussian_d{0,1};
-
-  //for visualization
-  cv::namedWindow("ekf", cv::WINDOW_NORMAL);
-  int count = 0;
-
-  while(time <= SIM_TIME){
-    time += DT;
-
-    ud(0) = u(0) + gaussian_d(gen) * Qsim(0,0);
-    ud(1) = u(1) + gaussian_d(gen) * Qsim(1,1);
-
-    xTrue = motion_model(xTrue, u);
-    xDR = motion_model(xDR, ud);
-
-    z(0) = xTrue(0) + gaussian_d(gen) * Rsim(0,0);
-    z(1) = xTrue(1) + gaussian_d(gen) * Rsim(1,1);
-
-    ekf_estimation(xEst, PEst, z, ud, Q, R);
-
-    hxDR.push_back(xDR);
-    hxTrue.push_back(xTrue);
-    hxEst.push_back(xEst);
-    hz.push_back(z);
-
-    //visualization
-    cv::Mat bg(1280,720, CV_8UC3, cv::Scalar(255,255,255));
-    for(unsigned int j=0; j<hxDR.size(); j++){
-
-      // green groundtruth
-      cv::circle(bg, cv_offset(hxTrue[j].head(2), bg.cols, bg.rows),
-                 7, cv::Scalar(0,255,0), -1);
-
-      // blue estimation
-      cv::circle(bg, cv_offset(hxEst[j].head(2), bg.cols, bg.rows),
-                 10, cv::Scalar(255,0,0), 5);
-
-      // black dead reckoning
-      cv::circle(bg, cv_offset(hxDR[j].head(2), bg.cols, bg.rows),
-                 7, cv::Scalar(0, 0, 0), -1);
-    }
-
-    // red observation
-    for(unsigned int i=0; i<hz.size(); i++){
-      cv::circle(bg, cv_offset(hz[i], bg.cols, bg.rows),
-               7, cv::Scalar(0, 0, 255), -1);
-    }
-
-    ellipse_drawing(bg, PEst.block(0,0,2,2), xEst.head(2));
-
-    cv::imshow("ekf", bg);
-    cv::waitKey(5);
-
-    // std::string int_count = std::to_string(count);
-    // cv::imwrite("./pngs/"+std::string(5-int_count.length(), '0').append(int_count)+".png", bg);
-
-    count++;
-  }
+//  // control input
+//  Eigen::Vector2f u;
+//  u<<1.0, 0.1;
+//
+//  // nosie control input
+//  Eigen::Vector2f ud;
+//
+//  // observation z
+//  Eigen::Vector2f z;
+//
+//  // dead reckoning
+//  Eigen::Vector4f xDR;
+//  xDR<<0.0,0.0,0.0,0.0;
+//
+//  // ground truth reading
+//  Eigen::Vector4f xTrue;
+//  xTrue<<0.0,0.0,0.0,0.0;
+//
+//  // Estimation
+//  Eigen::Vector4f xEst;
+//  xEst<<0.0,0.0,0.0,0.0;
+//
+//  std::vector<Eigen::Vector4f> hxDR;
+//  std::vector<Eigen::Vector4f> hxTrue;
+//  std::vector<Eigen::Vector4f> hxEst;
+//  std::vector<Eigen::Vector2f> hz;
+//
+//  Eigen::Matrix4f PEst = Eigen::Matrix4f::Identity();
+//
+//  // Motional model covariance
+//  Eigen::Matrix4f Q = Eigen::Matrix4f::Identity();
+//  Q(0,0)=0.1 * 0.1;
+//  Q(1,1)=0.1 * 0.1;
+//  Q(2,2)=(1.0/180 * M_PI) * (1.0/180 * M_PI);
+//  Q(3,3)=0.1 * 0.1;
+//
+//  // Observation model covariance
+//  Eigen::Matrix2f  R = Eigen::Matrix2f::Identity();
+//  R(0,0)=1.0;
+//  R(1,1)=1.0;
+//
+//  // Motion model simulation error
+//  Eigen::Matrix2f Qsim = Eigen::Matrix2f::Identity();
+//  Qsim(0,0)=1.0;
+//  Qsim(1,1)=(30.0/180 * M_PI) * (30.0/180 * M_PI);
+//
+//  // Observation model simulation error
+//  Eigen::Matrix2f Rsim = Eigen::Matrix2f::Identity();
+//  Rsim(0,0)=0.5 * 0.5;
+//  Rsim(1,1)=0.5 * 0.5;
+//
+//  std::random_device rd{};
+//  std::mt19937 gen{rd()};
+//  std::normal_distribution<> gaussian_d{0,1};
+//
+//  //for visualization
+//  cv::namedWindow("ekf", cv::WINDOW_NORMAL);
+//  int count = 0;
+//
+//  while(time <= SIM_TIME){
+//    time += DT;
+//
+//    ud(0) = u(0) + gaussian_d(gen) * Qsim(0,0);
+//    ud(1) = u(1) + gaussian_d(gen) * Qsim(1,1);
+//
+//    xTrue = motion_model(xTrue, u);
+//    xDR = motion_model(xDR, ud);
+//
+//    z(0) = xTrue(0) + gaussian_d(gen) * Rsim(0,0);
+//    z(1) = xTrue(1) + gaussian_d(gen) * Rsim(1,1);
+//
+//    ekf_estimation(xEst, PEst, z, ud, Q, R);
+//
+//    hxDR.push_back(xDR);
+//    hxTrue.push_back(xTrue);
+//    hxEst.push_back(xEst);
+//    hz.push_back(z);
+//
+//    //visualization
+//    cv::Mat bg(1280,720, CV_8UC3, cv::Scalar(255,255,255));
+//    for(unsigned int j=0; j<hxDR.size(); j++){
+//
+//      // green groundtruth
+//      cv::circle(bg, cv_offset(hxTrue[j].head(2), bg.cols, bg.rows),
+//                 7, cv::Scalar(0,255,0), -1);
+//
+//      // blue estimation
+//      cv::circle(bg, cv_offset(hxEst[j].head(2), bg.cols, bg.rows),
+//                 10, cv::Scalar(255,0,0), 5);
+//
+//      // black dead reckoning
+//      cv::circle(bg, cv_offset(hxDR[j].head(2), bg.cols, bg.rows),
+//                 7, cv::Scalar(0, 0, 0), -1);
+//    }
+//
+//    // red observation
+//    for(unsigned int i=0; i<hz.size(); i++){
+//      cv::circle(bg, cv_offset(hz[i], bg.cols, bg.rows),
+//               7, cv::Scalar(0, 0, 255), -1);
+//    }
+//
+//    ellipse_drawing(bg, PEst.block(0,0,2,2), xEst.head(2));
+//
+//    cv::imshow("ekf", bg);
+//    cv::waitKey(5);
+//
+//    // std::string int_count = std::to_string(count);
+//    // cv::imwrite("./pngs/"+std::string(5-int_count.length(), '0').append(int_count)+".png", bg);
+//
+//    count++;
+//  }
 }
