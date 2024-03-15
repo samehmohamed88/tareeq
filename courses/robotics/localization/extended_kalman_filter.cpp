@@ -17,7 +17,7 @@
 #include <tuple>
 
 static constexpr double SIM_TIME = 50.0;
-static constexpr double DT = 0.1;
+static constexpr double DT = 0.01;
 
 auto make_2x2_diagonal(const double x0, const double x1) -> Eigen::Matrix2d
 {
@@ -42,7 +42,7 @@ auto make_Q() -> Eigen::Matrix4d
     variances << 0.1,                   // variance of location on x-axis
         0.1,                            // variance of location on y-axis
         1.0 * std::numbers::pi / 180.0, // variance of yaw angle, converting degrees to radians
-        1.0;                            // variance of velocity
+        0.1;                            // variance of velocity
 
     // Squaring the variances for the covariance matrix
     Q = variances.array().square().matrix().asDiagonal();
@@ -223,9 +223,9 @@ int main()
         ekf_estimation(xEst, PEst, z, ud);
 
          // Visualization
-        cv::Point truePos(xTrue(0), xTrue(1));
-        cv::Point estPos(xEst(0), xEst(1));
-        cv::Point drPos(xDeadReckoning(0), xDeadReckoning(1));
+        cv::Point truePos(xTrue(0) * 20 + 300, xTrue(1)* 20 + 300);
+        cv::Point estPos(xEst(0)* 20 + 300, xEst(1)* 20 + 300);
+        cv::Point drPos(xDeadReckoning(0)* 20 + 300, xDeadReckoning(1)* 20 + 300);
 
         cv::circle(image, truePos, 2, cv::Scalar(255, 0, 0), cv::FILLED); // Blue for true position
         cv::circle(image, estPos, 2, cv::Scalar(0, 0, 255), cv::FILLED); // Red for estimated position
