@@ -7,3 +7,13 @@ cc_binary(
         "@opencv//:highgui",
     ],
 )
+
+cc_binary(
+    name = "orig.extended_kalman_filter",
+    srcs = ["orig.extended_kalman_filter.cpp"],
+    deps = [
+        "@eigen3",
+        "@opencv//:header",
+        "@opencv//:highgui",
+    ],
+)
