@@ -85,7 +85,7 @@ auto make_jacob_H() -> Eigen::Matrix<double, 2, 4>
 
 /// @brief Jacobian of Motion Model
 ///
-///    motion model
+///    motion model is
 ///    x_{t+1} = x_t+v*dt*cos(yaw)
 ///    y_{t+1} = y_t+v*dt*sin(yaw)
 ///    yaw_{t+1} = yaw_t+omega*dt
@@ -137,55 +137,38 @@ auto motion_model(const Eigen::Vector4d& x, const Eigen::Vector2d& u) -> Eigen::
 
     return F_ * x + B_ * u;
 };
-//void ekf_estimation(Eigen::Vector4f& xEst,
-//                    Eigen::Matrix4f& PEst,
-//                    Eigen::Vector2f z,
-//                    Eigen::Vector2f u,
-//                    Eigen::Matrix4f Q,
-//                    Eigen::Matrix2f R)
-//{
-//    Eigen::Vector4f xPred = motion_model(xEst, u);
-//    Eigen::Matrix4f jF = jacobF(xPred, u);
-//    Eigen::Matrix4f PPred = jF * PEst * jF.transpose() + Q;
-//
-//    Eigen::Matrix<float, 2, 4> jH = jacobH();
-//    Eigen::Vector2f zPred = observation_model(xPred);
-//    Eigen::Vector2f y = z - zPred;
-//    Eigen::Matrix2f S = jH * PPred * jH.transpose() + R;
-//    Eigen::Matrix<float, 4, 2> K = PPred * jH.transpose() * S.inverse();
-//    xEst = xPred + K * y;
-//    PEst = (Eigen::Matrix4f::Identity() - K * jH) * PPred;
-//};
-
 
 // observation mode H
 auto observation_model(const Eigen::Vector4d& x) -> Eigen::Vector2d
 {
     Eigen::Matrix<double, 2, 4> H_;
     H_ << 1.0, 0.0, 0.0, 0.0,
-          0.0, 1.0, 0.0, 0.0;
+        0.0, 1.0, 0.0, 0.0;
     return H_ * x;
 };
 
-//void ekf_estimation(Eigen::Vector4f& xEst,
-//                    Eigen::Matrix4f& PEst,
-//                    Eigen::Vector2f z,
-//                    Eigen::Vector2f u,
-//                    Eigen::Matrix4f Q,
-//                    Eigen::Matrix2f R)
-//{
-//    Eigen::Vector4f xPred = motion_model(xEst, u);
-//    Eigen::Matrix4f jF = jacobF(xPred, u);
-//    Eigen::Matrix4f PPred = jF * PEst * jF.transpose() + Q;
-//
-//    Eigen::Matrix<float, 2, 4> jH = jacobH();
-//    Eigen::Vector2f zPred = observation_model(xPred);
-//    Eigen::Vector2f y = z - zPred;
-//    Eigen::Matrix2f S = jH * PPred * jH.transpose() + R;
-//    Eigen::Matrix<float, 4, 2> K = PPred * jH.transpose() * S.inverse();
-//    xEst = xPred + K * y;
-//    PEst = (Eigen::Matrix4f::Identity() - K * jH) * PPred;
-//};
+void ekf_estimation(Eigen::Vector4d& xEst,
+                    Eigen::Matrix4d& PEst,
+                    const Eigen::Vector2d& z,
+                    const Eigen::Vector2d& u)
+{
+    auto static const Q = make_Q();
+    auto static const R = make_R();
+    auto static const jH = make_jacob_H();
+
+    auto xPred = motion_model(xEst, u);
+    auto jF = jacob_F(xPred, u);
+    
+    Eigen::Vector2d PPred = jF * PEst * jF.transpose() + Q;
+
+    auto zPred = observation_model(xPred);
+    auto y = z - zPred;
+    Eigen::Matrix<double, 4, 2> S = jH * PPred * jH.transpose() + R;
+    Eigen::Matrix<double, 4, 2> K = PPred * jH.transpose() * S.inverse();
+    xEst = xPred + K * y;
+    PEst = (Eigen::Matrix4f::Identity() - K * jH) * PPred;
+};
+
 
 cv::Point2i cv_offset(Eigen::Vector2f e_p, int image_width = 2000, int image_height = 2000)
 {
@@ -220,8 +203,7 @@ int main()
 {
     float time = 0.0;
 
-    auto const Q = make_Q();
-    auto const R = make_R();
+
     auto const INPUT_NOISE = make_input_noise();
     auto GPU_NOISE = make_gpu_noise();
 
