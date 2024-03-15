@@ -8,7 +8,7 @@
 #include <Eigen/Eigen>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc.hpp> // For drawing functions
 
 #include <cmath>
 #include <iostream>
@@ -153,8 +153,7 @@ Eigen::Matrix<double, 2, 1> randomNormalVector()
 
 auto observation(Eigen::Matrix<double, 4, 1>& xTrue,
                  Eigen::Matrix<double, 4, 1>& xDeadReckoning,
-                 const Eigen::Matrix<double, 2, 1>& u)
-    -> std::tuple<Eigen::Matrix<double, 2, 1>, Eigen::Matrix<double, 2, 1>>
+                 Eigen::Matrix<double, 2, 1>& u) -> std::tuple<Eigen::Matrix<double, 2, 1>, Eigen::Matrix<double, 2, 1>>
 {
     auto static const GPU_NOISE = make_gpu_noise();
     auto static const INPUT_NOISE = make_input_noise();
@@ -185,10 +184,9 @@ void ekf_estimation(Eigen::Matrix<double, 4, 1>& xEst,
     motion_model(xPred, u);
 
     auto jF = jacob_F(xEst, u);
-
     auto PPred = jF * PEst * jF.transpose() + Q;
 
-    auto zPred = observation_model(xEst);
+    auto zPred = observation_model(xPred);
 
     auto y = z - zPred;
     auto S = jH * PPred * jH.transpose() + R;
@@ -205,13 +203,18 @@ int main()
     Eigen::Matrix<double, 4, 1> xEst = Eigen::Matrix<double, 4, 1>::Zero();
     Eigen::Matrix<double, 4, 1> xTrue = Eigen::Matrix<double, 4, 1>::Zero();
     Eigen::Matrix4d PEst = Eigen::Matrix4d::Identity();
+
     Eigen::Matrix<double, 4, 1> xDeadReckoning = Eigen::Matrix<double, 4, 1>::Zero();
+
+    // Visualization setup
+    cv::Mat image(1920, 1080, CV_8UC3, cv::Scalar(255, 255, 255)); // White background
+    cv::namedWindow("Localization", cv::WINDOW_AUTOSIZE);
 
     while (SIM_TIME >= time) {
         time += DT;
 
         // control input
-        auto const u = calc_input();
+        auto u = calc_input();
 
         // get observation and apply noise to input
         auto [z, ud] = observation(xTrue, xDeadReckoning, u);
@@ -219,6 +222,20 @@ int main()
         // apply ekf to update x and p estimates
         ekf_estimation(xEst, PEst, z, ud);
 
+         // Visualization
+        cv::Point truePos(xTrue(0), xTrue(1));
+        cv::Point estPos(xEst(0), xEst(1));
+        cv::Point drPos(xDeadReckoning(0), xDeadReckoning(1));
+
+        cv::circle(image, truePos, 2, cv::Scalar(255, 0, 0), cv::FILLED); // Blue for true position
+        cv::circle(image, estPos, 2, cv::Scalar(0, 0, 255), cv::FILLED); // Red for estimated position
+        cv::circle(image, drPos, 2, cv::Scalar(0, 255, 0), cv::FILLED); // Green for dead reckoning
+
+        cv::imshow("Localization", image);
+        cv::waitKey(1); // Refresh display
+
         std::cout << "updated position " << xEst << std::endl;
     }
+    cv::waitKey(0); // Wait for a key press before exiting
+    return 0;
 }
