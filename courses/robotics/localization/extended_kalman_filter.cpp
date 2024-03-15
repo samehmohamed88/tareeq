@@ -18,7 +18,6 @@
 
 static constexpr double SIM_TIME = 50.0;
 static constexpr double DT = 0.1;
-static constexpr double PI = std::numbers::pi;
 
 auto make_2x2_diagonal(const double x0, const double x1) -> Eigen::Matrix2d
 {
@@ -120,7 +119,7 @@ Eigen::Vector2d calc_input()
 }
 
 // x_{t+1} = F @ x_{t} + B @ u_{t}
-auto motion_model(Eigen::Matrix<double, 4, 1> &x, const Eigen::Matrix<double, 2, 1> &u)
+auto motion_model(Eigen::Matrix<double, 4, 1>& x, const Eigen::Matrix<double, 2, 1>& u)
 {
     Eigen::Matrix4d F_;
     F_ << 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0;
@@ -131,16 +130,17 @@ auto motion_model(Eigen::Matrix<double, 4, 1> &x, const Eigen::Matrix<double, 2,
     x = F_ * x + B_ * u;
 }
 
-auto observation_model(const Eigen::Matrix<double, 4, 1> &x) -> Eigen::Matrix<double, 2, 1>
+auto observation_model(const Eigen::Matrix<double, 4, 1>& x) -> Eigen::Matrix<double, 2, 1>
 {
     Eigen::Matrix<double, 2, 4> H_;
     H_ << 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0;
     return H_ * x;
 }
 
-Eigen::Matrix<double, 2, 1> randomNormalVector() {
-    std::random_device rd;  // Obtain a random number from hardware
-    std::mt19937 gen(rd()); // Seed the generator
+Eigen::Matrix<double, 2, 1> randomNormalVector()
+{
+    std::random_device rd;                      // Obtain a random number from hardware
+    std::mt19937 gen(rd());                     // Seed the generator
     std::normal_distribution<> distr(0.0, 1.0); // Mean 0.0, standard deviation 1.0
 
     Eigen::Matrix<double, 2, 1> result;
@@ -151,9 +151,10 @@ Eigen::Matrix<double, 2, 1> randomNormalVector() {
     return result;
 }
 
-auto observation(Eigen::Matrix<double, 4, 1> &xTrue,
-                 Eigen::Matrix<double, 4, 1> &xDeadReckoning,
-                 const Eigen::Matrix<double, 2, 1> &u) -> std::tuple< Eigen::Matrix<double, 2, 1>,  Eigen::Matrix<double, 2, 1>>
+auto observation(Eigen::Matrix<double, 4, 1>& xTrue,
+                 Eigen::Matrix<double, 4, 1>& xDeadReckoning,
+                 const Eigen::Matrix<double, 2, 1>& u)
+    -> std::tuple<Eigen::Matrix<double, 2, 1>, Eigen::Matrix<double, 2, 1>>
 {
     auto static const GPU_NOISE = make_gpu_noise();
     auto static const INPUT_NOISE = make_input_noise();
@@ -161,17 +162,20 @@ auto observation(Eigen::Matrix<double, 4, 1> &xTrue,
     // update xTrue by applying the motion model
     motion_model(xTrue, u);
 
-    auto z = observation_model(xTrue) + GPU_NOISE * randomNormalVector();
+    Eigen::Matrix<double, 2, 1> z = observation_model(xTrue) + GPU_NOISE * randomNormalVector();
 
     // add noise to input
-    auto ud = u + INPUT_NOISE * randomNormalVector();
+    Eigen::Matrix<double, 2, 1> ud = u + INPUT_NOISE * randomNormalVector();
 
     motion_model(xDeadReckoning, ud);
 
     return {z, ud};
 }
 
-void ekf_estimation(Eigen::Matrix<double, 4, 1> &xEst, Eigen::Matrix<double, 4, 4> &PEst, const Eigen::Matrix<double, 2, 1> &z, const Eigen::Matrix<double, 2, 1> &u)
+void ekf_estimation(Eigen::Matrix<double, 4, 1>& xEst,
+                    Eigen::Matrix<double, 4, 4>& PEst,
+                    const Eigen::Matrix<double, 2, 1>& z,
+                    const Eigen::Matrix<double, 2, 1>& u)
 {
     auto static const Q = make_Q();
     auto static const R = make_R();
