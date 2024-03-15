@@ -19,6 +19,19 @@ static constexpr float SIM_TIME = 50.0;
 static constexpr float DT = 0.1;
 static constexpr float PI = std::numbers::pi;
 
+auto make_2x2_diagonal(const double x0, const double x1) -> Eigen::Matrix2d
+{
+    // Using Eigen to define a 2x2 matrix
+    Eigen::Matrix2d matrix2D;
+
+    Eigen::Vector2d vector2D;
+    vector2D << x0, x1;
+
+    // Squaring the diagonal elements for the covariance matrix
+    matrix2D = vector2D.array().square().matrix().asDiagonal();
+    return matrix2D;
+}
+
 auto make_Q() -> Eigen::Matrix4d
 {
     // Using Eigen to define the matrix
@@ -41,19 +54,25 @@ auto make_Q() -> Eigen::Matrix4d
 
 auto make_R() -> Eigen::Matrix2d
 {
-    // Using Eigen to define a 2x2 matrix
-    Eigen::Matrix2d R;
-
     // Diagonal elements representing the observation variances
-    Eigen::Vector2d variances;
-    variances << 1.0, 1.0;
-
-    // Squaring the diagonal elements for the covariance matrix
-    R = variances.array().square().matrix().asDiagonal();
+    Eigen::Matrix2d R = make_2x2_diagonal(1.0, 1.0);
 
     // Print the matrix, if needed
     std::cout << "Observation covariance matrix R:\n" << R << std::endl;
     return R;
+}
+
+auto make_input_noise() -> Eigen::Matrix2d
+{
+    double linear_noise = 1.0;                 // Linear noise
+    double angular_noise = 30.0 * std::numbers::pi / 180.0; // Convert degrees to radians for angular noise
+
+    return make_2x2_diagonal(linear_noise, angular_noise);
+}
+
+auto make_gpu_noise() -> Eigen::Matrix2d
+{
+    return make_2x2_diagonal(0.5, 0.5);
 }
 
 Eigen::Vector2d calc_input()
@@ -158,8 +177,10 @@ void ellipse_drawing(cv::Mat bg_img,
 int main()
 {
     float time = 0.0;
+
     auto const Q = make_Q();
     auto const R = make_R();
+    auto const INPUT_NOISE = make_input_noise();
 
     //  // control input
     //  Eigen::Vector2f u;
