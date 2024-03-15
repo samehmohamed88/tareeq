@@ -222,15 +222,17 @@ int main()
         // apply ekf to update x and p estimates
         ekf_estimation(xEst, PEst, z, ud);
 
-         // Visualization
-        cv::Point truePos(xTrue(0) * 20 + 300, xTrue(1)* 20 + 300);
-        cv::Point estPos(xEst(0)* 20 + 300, xEst(1)* 20 + 300);
-        cv::Point drPos(xDeadReckoning(0)* 20 + 300, xDeadReckoning(1)* 20 + 300);
+        // Visualization
+        cv::Point zPos(z(0) * 20 + 300, z(1) * 20 + 300);
+        cv::Point truePos(xTrue(0) * 20 + 300, xTrue(1) * 20 + 300);
+        cv::Point estPos(xEst(0) * 20 + 300, xEst(1) * 20 + 300);
+        cv::Point drPos(xDeadReckoning(0) * 20 + 300, xDeadReckoning(1) * 20 + 300);
 
+        cv::circle(image, zPos, 1, cv::Scalar(0, 255, 0), cv::FILLED);    // green for observation
         cv::circle(image, truePos, 2, cv::Scalar(255, 0, 0), cv::FILLED); // Blue for true position
-        cv::circle(image, estPos, 2, cv::Scalar(0, 0, 255), cv::FILLED); // Red for estimated position
-        cv::circle(image, drPos, 2, cv::Scalar(0, 255, 0), cv::FILLED); // Green for dead reckoning
-
+        cv::circle(image, estPos, 2, cv::Scalar(0, 0, 255), cv::FILLED);  // Red for estimated position
+        cv::circle(image, drPos, 2, cv::Scalar(0, 0, 0), cv::FILLED);     // black for dead reckoning
+        
         cv::imshow("Localization", image);
         cv::waitKey(1); // Refresh display
 
