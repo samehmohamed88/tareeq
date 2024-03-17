@@ -6,7 +6,7 @@ def repo():
     http_archive(
         name = "com_github_mvukov_rules_ros2",
         # Here you can use e.g. sha256sum cli utility to compute the sha sum.
-        sha256 = "95f4178da63e0c629379d679aaf9f77323f114ca192a8f601c6d53a6114437af",
-        strip_prefix = "rules_ros2-1fcde3efdcf22a9aa50bf9454f7bc0f93fbf44b6",
-        url = "https://github.com/samehmohamed88/rules_ros2/archive/1fcde3efdcf22a9aa50bf9454f7bc0f93fbf44b6.tar.gz",
+        sha256 = "2d03d299a2d8bd9ea21a9788eddf31649440d87a98b85e4f1bd1d6d5d9d55969",
+        strip_prefix = "rules_ros2-a3d796e544a86fcd00cb86184ac0487335aa51e7",
+        url = "https://github.com/samehmohamed88/rules_ros2/archive/a3d796e544a86fcd00cb86184ac0487335aa51e7.tar.gz",
     )

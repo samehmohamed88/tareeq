@@ -232,7 +232,7 @@ int main()
         cv::circle(image, truePos, 2, cv::Scalar(255, 0, 0), cv::FILLED); // Blue for true position
         cv::circle(image, estPos, 2, cv::Scalar(0, 0, 255), cv::FILLED);  // Red for estimated position
         cv::circle(image, drPos, 2, cv::Scalar(0, 0, 0), cv::FILLED);     // black for dead reckoning
-        
+
         cv::imshow("Localization", image);
         cv::waitKey(1); // Refresh display
 

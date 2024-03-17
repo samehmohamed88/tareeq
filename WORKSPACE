@@ -27,7 +27,9 @@ load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
 
 boost_deps()
 
-load("@com_github_mvukov_rules_ros2//repositories:repositories.bzl", "ros2_repositories")
+load("@com_github_mvukov_rules_ros2//repositories:repositories.bzl", "ros2_repositories", "ros2_workspace_repositories")
+
+ros2_workspace_repositories()
 
 ros2_repositories()
 

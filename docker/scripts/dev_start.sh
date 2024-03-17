@@ -26,7 +26,7 @@ DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${tareeqUSER}"
 
-VERSION_X86_64="ubuntu_2204_x86_64.02.23.2024"
+VERSION_X86_64="pytorch-2.2.1-cuda12.1-cudnn8-devel.03.17.2024"
 
 info "Remove existing Apollo Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}

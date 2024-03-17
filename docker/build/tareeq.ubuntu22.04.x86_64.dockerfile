@@ -1,5 +1,5 @@
-#FROM nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
-FROM ubuntu:22.04
+FROM pytorch/pytorch:2.2.1-cuda12.1-cudnn8-devel
+#FROM ubuntu:22.04
 
 ARG USERID=$USERID
 ARG USERNAME=tareeq

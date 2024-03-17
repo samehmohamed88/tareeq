@@ -121,7 +121,7 @@ private:
 
     CANDBC(bool allow_duplicate_message_name = false) {
         /// The variable `subaruGlobalCANDBC` is defined in header `nav/can_client/SubaruGlobalCANDBC.h` which is generated
-        /// by the bazel `genrule(subaru_global_can_dbc)` in the `BUILD` file.
+        /// by the bazel `genrule(subaru_global_can_dbc)` in the `BUILD.bazel` file.
         std::istringstream dbcStream(subaruGlobalCANDBC);
 
         uint32_t address = 0;

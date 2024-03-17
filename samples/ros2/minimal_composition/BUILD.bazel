@@ -1,0 +1,16 @@
+cc_binary(
+    name = "ros2_minimal_composition",
+    srcs = [
+        "composed.cpp",
+        "publisher_node.cpp",
+        "publisher_node.hpp",
+        "subscriber_node.cpp",
+        "subscriber_node.hpp",
+        "visibility.h",
+    ],
+    deps = [
+        "@ros2_common_interfaces//:cpp_std_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+    ],
+)
