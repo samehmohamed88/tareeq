@@ -64,6 +64,25 @@ load(
 
 install_rules_ros2_pip_deps()
 
+http_archive(
+    name = "rules_rust",
+    integrity = "sha256-ww398ehv1QZQp26mRbOkXy8AZnsGGHpoXpVU4WfKl+4=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.40.0/rules_rust-v0.40.0.tar.gz"],
+)
+
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+
+rules_rust_dependencies()
+
+rust_register_toolchains(
+    edition = "2021",
+    versions = ["1.76.0"],
+)
+
+load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+
+crate_universe_dependencies(bootstrap = True)
+
 # #local_repository(
 # #    name = "rules_cuda",
 # #    path = "third_party/rules_cuda",

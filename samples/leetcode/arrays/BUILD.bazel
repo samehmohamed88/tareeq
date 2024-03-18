@@ -1,0 +1,41 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc")
+
+cc_binary(
+    name = "contains_duplicates_cpp",
+    srcs = ["contains_duplicates.cpp"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
+
+cc_binary(
+    name = "valid_anagram_cpp",
+    srcs = ["valid_anagram.cpp"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
+
+rust_binary(
+    name = "contains_duplicates_rs",
+    srcs = ["contains_duplicates.rs"],
+    tags = [
+        "arrays",
+        "easy",
+        "rust",
+    ],
+)
+
+rust_binary(
+    name = "valid_anagram_rs",
+    srcs = ["valid_anagram.rs"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
