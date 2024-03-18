@@ -1,0 +1,5 @@
+cc_binary(
+    name = "merge_strings",
+    srcs = ["1768_merge_strings.cpp"],
+    tags = ["easy"],
+)
