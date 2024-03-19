@@ -6,21 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
+    vector<int> twoSum(const vector<int>& nums, int target) {
         std::vector<int> result;
-        size_t indexOne = 0;
-        size_t indexTwo = 1;
-        while (indexTwo < nums.size()) {
-            int numToAdd = target - nums[indexOne];
-            if (nums[indexTwo] == numToAdd) {
-                result.push_back(indexOne);
-                result.push_back(indexTwo);
-                break;
+        std::unordered_map<int, int> numMap;  // Map to store number and its index
+
+        for (size_t i = 0; i < nums.size(); ++i) {
+            int complement = target - nums[i];
+
+            if (numMap.find(complement) != numMap.end()) {
+                result.push_back(numMap[complement]);
+                result.push_back(i);
+                return result;  // Return immediately once the pair is found
             }
-            ++indexOne;
-            ++indexTwo;
+
+            numMap[nums[i]] = i;  // Add the current number to the map
         }
-        return result;
+
+        return result;  // Return an empty vector if no pair is found
     }
 };
 
@@ -52,6 +54,15 @@ int main() {
     std::cout << std::endl;
 
     nums =  {3,3};
+    target = 6;
+
+    vec = solution.twoSum(nums, target);
+    std::ranges::for_each(vec, [](const int& element) {
+        std::cout << element << " ";
+    });
+    std::cout << std::endl;
+
+    nums =  {3,2,3};
     target = 6;
 
     vec = solution.twoSum(nums, target);
