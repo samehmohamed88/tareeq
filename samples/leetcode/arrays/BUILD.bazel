@@ -11,6 +11,16 @@ cc_binary(
 )
 
 cc_binary(
+    name = "two_sums_cpp",
+    srcs = ["two_sums.cpp"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
+
+cc_binary(
     name = "valid_anagram_cpp",
     srcs = ["valid_anagram.cpp"],
     tags = [
@@ -23,6 +33,16 @@ cc_binary(
 rust_binary(
     name = "contains_duplicates_rs",
     srcs = ["contains_duplicates.rs"],
+    tags = [
+        "arrays",
+        "easy",
+        "rust",
+    ],
+)
+
+rust_binary(
+    name = "two_rums_rs",
+    srcs = ["two_sums.rs"],
     tags = [
         "arrays",
         "easy",
