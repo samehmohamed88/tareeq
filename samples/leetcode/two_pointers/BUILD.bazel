@@ -1,7 +1,30 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc")
+
 cc_binary(
     name = "merge_strings",
-    srcs = ["1768_merge_strings.cpp"],
+    srcs = ["merge_strings.cpp"],
     tags = [
+        "cpp",
+        "easy",
+        "two_pointers",
+    ],
+)
+
+cc_binary(
+    name = "valid_palindrome",
+    srcs = ["valid_palindrome.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "two_pointers",
+    ],
+)
+
+rust_binary(
+    name = "valid_palindrome_rs",
+    srcs = ["valid_palindrome.rs"],
+    tags = [
+        "cpp",
         "easy",
         "two_pointers",
     ],
