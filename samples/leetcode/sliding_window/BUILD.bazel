@@ -1,0 +1,21 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc")
+
+cc_binary(
+    name = "best_time_to_buy_a_stock_cpp",
+    srcs = ["best_time_to_buy_a_stock.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "sliding_window",
+    ],
+)
+
+rust_binary(
+    name = "best_time_to_buy_a_stock_rs",
+    srcs = ["best_time_to_buy_a_stock.rs"],
+    tags = [
+        "easy",
+        "rust",
+        "sliding_window",
+    ],
+)

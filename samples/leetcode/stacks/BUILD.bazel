@@ -1,0 +1,21 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_doc")
+
+cc_binary(
+    name = "baseball_game_cpp",
+    srcs = ["baseball_game.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "sliding_window",
+    ],
+)
+
+rust_binary(
+    name = "baseball_game_rs",
+    srcs = ["baseball_game.rs"],
+    tags = [
+        "easy",
+        "rust",
+        "sliding_window",
+    ],
+)

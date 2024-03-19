@@ -11,6 +11,26 @@ cc_binary(
 )
 
 cc_binary(
+    name = "remove_element_cpp",
+    srcs = ["remove_element.cpp"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
+
+cc_binary(
+    name = "remove_duplicates_cpp",
+    srcs = ["remove_duplicates.cpp"],
+    tags = [
+        "arrays",
+        "cpp",
+        "easy",
+    ],
+)
+
+cc_binary(
     name = "two_sums_cpp",
     srcs = ["two_sums.cpp"],
     tags = [
@@ -41,6 +61,26 @@ rust_binary(
 )
 
 rust_binary(
+    name = "remove_element_rs",
+    srcs = ["remove_element.rs"],
+    tags = [
+        "arrays",
+        "easy",
+        "rust",
+    ],
+)
+
+rust_binary(
+    name = "remove_duplicates_rs",
+    srcs = ["remove_duplicates.rs"],
+    tags = [
+        "arrays",
+        "easy",
+        "rust",
+    ],
+)
+
+rust_binary(
     name = "two_rums_rs",
     srcs = ["two_sums.rs"],
     tags = [
@@ -55,7 +95,7 @@ rust_binary(
     srcs = ["valid_anagram.rs"],
     tags = [
         "arrays",
-        "cpp",
         "easy",
+        "rust",
     ],
 )
