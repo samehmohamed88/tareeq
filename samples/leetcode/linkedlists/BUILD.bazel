@@ -1,0 +1,19 @@
+cc_binary(
+    name = "reverse_linked_list",
+    srcs = ["reverse_linked_list.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "linkedlists",
+    ],
+)
+
+cc_binary(
+    name = "merge_sorted_lists",
+    srcs = ["merge_sorted_lists.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "linkedlists",
+    ],
+)

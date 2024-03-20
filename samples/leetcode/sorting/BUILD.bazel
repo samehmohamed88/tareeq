@@ -1,0 +1,19 @@
+cc_binary(
+    name = "insertion_sort",
+    srcs = ["insertion_sort.cpp"],
+    tags = [
+        "cpp",
+        "medium",
+        "sorting",
+    ],
+)
+
+cc_binary(
+    name = "merge_sort",
+    srcs = ["merge_sort.cpp"],
+    tags = [
+        "cpp",
+        "medium",
+        "sorting",
+    ],
+)
