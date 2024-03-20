@@ -10,12 +10,12 @@ cc_binary(
     ],
 )
 
-rust_binary(
-    name = "baseball_game_rs",
-    srcs = ["baseball_game.rs"],
+cc_binary(
+    name = "valid_parentheses",
+    srcs = ["valid_parentheses.cpp"],
     tags = [
+        "cpp",
         "easy",
-        "rust",
         "sliding_window",
     ],
 )
