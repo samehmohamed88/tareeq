@@ -1,0 +1,9 @@
+cc_binary(
+    name = "binary_search",
+    srcs = ["binary_search.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "search",
+    ],
+)
