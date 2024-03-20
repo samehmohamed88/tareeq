@@ -20,17 +20,18 @@ struct ListNode {
 
 class Solution {
 public:
+   // head -> 1 -> 2 -> 3 -> 4
    ListNode* reverseList(ListNode* head) {
-//        ListNode* two = head->next;
-//        ListNode* three = two->next;
-//        three->next = two;
-//        two->next = three;
-//        head->next = nullptr;
-        // head -> 2 -> 3 ->
-        // step a:
+       ListNode* prev = nullptr;
+       ListNode* curr = head;
 
-        
-        return head;
+       while (curr != nullptr) {
+           ListNode* tmp = curr->next;
+           curr->next = prev;
+           prev = curr;
+           curr = tmp;
+       }
+       return prev;
    }
 };
 
