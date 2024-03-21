@@ -1,0 +1,29 @@
+cc_binary(
+    name = "bst",
+    srcs = ["bst.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+)
+
+cc_binary(
+    name = "insert_node_bst",
+    srcs = ["insert_node_bst.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+)
+
+cc_binary(
+    name = "path_sum",
+    srcs = ["path_sum.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+)
