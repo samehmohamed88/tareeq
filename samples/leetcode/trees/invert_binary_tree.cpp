@@ -32,12 +32,8 @@ public:
         root->right = root->left;
         root->left = tmp;
 
-        if (invertTree(root->left) == nullptr) {
-            return root;
-        }
-        if (invertTree(root->right) == nullptr) {
-            return root;
-        }
+        invertTree(root->left);
+        invertTree(root->right);
         return root;
     }
 };
