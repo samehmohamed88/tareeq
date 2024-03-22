@@ -27,3 +27,13 @@ cc_binary(
         "trees",
     ],
 )
+
+cc_binary(
+    name = "invert_binary_tree",
+    srcs = ["invert_binary_tree.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+)
