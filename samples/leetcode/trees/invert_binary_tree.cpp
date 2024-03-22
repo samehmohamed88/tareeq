@@ -28,35 +28,30 @@ public:
         if (root == nullptr) {
             return nullptr;
         }
-        if (root->left == nullptr && root->right == nullptr) {
+        TreeNode* tmp = root->right;
+        root->right = root->left;
+        root->left = tmp;
+
+        if (invertTree(root->left) == nullptr) {
             return root;
         }
-        if (invertTree(root->left) != nullptr) {
-            TreeNode* tmp = root->right;
-            root->right = root->left;
-            root->left = tmp;
-            return root;
-        }
-        if (invertTree(root->left) != nullptr) {
-            TreeNode* tmp = root->right;
-            root->right = root->left;
-            root->left = tmp;
+        if (invertTree(root->right) == nullptr) {
             return root;
         }
         return root;
     }
-
 };
 int main() {
 
-    auto one = TreeNode(1);
-    auto three = TreeNode(3);
+    auto two = TreeNode(2);
+//    auto one = TreeNode(1);
+//    auto three = TreeNode(3);
 //    auto six = TreeNode(6);
 //    auto nine = TreeNode(9);
 //
 //    TreeNode seven = TreeNode(7, &six, &nine);
 //    TreeNode two = TreeNode(2, &one, &three);
-    TreeNode root = TreeNode(2, &one, &three);
+    TreeNode root = TreeNode(1, nullptr, &two);
 
     auto sol = Solution();
     TreeNode* node = sol.invertTree(&root);
