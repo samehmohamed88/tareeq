@@ -1,3 +1,8 @@
+cc_library(
+    name = "binary_tree",
+    srcs = ["binary_tree.hpp"],
+)
+
 cc_binary(
     name = "bst",
     srcs = ["bst.cpp"],
@@ -6,6 +11,7 @@ cc_binary(
         "easy",
         "trees",
     ],
+    deps = [":binary_tree"],
 )
 
 cc_binary(
@@ -16,6 +22,7 @@ cc_binary(
         "easy",
         "trees",
     ],
+    deps = [":binary_tree"],
 )
 
 cc_binary(
@@ -26,6 +33,7 @@ cc_binary(
         "easy",
         "trees",
     ],
+    deps = [":binary_tree"],
 )
 
 cc_binary(
@@ -36,4 +44,16 @@ cc_binary(
         "easy",
         "trees",
     ],
+    deps = [":binary_tree"],
+)
+
+cc_binary(
+    name = "max_depth_bst",
+    srcs = ["max_depth_bst.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+    deps = [":binary_tree"],
 )
