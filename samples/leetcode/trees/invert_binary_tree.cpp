@@ -29,17 +29,19 @@ public:
             return nullptr;
         }
         if (root->left == nullptr && root->right == nullptr) {
-            return nullptr;
+            return root;
         }
-        if (invertTree(root->left) == nullptr) {
+        if (invertTree(root->left) != nullptr) {
             TreeNode* tmp = root->right;
             root->right = root->left;
             root->left = tmp;
+            return root;
         }
-        if (invertTree(root->right) == nullptr) {
+        if (invertTree(root->left) != nullptr) {
             TreeNode* tmp = root->right;
             root->right = root->left;
             root->left = tmp;
+            return root;
         }
         return root;
     }
