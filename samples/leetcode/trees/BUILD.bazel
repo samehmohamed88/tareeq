@@ -57,3 +57,14 @@ cc_binary(
     ],
     deps = [":binary_tree"],
 )
+
+cc_binary(
+    name = "diameter_bst",
+    srcs = ["diameter_bst.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+    deps = [":binary_tree"],
+)
