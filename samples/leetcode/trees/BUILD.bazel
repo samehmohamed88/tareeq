@@ -68,3 +68,14 @@ cc_binary(
     ],
     deps = [":binary_tree"],
 )
+
+cc_binary(
+    name = "balanced_tree",
+    srcs = ["balanced_tree.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "trees",
+    ],
+    deps = [":binary_tree"],
+)

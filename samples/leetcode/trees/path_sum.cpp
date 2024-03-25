@@ -8,7 +8,6 @@ public:
         if (root == nullptr) {
             return false;
         }
-
         if (root->left == nullptr && root->right == nullptr) {
             return root->val == targetSum;
         }

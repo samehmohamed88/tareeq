@@ -1,0 +1,29 @@
+cc_binary(
+    name = "has_path_dfs",
+    srcs = ["has_path_dfs.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "graphs",
+    ],
+)
+
+cc_binary(
+    name = "has_path_undirected_dfs",
+    srcs = ["has_path_undirected_dfs.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "graphs",
+    ],
+)
+
+cc_binary(
+    name = "has_path_bfs",
+    srcs = ["has_path_bfs.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "graphs",
+    ],
+)
