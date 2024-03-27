@@ -29,3 +29,13 @@ rust_binary(
         "two_pointers",
     ],
 )
+
+cc_binary(
+    name = "roman_numerals",
+    srcs = ["roman_numerals.cpp"],
+    tags = [
+        "cpp",
+        "easy",
+        "two_pointers",
+    ],
+)

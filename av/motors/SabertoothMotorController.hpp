@@ -1,16 +1,22 @@
 #pragma once
 
+#include <CppLinuxSerial/SerialPort.hpp>
+
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <variant>
-#include <CppLinuxSerial/SerialPort.hpp>
-#include <algorithm>
 
-using namespace mn::CppLinuxSerial;
+namespace av {
+namespace motors {
 
-class SabertoothDriver {
+using namespace mn;
+
+class SabertoothDriver
+{
 public:
-    enum class Error {
+    enum class Error
+    {
         None,
         NotInitialized,
         SerialPortError,
@@ -18,29 +24,33 @@ public:
         CommunicationError,
     };
 
-    enum class DriveType {
+    enum class DriveType
+    {
         Differential,
         Ackerman,
     };
 
     explicit SabertoothDriver(const std::string& port, DriveType type)
-        : serialPort(port, BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE),
-        driveType(type),
-        initialized(false) {}
+        : serialPort(port, CppLinuxSerial::BaudRate::B_9600, CppLinuxSerial::NumDataBits::EIGHT, CppLinuxSerial::Parity::NONE, CppLinuxSerial::NumStopBits::ONE)
+        , driveType(type)
+        , initialized(false)
+    {}
 
-    std::variant<bool, Error> initialize() {
+    std::variant<bool, Error> initialize()
+    {
         try {
             serialPort.Open();
             autobaud();
             initialized = true;
             return true;
-        } catch (const SerialPortException& e) {
+        } catch (const CppLinuxSerial::Exception& e) {
             std::cerr << "Serial port error: " << e.what() << std::endl;
             return Error::SerialPortError;
         }
     }
 
-    std::variant<bool, Error> setSpeed(int speed) {
+    std::variant<bool, Error> setSpeed(int speed)
+    {
         if (!initialized) {
             return Error::NotInitialized;
         }
@@ -56,7 +66,8 @@ public:
         return true;
     }
 
-    std::variant<bool, Error> steer(int angle) {
+    std::variant<bool, Error> steer(int angle)
+    {
         if (!initialized) {
             return Error::NotInitialized;
         }
@@ -75,16 +86,18 @@ public:
     }
 
 private:
-    SerialPort serialPort;
+    CppLinuxSerial::SerialPort serialPort;
     DriveType driveType;
     bool initialized;
 
-    void autobaud() const {
+    void autobaud() const
+    {
         serialPort.Write(std::string(1, 0xAA));
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
-    void command(byte commandByte, byte value) const {
+    void command(byte commandByte, byte value) const
+    {
         byte address = 128;
         byte checksum = (address + commandByte + value) & 0x7F;
 
@@ -97,28 +110,32 @@ private:
         serialPort.Write(command);
     }
 
-    void motor(byte motorNumber, int power) const {
-        if (motorNumber < 1 || motorNumber > 2) return;
+    void motor(byte motorNumber, int power) const
+    {
+        if (motorNumber < 1 || motorNumber > 2)
+            return;
 
         byte commandByte = (motorNumber == 2 ? 4 : 0) + (power < 0 ? 1 : 0);
         throttleCommand(commandByte, power);
     }
 
-    void drive(int power) const {
-        throttleCommand(power < 0 ? 9 : 8, power);
-    }
+    void drive(int power) const { throttleCommand(power < 0 ? 9 : 8, power); }
 
-    void throttleCommand(byte commandByte, int power) const {
+    void throttleCommand(byte commandByte, int power) const
+    {
         power = std::clamp(power, -126, 126);
         byte powerByte = static_cast<byte>(std::abs(power));
         command(commandByte, powerByte);
     }
 };
 
-int main() {
-    SabertoothDriver driver("/dev/serial0", SabertoothDriver::DriveType::Differential);
+} // namespace motors
+} //  namespace av
+int main()
+{
+    av::motors::SabertoothDriver driver("/dev/serial0", av::motors::SabertoothDriver::DriveType::Differential);
     auto result = driver.initialize();
-    if (std::holds_alternative<SabertoothDriver::Error>(result)) {
+    if (std::holds_alternative<av::motors::SabertoothDriver::Error>(result)) {
         std::cerr << "Initialization failed" << std::endl;
         return -1;
     }
@@ -128,4 +145,3 @@ int main() {
 
     return 0;
 }
-

@@ -27,4 +27,14 @@ apt-get -y update \
   && mv SFML-2.6.1 /usr/local/ \
   && rm -rf SFML-2.6.1-linux-gcc-64-bit.tar.gz \
   && go install github.com/bazelbuild/buildtools/buildifier@latest \
-  && mv ~/go/bin/buildifier /usr/local/bin
+  && mv ~/go/bin/buildifier /usr/local/bin \
+  && wget https://github.com/gbmhunter/CppLinuxSerial/archive/refs/tags/v2.8.1.tar.gz \
+  && tar -xf v2.8.1.tar.gz \
+  && cd CppLinuxSerial-2.8.1 \
+  && mkdir build \
+  && cd build \
+  && cmake .. \
+  && make \
+  && make install \
+  && cd ../../ \
+  && rm -rf v2.8.1.tar.gz  CppLinuxSerial-2.8.1

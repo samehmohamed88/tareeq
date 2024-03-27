@@ -1,0 +1,8 @@
+cc_library(
+    name = "SabertoothMotorController",
+    srcs = ["SabertoothMotorController.cpp"],
+    hdrs = ["SabertoothMotorController.hpp"],
+    deps = [
+        "@cpp_linux_serial",
+    ],
+)
