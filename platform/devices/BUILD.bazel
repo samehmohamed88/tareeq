@@ -1,4 +1,10 @@
 cc_library(
+    name = "DeviceInterface",
+    hdrs = ["DeviceInterface.hpp"],
+    deps = [],
+)
+
+cc_library(
     name = "ISerialPort",
     srcs = ["ISerialPort.hpp"],
     deps = [],
@@ -6,7 +12,6 @@ cc_library(
 
 cc_library(
     name = "BoostSerialPort",
-    srcs = ["BoostSerialPort.cpp"],
     hdrs = ["BoostSerialPort.hpp"],
     deps = [
         ":ISerialPort",

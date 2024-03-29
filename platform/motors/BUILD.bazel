@@ -1,8 +1,25 @@
 cc_library(
+    name = "MotorController",
+    hdrs = ["MotorController.hpp"],
+    deps = [
+        "//platform/devices:DeviceInterface",
+    ],
+)
+
+cc_library(
     name = "SabertoothMotorController",
     srcs = ["SabertoothMotorController.cpp"],
     hdrs = ["SabertoothMotorController.hpp"],
     deps = [
         "@cpp_linux_serial",
+    ],
+)
+
+cc_library(
+    name = "WaveRoverMotorController",
+    srcs = ["WaveRoverMotorController.cpp"],
+    hdrs = ["WaveRoverMotorController.hpp"],
+    deps = [
+        ":MotorController",
     ],
 )
