@@ -1,8 +1,8 @@
 #pragma once
 
+#include <string>
 
-
-namespace av::devices {
+namespace platform::devices {
 
 template <typename SerialPortImpl>
 class SerialDevice {

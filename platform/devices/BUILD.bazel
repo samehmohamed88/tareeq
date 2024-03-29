@@ -1,8 +1,21 @@
 cc_library(
+    name = "ISerialPort",
+    srcs = ["ISerialPort.hpp"],
+    deps = [],
+)
+
+cc_library(
     name = "BoostSerialPort",
     srcs = ["BoostSerialPort.cpp"],
     hdrs = ["BoostSerialPort.hpp"],
     deps = [
+        ":ISerialPort",
         "@boost//:asio",
     ],
+)
+
+cc_library(
+    name = "SerialDevice",
+    srcs = ["SerialDevice.hpp"],
+    deps = [],
 )

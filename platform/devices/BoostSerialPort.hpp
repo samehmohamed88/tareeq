@@ -1,33 +1,31 @@
 #pragma once
 
+#include "platform/devices/ISerialPort.hpp"
+
 #include <boost/asio.hpp>
 
+#include <mutex>
+#include <thread>
 #include <array>
 #include <string>
 
-namespace av::devices {
+namespace platform::devices {
 
-class BoostSerialPort : public ISerialPort {
-public:
-    BoostSerialPort(const std::string& port, unsigned int baud_rate)
-        : io_(), serial_(io_, port) {
-        serial_.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
-    }
+    class BoostSerialPort : public ISerialPort {
+    public:
+        BoostSerialPort(const std::string &port, uint32_t baud_rate=115200);
+        ~BoostSerialPort() override;
 
-    void write(const std::string& data) override {
-        boost::asio::write(serial_, boost::asio::buffer(data));
-    }
+        void write(const std::string &data) override;
 
-    std::string read() override {
-        std::array<char, 128> buf{};
-        boost::asio::read(serial_, boost::asio::buffer(buf), boost::asio::transfer_at_least(1));
-        return std::string(buf.data());
-    }
+        void read(const ReadCallback& callback) override;
 
-private:
-    boost::asio::io_context io_;
-    boost::asio::serial_port serial_;
-};
+    private:
+        void stop();
+        boost::asio::io_context io_context_;
+        boost::asio::serial_port serial_;
+        std::thread read_thread_;
+        std::mutex read_mutex_;  // Mutex to synchronize access to the read method
+    };
 
-
-}; // namespace av::devices
+}; // namespace platform::devices
