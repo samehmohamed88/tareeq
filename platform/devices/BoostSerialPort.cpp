@@ -16,13 +16,7 @@ namespace platform::devices {
     void BoostSerialPort::write(const std::string &data) {
         boost::asio::write(serial_, boost::asio::buffer(data));
     }
-
-//    std::string BoostSerialPort::read() {
-//        std::array<char, 128> buf{};
-//        boost::asio::read(serial_, boost::asio::buffer(buf), boost::asio::transfer_at_least(1));
-//        return {buf.data()};
-//    }
-
+    
     // TO-DO: use logging instead of std::cout
     void BoostSerialPort::read(const ReadCallback& callback) {
         std::lock_guard<std::mutex> lock(read_mutex_);
