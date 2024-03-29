@@ -27,14 +27,7 @@ public:
     std::variant<bool, MotorControllerErrors> steer(int angle) override;
 
 private:
-    enum class MovementCommands
-    {
-        CMD_SPEED_CTRL = 1,
-        CMD_PWM_INPUT = 11
-    };
-    const std::unordered_map<MovementCommands, std::pair<std::string, int>> chassisMovementCommandMap = {
-        {MovementCommands::CMD_SPEED_CTRL, {"T", 1}},
-        {MovementCommands::CMD_PWM_INPUT, {"T", 11}}};
+    Command speedControlCommand_;
 };
 
 template<typename DeviceManager, typename ILogger>

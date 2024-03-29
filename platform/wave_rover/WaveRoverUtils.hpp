@@ -37,12 +37,40 @@ public:
 };
 
 struct Command {
-
     using ParamType = std::variant<int, double, std::string>;
 
     int waveShareIdentifier{};
-
     std::unordered_map<std::string, ParamType> parameters;
+
+private:
+    mutable nlohmann::json jsonData; // Cache for the JSON object
+    mutable std::string jsonString;  // Cache for the JSON string representation
+    mutable bool isDirty = true;     // Flag to indicate if recalculation is needed
+
+public:
+    const nlohmann::json& toJson() const {
+        if (isDirty) {
+            jsonData = {{"T", waveShareIdentifier}};
+            for (const auto& [key, value] : parameters) {
+                jsonData[key] = value;
+            }
+            jsonString = jsonData.dump(4);  // Update the string representation as well
+            isDirty = false;
+        }
+        return jsonData;
+    }
+
+    const std::string& toJsonString() const {
+        if (isDirty) {
+            toJson();  // This will update jsonString as well
+        }
+        return jsonString;
+    }
+
+    void updateParameter(const std::string& key, const ParamType& value) {
+        parameters[key] = value;
+        isDirty = true;  // Mark as dirty whenever a parameter is updated
+    }
 };
 
 class CommandFactory {
@@ -69,6 +97,7 @@ public:
         // No additional parameters for this command
         return cmd;
     }
+
 
 private:
 
