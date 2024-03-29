@@ -1,0 +1,15 @@
+cc_library(
+    name = "IMUDeviceController",
+    hdrs = ["IMUDeviceController.hpp"],
+    deps = [
+        "//platform/devices:DeviceInterface",
+    ],
+)
+
+cc_library(
+    name = "WaveRoverIMUController",
+    hdrs = ["WaveRoverIMUController.hpp"],
+    deps = [
+        ":IMUDeviceController",
+    ],
+)

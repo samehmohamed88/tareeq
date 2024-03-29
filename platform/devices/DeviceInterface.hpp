@@ -6,7 +6,6 @@
 namespace platform::devices {
 
 template<typename Error,
-         typename DeviceManager,
          typename ILogger>
 class DeviceInterface {
 public:
@@ -21,17 +20,18 @@ public:
 
 protected:
     std::shared_ptr<const ILogger> getLogger() const;
-private:
     std::shared_ptr<const ILogger> logger_;
 };
-template<typename Error, typename DeviceManager, typename ILogger>
-std::shared_ptr<const ILogger> DeviceInterface<Error, DeviceManager, ILogger>::getLogger() const
+
+template<typename Error, typename ILogger>
+DeviceInterface<Error, ILogger>::DeviceInterface(std::shared_ptr<const ILogger> logger)
+    : logger_{logger}
+{}
+
+template<typename Error, typename ILogger>
+std::shared_ptr<const ILogger> DeviceInterface<Error, ILogger>::getLogger() const
 {
     return logger_;
 }
-
-template<typename Error, typename DeviceManager, typename ILogger>
-DeviceInterface<Error, DeviceManager, ILogger>::DeviceInterface(std::shared_ptr<const ILogger> logger)
-    : logger_{logger} {}
 
 } // namespace platform::devices

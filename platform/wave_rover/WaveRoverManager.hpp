@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-namespace platform::motors {
+namespace platform::waverover {
 
 template<typename MotorController, typename IMUDeviceController, typename OLEDDeviceController, typename ILogger>
 class WaveRoverManager
@@ -52,4 +52,4 @@ WaveRoverManager<MotorController, IMUDeviceController, OLEDDeviceController, ILo
     , logger_{logger}
 {}
 
-} // namespace platform::motors
+} // namespace platform::waverover
