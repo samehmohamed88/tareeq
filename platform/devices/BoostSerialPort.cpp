@@ -14,9 +14,15 @@ namespace platform::devices {
     }
 
     void BoostSerialPort::write(const std::string &data) {
-        boost::asio::write(serial_, boost::asio::buffer(data));
+        std::lock_guard<std::mutex> lock(write_mutex_);
+        try {
+            boost::asio::write(serial_, boost::asio::buffer(data));
+        } catch (const boost::system::system_error& e) {
+            std::cerr << "Write error: " << e.what() << std::endl;
+            // Handle the error appropriately (e.g., retry, log, or propagate the error)
+        }
     }
-    
+
     // TO-DO: use logging instead of std::cout
     void BoostSerialPort::read(const ReadCallback& callback) {
         std::lock_guard<std::mutex> lock(read_mutex_);
@@ -25,7 +31,7 @@ namespace platform::devices {
             read_thread_.join();
         }
 
-        read_thread_ = std::thread([this, callback]() {
+        read_thread_ = std::thread([this, &callback]() {
             boost::asio::streambuf buf;
             while (true) {
                 try {
@@ -43,12 +49,19 @@ namespace platform::devices {
     }
 
     void BoostSerialPort::stop() {
-        if (read_thread_.joinable()) {
-            io_context_.stop();  // This will cause the read operation to unblock and terminate
-            read_thread_.join();  // Wait for the thread to finish execution
+        if (!io_context_.stopped()) {
+            io_context_.stop();  // Stop the io_context to cancel any asynchronous operations
         }
-        serial_.close();  // Close the serial port
+
+        if (serial_.is_open()) {
+            serial_.close();  // Close the serial port
+        }
+
+        if (read_thread_.joinable()) {
+            read_thread_.join();  // Ensure the read thread is finished
+        }
     }
+
 
     BoostSerialPort::~BoostSerialPort() {
         stop();

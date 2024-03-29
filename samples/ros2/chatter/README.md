@@ -34,7 +34,7 @@ bazel run //chatter:bag -- record /topic
 You can run tests with
 
 ```sh
-bazel test //chatter:tests  # To see the logs run with `--test_output=all`.
+bazel test //chatter:tests  # To see the logging run with `--test_output=all`.
 ```
 
 To run the sample deployment in a Docker container, run

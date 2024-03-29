@@ -22,10 +22,11 @@ namespace platform::devices {
 
     private:
         void stop();
-        boost::asio::io_context io_context_;
         boost::asio::serial_port serial_;
+        boost::asio::io_context io_context_;
         std::thread read_thread_;
         std::mutex read_mutex_;  // Mutex to synchronize access to the read method
+        std::mutex write_mutex_;  // Mutex to synchronize access to the write method
     };
 
 }; // namespace platform::devices
