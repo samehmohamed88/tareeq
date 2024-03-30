@@ -1,10 +1,14 @@
 #pragma once
 
 #include "platform/motors/MotorController.hpp"
+#include "platform/wave_rover/WaveRoverUtils.hpp"
 
+#include <exception>
 #include <unordered_map>
 
 namespace platform::motors {
+
+namespace WaveRoverUtils = platform::waverover::utils;
 
 enum class MotorControllerErrors
 {
@@ -22,30 +26,53 @@ class WaveRoverMotorController : public MotorController<MotorControllerErrors, D
 public:
     WaveRoverMotorController(std::shared_ptr<DeviceManager> deviceManager, std::shared_ptr<const ILogger> logger);
 
-    std::variant<bool, MotorControllerErrors> setSpeed(int speed) override;
+    std::variant<bool, MotorControllerErrors> initialize() override;
 
-    std::variant<bool, MotorControllerErrors> steer(int angle) override;
+    std::variant<bool, MotorControllerErrors> stop() override;
+
+    std::variant<bool, MotorControllerErrors> setWheelSpeeds(double leftWheelSpeed, double rightWheelSpeed) override;
 
 private:
-    Command speedControlCommand_;
+    WaveRoverUtils::Command speedControlCommand_;
 };
+
+template<typename DeviceManager, typename ILogger>
+std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::stop()
+{
+    return {};
+}
+
+template<typename DeviceManager, typename ILogger>
+std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::initialize()
+{
+    return {};
+}
+
+template<typename DeviceManager, typename ILogger>
+std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::setWheelSpeeds(
+    double leftWheelSpeed,
+    double rightWheelSpeed)
+{
+    speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::LeftMotor, leftWheelSpeed);
+    speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::RightMotor, rightWheelSpeed);
+
+    const std::string& command = speedControlCommand_.toJsonString();
+
+    try {
+        deviceManager_.write(command);
+    } catch (const std::exception& e) {
+        return MotorControllerErrors::CommunicationError;
+    }
+
+    return true;
+}
 
 template<typename DeviceManager, typename ILogger>
 WaveRoverMotorController<DeviceManager, ILogger>::WaveRoverMotorController(std::shared_ptr<DeviceManager> deviceManager,
                                                                            std::shared_ptr<const ILogger> logger)
     : MotorController<MotorControllerErrors, DeviceManager, ILogger>(deviceManager, logger)
+    , speedControlCommand_{WaveRoverUtils::CommandFactory::createSpeedControlCommand(0.0, 0.0)}
 {}
 
-template<typename DeviceManager, typename ILogger>
-std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::steer(int angle)
-{
-    return {};
-}
-
-template<typename DeviceManager, typename ILogger>
-std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::setSpeed(int speed)
-{
-    return {};
-}
 
 } // namespace platform::motors

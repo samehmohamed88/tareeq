@@ -12,9 +12,11 @@ class MotorController : public devices::DeviceInterface<Error, ILogger>
 public:
     MotorController(std::shared_ptr<DeviceManager> deviceManager, std::shared_ptr<const ILogger> logger);
 
-    virtual std::variant<bool, Error> setSpeed(int speed) = 0;
+    virtual std::variant<bool, Error> initialize() = 0;
 
-    virtual std::variant<bool, Error> steer(int angle) = 0;
+    virtual std::variant<bool, Error> stop() = 0;
+
+    virtual std::variant<bool, Error> setWheelSpeeds(double leftWheelSpeed, double rightWheelSpeed) = 0;
 
 protected:
     std::shared_ptr<DeviceManager> deviceManager_;

@@ -21,5 +21,6 @@ cc_library(
     hdrs = ["WaveRoverMotorController.hpp"],
     deps = [
         ":MotorController",
+        "//platform/wave_rover:WaveRoverUtils",
     ],
 )

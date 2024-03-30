@@ -1,0 +1,7 @@
+cc_library(
+    name = "MockLogger",
+    hdrs = ["mocks/MockLogger.hpp"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)

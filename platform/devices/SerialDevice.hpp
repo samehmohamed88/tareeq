@@ -2,27 +2,38 @@
 
 #include <string>
 #include <memory>
+#include <exception>
 
 namespace platform::devices {
 
 template<
     typename SerialPortImpl,
     typename ILogger>
-class SerialDevice
+class SerialDeviceManager
 {
 public:
-    SerialDevice(std::shared_ptr<SerialPortImpl> serialPort, std::shared_ptr<ILogger> logger)
+    SerialDeviceManager(std::shared_ptr<SerialPortImpl> serialPort, std::shared_ptr<ILogger> logger)
         : serialPort_{serialPort}
         , logger_{logger}
     {}
 
-    void write(const std::string& data) { serialPort_.write(data); }
+    void write(const std::string& data) {
+        std::lock_guard<std::mutex> lock(write_mutex_);
+        try {
+            serialPort_.write(data);
+        } catch (const std::exception& e) {
+
+        }
+    }
 
     std::string read() { return serialPort_.read(); }
 
 private:
     std::shared_ptr<ILogger> logger_;
     std::shared_ptr<SerialPortImpl> serialPort_;
+
+    std::mutex read_mutex_;  // Mutex to synchronize access to the read method
+    std::mutex write_mutex_; // Mutex to synchronize access to the write method
 };
 
 } // namespace platform::devices

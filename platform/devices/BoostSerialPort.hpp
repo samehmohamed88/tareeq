@@ -57,8 +57,9 @@ void BoostSerialPort<ILogger>::write(const std::string& data)
     try {
         boost::asio::write(serial_, boost::asio::buffer(data));
     } catch (const boost::system::system_error& e) {
-        logger_->logError("Write error: " + std::string(e.what()));
-        // Handle the error appropriately (e.g., retry, log, or propagate the error)
+        logger_->logError("BoostSerialPort : Error while writing: " + data);
+        logger_->logError("BoostSerialPort : Error while writing: " + std::string(e.what()));
+        throw e;
     }
 }
 
