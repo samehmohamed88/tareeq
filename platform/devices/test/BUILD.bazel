@@ -1,7 +1,10 @@
 cc_test(
     name = "TestBoostSerialPort",
-    srcs = ["TestBoostSerialPort.cpp"],
+    srcs = ["BoostSerialPortTest.cpp"],
     deps = [
+        "//platform/devices:BoostSerialPort",
+        "//platform/test:MockIAsioOperations",
+        "//platform/test:MockLogger",
         "@com_google_googletest//:gtest_main",
     ],
 )

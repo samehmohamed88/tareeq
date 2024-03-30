@@ -1,7 +1,10 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "MockLogger",
     hdrs = ["mocks/MockLogger.hpp"],
     deps = [
+        "//platform/logging:LoggerFactory",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -10,6 +13,7 @@ cc_library(
     name = "MockIAsioOperations",
     hdrs = ["mocks/MockIAsioOperations.hpp"],
     deps = [
+        "//platform/io:IAsioOperations",
         "@boost//:asio",
         "@com_google_googletest//:gtest_main",
     ],
