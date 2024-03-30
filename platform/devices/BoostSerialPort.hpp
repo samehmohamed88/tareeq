@@ -12,11 +12,15 @@
 
 namespace platform::devices {
 
-template <typename ILogger>
+template <typename AsioOperations, typename ILogger>
 class BoostSerialPort : public ISerialPort
 {
 public:
-    BoostSerialPort(std::shared_ptr<ILogger> logger, const std::string& port, uint32_t baud_rate = 115200);
+    BoostSerialPort(std::shared_ptr<AsioOperations> asioOperations,
+                    std::shared_ptr<ILogger> logger,
+                    const std::string& port,
+                    uint32_t baud_rate = 115200);
+
     ~BoostSerialPort() override;
 
     void write(const std::string& data) override;
@@ -25,23 +29,26 @@ public:
 
 private:
     void stop();
-    boost::asio::serial_port serial_;
-    boost::asio::io_context io_context_;
+
     std::thread read_thread_;
     std::mutex read_mutex_;  // Mutex to synchronize access to the read method
     std::mutex write_mutex_; // Mutex to synchronize access to the write method
+
+    boost::asio::serial_port serial_;
+    boost::asio::io_context io_context_;
+
     std::shared_ptr<ILogger> logger_;
+    std::shared_ptr<AsioOperations> asioOperations_;
 };
 
-}; // namespace platform::devices
-
-// TEMPLATE IMPL
-namespace platform::devices {
-
-template <typename ILogger>
-BoostSerialPort<ILogger>::BoostSerialPort(std::shared_ptr<ILogger> logger, const std::string& port, uint32_t baud_rate)
-
+template <typename AsioOperations, typename ILogger>
+BoostSerialPort<AsioOperations, ILogger>::BoostSerialPort(std::shared_ptr<AsioOperations> asioOperations,
+                                                          std::shared_ptr<ILogger> logger,
+                                                          const std::string& port,
+                                                          uint32_t baud_rate)
     : serial_(io_context_, port)
+    , logger_{logger}
+    , asioOperations_{asioOperations}
 {
     serial_.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
     serial_.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
@@ -50,8 +57,8 @@ BoostSerialPort<ILogger>::BoostSerialPort(std::shared_ptr<ILogger> logger, const
     serial_.set_option(boost::asio::serial_port::character_size(8));
 }
 
-template <typename ILogger>
-void BoostSerialPort<ILogger>::write(const std::string& data)
+template <typename AsioOperations, typename ILogger>
+BoostSerialPort<AsioOperations, ILogger>::write(const std::string& data)
 {
     std::lock_guard<std::mutex> lock(write_mutex_);
     try {
@@ -63,8 +70,8 @@ void BoostSerialPort<ILogger>::write(const std::string& data)
     }
 }
 
-template <typename ILogger>
-void BoostSerialPort<ILogger>::read(const ReadCallback& callback)
+template <typename AsioOperations, typename ILogger>
+BoostSerialPort<AsioOperations, ILogger>::read(const ReadCallback& callback)
 {
     std::lock_guard<std::mutex> lock(read_mutex_);
     if (read_thread_.joinable()) {
@@ -89,8 +96,8 @@ void BoostSerialPort<ILogger>::read(const ReadCallback& callback)
     });
 }
 
-template <typename ILogger>
-void BoostSerialPort<ILogger>::stop()
+template <typename AsioOperations, typename ILogger>
+BoostSerialPort<AsioOperations, ILogger>::stop()
 {
     if (!io_context_.stopped()) {
         io_context_.stop(); // Stop the io_context to cancel any asynchronous operations
@@ -105,8 +112,8 @@ void BoostSerialPort<ILogger>::stop()
     }
 }
 
-template <typename ILogger>
-BoostSerialPort<ILogger>::~BoostSerialPort()
+template <typename AsioOperations, typename ILogger>
+BoostSerialPort<AsioOperations, ILogger>::~BoostSerialPort()
 {
     stop();
 }

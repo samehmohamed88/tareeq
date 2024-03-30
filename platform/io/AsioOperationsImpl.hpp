@@ -2,6 +2,8 @@
 
 #include <boost/asio.hpp>
 
+#include <cstddef>
+
 namespace platform::io {
 
 class AsioOperationsImpl : public IAsioOperations {
@@ -15,7 +17,4 @@ public:
     }
 };
 
-
 } // namespace platform::io
-
-
