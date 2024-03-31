@@ -69,10 +69,10 @@ void BoostSerialPort<AsioOperations, ILogger>::initialize() {
         logger_->logInfo(">>>>>>>>>> Initializing the BoostSerialPort boost::asio::serial_port object with port " + port_ + " and baud rate " + std::to_string(baudRate_));
         serial_.open(port_);
         serial_.set_option(boost::asio::serial_port_base::baud_rate(baudRate_));
-        serial_.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
-        serial_.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
-        serial_.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
-        serial_.set_option(boost::asio::serial_port::character_size(8));
+//        serial_.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
+//        serial_.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
+//        serial_.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
+//        serial_.set_option(boost::asio::serial_port::character_size(8));
     }
 }
 
