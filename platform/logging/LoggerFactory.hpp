@@ -12,7 +12,7 @@ class ILogger
 {
 public:
     virtual ~ILogger() = default;
-    virtual void logInfo(const std::string& message) = 0;
+    virtual void logInfo(const std::string& message) const = 0;
     virtual void logError(const std::string& message) = 0;
     // Add more log levels as needed
 };
@@ -20,7 +20,7 @@ public:
 class ConsoleLogger : public ILogger
 {
 public:
-    void logInfo(const std::string& message) override { std::cout << "Info: " << message << std::endl; }
+    void logInfo(const std::string& message) const override { std::cout << "Info: " << message << std::endl; }
 
     void logError(const std::string& message) override { std::cerr << "Error: " << message << std::endl; }
 };
@@ -29,7 +29,7 @@ class Ros2Logger : public ILogger
 {
 public:
     Ros2Logger(const std::basic_string<char> basicString) {}
-    void logInfo(const std::string& message) override
+    void logInfo(const std::string& message) const override
     {
         RCLCPP_INFO(rclcpp::get_logger("MotorController"), "%s", message.c_str());
     }

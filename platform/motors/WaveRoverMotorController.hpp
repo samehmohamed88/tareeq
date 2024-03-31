@@ -47,11 +47,12 @@ std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager
 template<typename DeviceManager, typename ILogger>
 std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::stop()
 {
+    this->logger_->logInfo("WaveRoverMotorController::stop()");
     speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::LeftMotor, 0.0);
     speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::RightMotor, 0.0);
 
     const std::string& command = speedControlCommand_.toJsonString();
-
+    this->logger_->logInfo("WaveRoverMotorController::stop() creating json output " + command);
     try {
         this->deviceManager_->write(command);
     } catch (const std::exception& e) {
@@ -72,10 +73,12 @@ std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager
     double leftWheelSpeed,
     double rightWheelSpeed)
 {
+    this->logger_->logInfo("WaveRoverMotorController::setWheelSpeeds " + std::to_string(leftWheelSpeed) + " " + std::to_string(rightWheelSpeed));
     speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::LeftMotor, leftWheelSpeed);
     speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::RightMotor, rightWheelSpeed);
 
     const std::string& command = speedControlCommand_.toJsonString();
+    this->logger_->logInfo("WaveRoverMotorController::setWheelSpeeds creating json output " + command);
 
     try {
         this->deviceManager_->write(command);

@@ -19,7 +19,7 @@ public:
     virtual std::variant<bool, Error> close() = 0;
 
 protected:
-    std::shared_ptr<const ILogger> getLogger() const;
+//    std::shared_ptr<const ILogger> getLogger() const;
     std::shared_ptr<const ILogger> logger_;
 };
 
@@ -28,10 +28,10 @@ DeviceInterface<Error, ILogger>::DeviceInterface(std::shared_ptr<const ILogger> 
     : logger_{logger}
 {}
 
-template<typename Error, typename ILogger>
-std::shared_ptr<const ILogger> DeviceInterface<Error, ILogger>::getLogger() const
-{
-    return logger_;
-}
+//template<typename Error, typename ILogger>
+//std::shared_ptr<const ILogger> DeviceInterface<Error, ILogger>::getLogger() const
+//{
+//    return logger_;
+//}
 
 } // namespace platform::devices
