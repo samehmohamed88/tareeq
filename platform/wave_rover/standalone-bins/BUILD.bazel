@@ -9,3 +9,9 @@ cc_binary(
         "//platform/motors:WaveRoverMotorController",
     ],
 )
+
+py_binary(
+    name = "serial_simple_ctrl",
+    srcs = ["serial_simple_ctrl.py"],
+    deps = [],
+)
