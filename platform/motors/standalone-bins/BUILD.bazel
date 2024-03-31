@@ -12,6 +12,8 @@ cc_binary(
     deps = [
         "//platform/devices:BoostSerialPort",
         "//platform/devices:SerialDeviceManager",
+        "//platform/io:AsioOperationsImpl",
+        "//platform/logging:LoggerFactory",
         "//platform/motors:WaveRoverMotorController",
     ],
 )

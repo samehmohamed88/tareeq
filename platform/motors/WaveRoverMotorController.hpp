@@ -32,9 +32,17 @@ public:
 
     std::variant<bool, MotorControllerErrors> setWheelSpeeds(double leftWheelSpeed, double rightWheelSpeed) override;
 
+    std::variant<bool, MotorControllerErrors> close() override;
+
 private:
     WaveRoverUtils::Command speedControlCommand_;
 };
+
+template<typename DeviceManager, typename ILogger>
+std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::close()
+{
+    return {};
+}
 
 template<typename DeviceManager, typename ILogger>
 std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::stop()
@@ -59,7 +67,7 @@ std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager
     const std::string& command = speedControlCommand_.toJsonString();
 
     try {
-        deviceManager_.write(command);
+        this->deviceManager_->write(command);
     } catch (const std::exception& e) {
         return MotorControllerErrors::CommunicationError;
     }

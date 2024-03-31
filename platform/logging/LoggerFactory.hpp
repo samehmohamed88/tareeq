@@ -44,13 +44,14 @@ class LoggerFactory
 {
 public:
     // Factory method
-    static std::unique_ptr<ILogger> createLogger(const std::string& loggerType, const std::string& loggerName = "")
+    static std::shared_ptr<ConsoleLogger> createLogger(const std::string& loggerType, const std::string& loggerName = "")
     {
         if (loggerType == "ROS2") {
-            return std::make_unique<Ros2Logger>(loggerName);
+//            return std::make_shared<Ros2Logger>(loggerName);
+            return std::make_shared<ConsoleLogger>();
         } else {
             // Default to console logger if no specific type is requested or recognized
-            return std::make_unique<ConsoleLogger>();
+            return std::make_shared<ConsoleLogger>();
         }
     }
 };

@@ -52,7 +52,9 @@ public:
         if (isDirty) {
             jsonData = {{"T", waveShareIdentifier}};
             for (const auto& [key, value] : parameters) {
-                jsonData[key] = value;
+                std::visit([this, &key](const auto& val) {
+                    this->jsonData[key] = val;
+                }, value);
             }
             jsonString = jsonData.dump(4);  // Update the string representation as well
             isDirty = false;

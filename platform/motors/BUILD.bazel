@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "MotorController",
     hdrs = ["MotorController.hpp"],
@@ -17,7 +19,6 @@ cc_library(
 
 cc_library(
     name = "WaveRoverMotorController",
-    srcs = ["WaveRoverMotorController.cpp"],
     hdrs = ["WaveRoverMotorController.hpp"],
     deps = [
         ":MotorController",
