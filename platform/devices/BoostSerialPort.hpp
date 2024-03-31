@@ -66,7 +66,7 @@ BoostSerialPort<AsioOperations, ILogger>::BoostSerialPort(std::shared_ptr<AsioOp
 template <typename AsioOperations, typename ILogger>
 void BoostSerialPort<AsioOperations, ILogger>::initialize() {
     if (!isInitialized) {
-        logger_->logInfo("Initializing the BoostSerialPort boost::asio::serial_port object");
+        logger_->logInfo(">>>>>>>>>> Initializing the BoostSerialPort boost::asio::serial_port object with port " + port_ + " and baud rate " + std::to_string(baudRate_));
         serial_.open(port_);
         serial_.set_option(boost::asio::serial_port_base::baud_rate(baudRate_));
         serial_.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
