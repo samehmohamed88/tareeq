@@ -30,7 +30,7 @@ int main()
     auto waveRoverMotorController = std::make_shared<WaveRoverMotorController<SerialDeviceManagerType, ConsoleLogger>>(deviceManager, logger);
 
     waveRoverMotorController->setWheelSpeeds(164, 164);
-    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     waveRoverMotorController->stop();
     return 0;
 }
