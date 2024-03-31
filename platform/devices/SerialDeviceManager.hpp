@@ -20,17 +20,17 @@ public:
     void write(const std::string& data) {
         std::lock_guard<std::mutex> lock(write_mutex_);
         try {
-            serialPort_.write(data);
+            serialPort_->write(data);
         } catch (const std::exception& e) {
 
         }
     }
 
-    std::string read() { return serialPort_.read(); }
+    std::string read() { return serialPort_->read(); }
 
 private:
-    std::shared_ptr<ILogger> logger_;
     std::shared_ptr<SerialPortImpl> serialPort_;
+    std::shared_ptr<ILogger> logger_;
 
     std::mutex read_mutex_;  // Mutex to synchronize access to the read method
     std::mutex write_mutex_; // Mutex to synchronize access to the write method

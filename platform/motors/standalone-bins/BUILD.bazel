@@ -1,7 +1,17 @@
+#cc_binary(
+#    name = "run_sabertooth_motor",
+#    srcs = ["run_sabertooth_motor.cpp"],
+#    deps = [
+#        "//av/motors:SabertoothMotorController",
+#    ],
+#)
+
 cc_binary(
-    name = "run_sabertooth_motor",
-    srcs = ["run_sabertooth_motor.cpp"],
+    name = "run_wave_rover_motor_standalone",
+    srcs = ["run_wave_rover_motor_standalone.cpp"],
     deps = [
-        "//av/motors:SabertoothMotorController",
+        "//platform/devices:BoostSerialPort",
+        "//platform/devices:SerialDeviceManager",
+        "//platform/motors:WaveRoverMotorController",
     ],
 )

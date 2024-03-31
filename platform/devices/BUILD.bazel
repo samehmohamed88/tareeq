@@ -13,8 +13,8 @@ cc_library(
 )
 
 cc_library(
-    name = "SerialDevice",
-    srcs = ["SerialDevice.hpp"],
+    name = "SerialDeviceManager",
+    srcs = ["SerialDeviceManager.hpp"],
     deps = [],
 )
 

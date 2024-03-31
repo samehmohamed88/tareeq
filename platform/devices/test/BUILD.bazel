@@ -1,9 +1,20 @@
 cc_test(
-    name = "TestBoostSerialPort",
+    name = "BoostSerialPortTest",
     srcs = ["BoostSerialPortTest.cpp"],
     deps = [
         "//platform/devices:BoostSerialPort",
         "//platform/test:MockIAsioOperations",
+        "//platform/test:MockLogger",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "SerialDeviceTest",
+    srcs = ["SerialDeviceTest.cpp"],
+    deps = [
+        "//platform/devices:SerialDeviceManager",
+        "//platform/test:MockISerialPort",
         "//platform/test:MockLogger",
         "@com_google_googletest//:gtest_main",
     ],

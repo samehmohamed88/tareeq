@@ -3,6 +3,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 namespace platform::devices {
@@ -27,6 +28,7 @@ public:
 class Ros2Logger : public ILogger
 {
 public:
+    Ros2Logger(const std::basic_string<char> basicString) {}
     void logInfo(const std::string& message) override
     {
         RCLCPP_INFO(rclcpp::get_logger("MotorController"), "%s", message.c_str());

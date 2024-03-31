@@ -5,7 +5,16 @@ cc_library(
     hdrs = ["mocks/MockLogger.hpp"],
     deps = [
         "//platform/logging:LoggerFactory",
-        "@com_google_googletest//:gtest_main",
+        "@com_google_googletest//:gtest",
+    ],
+)
+
+cc_library(
+    name = "MockISerialPort",
+    hdrs = ["mocks/MockISerialPort.hpp"],
+    deps = [
+        "//platform/devices:ISerialPort",
+        "@com_google_googletest//:gtest",
     ],
 )
 
@@ -15,6 +24,6 @@ cc_library(
     deps = [
         "//platform/io:IAsioOperations",
         "@boost//:asio",
-        "@com_google_googletest//:gtest_main",
+        "@com_google_googletest//:gtest",
     ],
 )
