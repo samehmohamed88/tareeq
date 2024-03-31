@@ -6,6 +6,8 @@
 #include "platform/motors/WaveRoverMotorController.hpp"
 
 #include <memory>
+#include <thread>
+#include <chrono>
 
 int main()
 {
@@ -27,6 +29,7 @@ int main()
     auto waveRoverMotorController = std::make_shared<WaveRoverMotorController<SerialDeviceManagerType, ConsoleLogger>>(deviceManager, logger);
 
     waveRoverMotorController->setWheelSpeeds(.15, .15);
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    waveRoverMotorController->stop();
     return 0;
 }

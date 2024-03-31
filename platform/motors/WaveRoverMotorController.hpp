@@ -47,7 +47,18 @@ std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager
 template<typename DeviceManager, typename ILogger>
 std::variant<bool, MotorControllerErrors> WaveRoverMotorController<DeviceManager, ILogger>::stop()
 {
-    return {};
+    speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::LeftMotor, 0.0);
+    speedControlCommand_.updateParameter(WaveRoverUtils::CommandType::CMD_SPEED_CTRL::RightMotor, 0.0);
+
+    const std::string& command = speedControlCommand_.toJsonString();
+
+    try {
+        this->deviceManager_->write(command);
+    } catch (const std::exception& e) {
+        return MotorControllerErrors::CommunicationError;
+    }
+
+    return true;
 }
 
 template<typename DeviceManager, typename ILogger>
