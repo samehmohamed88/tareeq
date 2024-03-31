@@ -27,10 +27,11 @@ public:
     void write(const std::string& data) override;
 
     void read(const ReadCallback& callback) override;
+    void initialize();
 
 private:
     void stop();
-    void initialize();
+
 
     bool isInitialized = false;
     std::thread read_thread_;
