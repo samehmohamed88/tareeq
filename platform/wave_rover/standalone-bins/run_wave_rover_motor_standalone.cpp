@@ -22,7 +22,7 @@ int main()
 
     auto logger = LoggerFactory::createLogger("console");
 
-    auto boostSerialDevice = std::make_shared<BoostSerialDeviceType>(asioOperations, logger, "/dev/ttyTHS1");
+    auto boostSerialDevice = std::make_shared<BoostSerialDeviceType>(asioOperations, logger, "/dev/ttyTHS2");
     boostSerialDevice->initialize();
 
     auto deviceManager = std::make_shared<SerialDeviceManagerType>(boostSerialDevice, logger);
