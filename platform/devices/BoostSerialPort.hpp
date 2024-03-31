@@ -79,8 +79,10 @@ void BoostSerialPort<AsioOperations, ILogger>::initialize() {
 template <typename AsioOperations, typename ILogger>
 void BoostSerialPort<AsioOperations, ILogger>::write(const std::string& data)
 {
+    logger_->logInfo("BoostSerialPort::write data " + data);
     std::lock_guard<std::mutex> lock(write_mutex_);
     try {
+        logger_->logInfo("BoostSerialPort::write calling boost asio operations impl");
         asioOperations_->write(serial_, boost::asio::buffer(data));
     } catch (const boost::system::system_error& e) {
         logger_->logError("BoostSerialPort : Error while writing: " + data);
