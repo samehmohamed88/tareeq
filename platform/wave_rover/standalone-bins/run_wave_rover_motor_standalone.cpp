@@ -26,5 +26,7 @@ int main()
 
     auto waveRoverMotorController = std::make_shared<WaveRoverMotorController<SerialDeviceManagerType, ConsoleLogger>>(deviceManager, logger);
 
+    waveRoverMotorController->setWheelSpeeds(.15, .15);
+
     return 0;
 }
