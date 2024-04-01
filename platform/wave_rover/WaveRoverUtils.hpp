@@ -56,7 +56,7 @@ public:
                     this->jsonData[key] = val;
                 }, value);
             }
-            jsonString = jsonData.dump(4);  // Update the string representation as well
+            jsonString = jsonData.dump();  // Update the string representation as well
             isDirty = false;
         }
         return jsonData;

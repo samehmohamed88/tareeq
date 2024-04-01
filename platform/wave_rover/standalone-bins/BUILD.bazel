@@ -10,6 +10,15 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "make_simple_http_command",
+    srcs = ["make_simple_http_command.cpp"],
+    deps = [
+        "@boost//:asio",
+        "@boost//:beast",
+    ],
+)
+
 py_binary(
     name = "serial_simple_ctrl",
     srcs = ["serial_simple_ctrl.py"],

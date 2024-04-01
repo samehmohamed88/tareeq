@@ -80,78 +80,51 @@ template<typename AsioOperations, typename ILogger>
 void BoostNetworkDevice<AsioOperations, ILogger>::initialize()
 {
     if (!isInitialized) {
-        logger_->logInfo("Initializing the BoostHttpClient with server " + server_ + " and port " + port_);
-
-        if (!localAddress_.empty()) {
-            // Bind the socket to the local address (interface) before connecting
-            boost::asio::ip::tcp::endpoint local_endpoint(boost::asio::ip::make_address(localAddress_), 0);
-            socket_.open(boost::asio::ip::tcp::v4());
-            socket_.bind(local_endpoint);
+        logger_->logInfo("Initializing the network device with server " + server_ + " and port " + port_);
+        try {
+            auto const results = resolver_.resolve(server_, port_);
+            boost::asio::connect(socket_, results.begin(), results.end());
+            isInitialized = true;
+            logger_->logInfo("Connection established with " + server_ + ":" + port_);
+        } catch (const std::exception& e) {
+            logger_->logError("Connection failed: " + std::string(e.what()));
+            isInitialized = false;
         }
-
-        boost::asio::ip::tcp::resolver::query query(server_, port_);
-        auto endpoint_iterator = resolver_.resolve(query);
-        boost::asio::connect(socket_, endpoint_iterator);
-
-        isInitialized = true;
+    } else {
+        logger_->logInfo("Network device is already initialized.");
     }
 }
 
 template<typename AsioOperations, typename ILogger>
-void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& command)
-{
+void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& command) {
     logger_->logInfo("BoostNetworkDevice::write data " + command);
     std::lock_guard<std::mutex> lock(write_mutex_);
-//    try {
-//        logger_->logInfo("Sending HTTP request: " + request);
-////        boost::asio::write(socket_, boost::asio::buffer(request));
-//        asioOperations_->template write<boost::asio::ip::tcp::socket>(socket_, boost::asio::buffer(request));
-//    } catch (const boost::system::system_error& e) {
-//        logger_->logError("BoostNetworkDevice : Error while writing: " + request);
-//        logger_->logError("BoostNetworkDevice : Error while writing: " + std::string(e.what()));
-//        throw e;
-//    }
+
+    if (!isInitialized) {
+        logger_->logError("Network device not initialized. Attempting to initialize...");
+        initialize();
+        if (!isInitialized) {
+            logger_->logError("Initialization failed.");
+            return;
+        }
+    }
 
     try {
-        net::io_context ioc;
-
-        // The io_context is required for all I/O
-        tcp::resolver resolver{ioc};
-        tcp::socket socket{ioc};
-
-        // Look up the domain name
-        auto const results = resolver.resolve(server_, port_);
-
-        // Make the connection on the IP address we get from a lookup
-        net::connect(socket, results.begin(), results.end());
-
-        // Construct the request
         http::request<http::string_body> req{http::verb::get, "/js?json=" + command, 11};
         req.set(http::field::host, server_);
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
-        // Send the HTTP request
-        http::write(socket, req);
+        http::write(socket_, req);
 
-        // This buffer is used for reading and must be persisted
-        beast::flat_buffer buffer;
-
-        // Declare a container to hold the response
-        http::response<http::dynamic_body> res;
-
-        // Receive the HTTP response
-        http::read(socket, buffer, res);
-
-        // Write the message to standard out
-        std::cout << res << std::endl;
-
-        // Gracefully close the socket
-        socket.shutdown(tcp::socket::shutdown_both);
-    } catch (const std::exception& e) {
-        std::cerr << "Error sending request: " << e.what() << std::endl;
+        // No read operation or response handling. Assume the command is sent and received by the server.
+        logger_->logInfo("Request sent successfully.");
+    } catch (const beast::system_error& e) {
+        logger_->logError("Error sending request: " + std::string(e.what()));
+        socket_.close();
+        isInitialized = false;
     }
-
 }
+
 
 template<typename AsioOperations, typename ILogger>
 void BoostNetworkDevice<AsioOperations, ILogger>::read(const ReadCallback& callback)
@@ -160,20 +133,25 @@ void BoostNetworkDevice<AsioOperations, ILogger>::read(const ReadCallback& callb
 template<typename AsioOperations, typename ILogger>
 void BoostNetworkDevice<AsioOperations, ILogger>::stop()
 {
-    if (!io_context_.stopped()) {
-        io_context_.stop(); // Stop the io_context to cancel any asynchronous operations
+    if (socket_.is_open()) {
+        boost::system::error_code ec;
+        socket_.shutdown(tcp::socket::shutdown_both, ec);
+        socket_.close(ec);
+        if (ec) {
+            logger_->logError("Error closing socket: " + ec.message());
+        }
+        isInitialized = false;
     }
 
-    // Since there's no direct is_open() check for a socket, we can use the lowest layer's is_open()
-    // if you're using a plain TCP socket, or connected() if you have a higher-level protocol or session management
-    if (socket_.is_open()) {
-        socket_.close(); // Close the socket
+    if (!io_context_.stopped()) {
+        io_context_.stop();
     }
 
     if (read_thread_.joinable()) {
-        read_thread_.join(); // Ensure the read thread is finished
+        read_thread_.join();
     }
 }
+
 
 template<typename AsioOperations, typename ILogger>
 BoostNetworkDevice<AsioOperations, ILogger>::~BoostNetworkDevice()
