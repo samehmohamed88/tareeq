@@ -77,28 +77,30 @@ BoostNetworkDevice<AsioOperations, ILogger>::BoostNetworkDevice(std::shared_ptr<
 {}
 
 template<typename AsioOperations, typename ILogger>
-void BoostNetworkDevice<AsioOperations, ILogger>::initialize()
-{
-    if (!isInitialized) {
-        logger_->logInfo("Initializing the network device with server " + server_ + " and port " + port_);
-        try {
-            auto const results = resolver_.resolve(server_, port_);
-            boost::asio::connect(socket_, results.begin(), results.end());
-            isInitialized = true;
-            logger_->logInfo("Connection established with " + server_ + ":" + port_);
-        } catch (const std::exception& e) {
-            logger_->logError("Connection failed: " + std::string(e.what()));
-            isInitialized = false;
+void BoostNetworkDevice<AsioOperations, ILogger>::initialize() {
+    if (isInitialized && socket_.is_open()) {
+        logger_->logInfo("Network device already initialized.");
+        return;
+    }
+
+    try {
+        auto const results = resolver_.resolve(server_, port_);
+        boost::asio::connect(socket_, results.begin(), results.end());
+        isInitialized = true;
+        logger_->logInfo("Connection established with " + server_ + ":" + port_);
+    } catch (const std::exception& e) {
+        logger_->logError("Connection failed: " + std::string(e.what()));
+        isInitialized = false;
+        if (socket_.is_open()) {
+            socket_.close();  // Ensure the socket is closed on failure
         }
-    } else {
-        logger_->logInfo("Network device is already initialized.");
     }
 }
+
 
 template<typename AsioOperations, typename ILogger>
 void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& command) {
     logger_->logInfo("BoostNetworkDevice::write data " + command);
-    std::lock_guard<std::mutex> lock(write_mutex_);
 
     if (!isInitialized) {
         logger_->logError("Network device not initialized. Attempting to initialize...");
@@ -116,14 +118,27 @@ void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& comma
 
         http::write(socket_, req);
 
-        // No read operation or response handling. Assume the command is sent and received by the server.
-        logger_->logInfo("Request sent successfully.");
+        // Since we don't need to process the response, we can ignore it or log it for debugging
+        beast::flat_buffer buffer;
+        http::response<http::dynamic_body> res;
+        http::read(socket_, buffer, res);  // Consider removing if not needed
+
+        logger_->logInfo("HTTP request sent successfully.");
+
+        // Check if the connection should be closed
+        if (!res.keep_alive()) {
+            logger_->logInfo("Connection closed by server.");
+            socket_.shutdown(tcp::socket::shutdown_both);
+            socket_.close();
+            isInitialized = false;
+        }
     } catch (const beast::system_error& e) {
         logger_->logError("Error sending request: " + std::string(e.what()));
         socket_.close();
         isInitialized = false;
     }
 }
+
 
 
 template<typename AsioOperations, typename ILogger>
