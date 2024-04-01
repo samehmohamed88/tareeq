@@ -113,22 +113,38 @@ void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& comma
 //    }
 
     try {
-        std::string target = "/js?json=" + command;
-        std::string host = server_ + ":" + port_;
+        net::io_context ioc;
+
+        // The io_context is required for all I/O
+        tcp::resolver resolver{ioc};
+        beast::tcp_stream stream{ioc};
+
+        // The SSL context is required, and holds certificates
+        net::ssl::context ctx{net::ssl::context::sslv23_client};
+
+        // This holds the root certificate used for verification
+        load_root_certificates(ctx);
+
+        // Set SNI Hostname (many hosts need this to handshake successfully)
+        if(!SSL_set_tlsext_host_name(stream.native_handle(), host.c_str()))
+        {
+            beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
+            throw beast::system_error{ec};
+        }
+
+        // Look up the domain name
+        auto const results = resolver.resolve(host, port);
+
+        // Make the connection on the IP address we get from a lookup
+        stream.connect(results);
 
         // Set up an HTTP GET request message
-        http::request<http::string_body> req{http::verb::get, target, 11};
+        http::request<http::string_body> req{http::verb::get, "/js?json=" + command, 11};
         req.set(http::field::host, host);
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
-        // Look up the domain name
-        auto const results = resolver_.resolve(server_, port_);
-
-        // Make the connection on the IP address we get from a lookup
-        net::connect(socket_, results.begin(), results.end());
-
         // Send the HTTP request to the remote host
-        http::write(socket_, req);
+        http::write(stream, req);
 
         // This buffer is used for reading and must be persisted
         beast::flat_buffer buffer;
@@ -137,21 +153,21 @@ void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& comma
         http::response<http::dynamic_body> res;
 
         // Receive the HTTP response
-        http::read(socket_, buffer, res);
+        http::read(stream, buffer, res);
 
         // Write the message to standard out
-        std::cout << " >>>>>>>>>>>>>>>>>>>> response " << res << std::endl;
+        std::cout << res << std::endl;
 
-        // Gracefully close the socket
-//        beast::error_code ec;
-//        socket_.shutdown(tcp::socket::shutdown_both, ec);
-//
-//        // not_connected happens sometimes so don't bother reporting it.
-//        if (ec && ec != beast::errc::not_connected)
-//            throw beast::system_error{ec};
+        // Gracefully close the stream
+        beast::error_code ec;
+        stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+
+        // not_connected happens sometimes so don't bother reporting it.
+        if(ec && ec != beast::errc::not_connected)
+            throw beast::system_error{ec};
 
         // If we get here then the connection is closed gracefully
-    } catch (std::exception const& e) {
+    } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 
