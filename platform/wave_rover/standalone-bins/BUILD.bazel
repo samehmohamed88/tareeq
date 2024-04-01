@@ -2,7 +2,7 @@ cc_binary(
     name = "run_wave_rover_motor_standalone",
     srcs = ["run_wave_rover_motor_standalone.cpp"],
     deps = [
-        "//platform/devices:BoostSerialPort",
+        "//platform/devices:BoostNetworkDevice",
         "//platform/devices:SerialDeviceManager",
         "//platform/io:AsioOperationsImpl",
         "//platform/logging:LoggerFactory",

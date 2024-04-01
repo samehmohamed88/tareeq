@@ -26,3 +26,12 @@ cc_library(
         "@boost//:asio",
     ],
 )
+
+cc_library(
+    name = "BoostNetworkDevice",
+    hdrs = ["BoostNetworkDevice.hpp"],
+    deps = [
+        ":ISerialPort",
+        "@boost//:asio",
+    ],
+)

@@ -24,14 +24,16 @@ public:
         std::cout << str << std::endl;
     }
 
-    void write(boost::asio::serial_port& serial, const boost::asio::const_buffer& buffer) {
+    template<typename AsyncIO>
+    void write(AsyncIO& asyncIo, const boost::asio::const_buffer& buffer) {
         std::cout << "Info: AsioOperationsImpl::write writing buffer ";
         printBuffer(buffer);
-        boost::asio::write(serial, buffer);
+        boost::asio::write(asyncIo, buffer);
     }
 
-    std::size_t read(boost::asio::serial_port& serial, boost::asio::mutable_buffer buffer) {
-        return boost::asio::read(serial, buffer);
+    template<typename AsyncIO>
+    std::size_t read(AsyncIO& asyncIo, boost::asio::mutable_buffer buffer) {
+        return boost::asio::read(asyncIo, buffer);
     }
 };
 
