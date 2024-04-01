@@ -33,5 +33,6 @@ cc_library(
     deps = [
         ":ISerialPort",
         "@boost//:asio",
+        "@boost//:beast",
     ],
 )
