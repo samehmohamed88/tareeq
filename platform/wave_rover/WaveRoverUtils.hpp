@@ -87,7 +87,7 @@ public:
 
     static Command createSpeedControlCommand(int leftSpeed, int rightSpeed) {
         Command cmd;
-        cmd.waveShareIdentifier = CommandType::CMD_SPEED_CTRL::ID;
+        cmd.waveShareIdentifier = CommandType::CMD_PWM_INPUT::ID;
         cmd.parameters[CommandType::CMD_PWM_INPUT::LeftMotor] = leftSpeed;
         cmd.parameters[CommandType::CMD_PWM_INPUT::RightMotor] = rightSpeed;
         return cmd;
