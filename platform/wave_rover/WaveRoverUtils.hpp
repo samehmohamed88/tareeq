@@ -1,109 +1,128 @@
 #pragma once
 
+#include "platform/sensors/imu/IMUData.hpp"
+
 #include <nlohmann/json.hpp>
 
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <variant>
 #include <vector>
 
 namespace platform::waverover::utils {
 
-class CommandType {
-public:
-    class CMD_SPEED_CTRL {
-    public:
-        static const int ID = 11;
-        static inline const std::string LeftMotor = "L";
-        static inline const std::string RightMotor = "R";
-    };
+// Function to convert JSON string to IMUData struct
+platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
+{
+    // Parse the JSON string
+    auto json = nlohmann::json::parse(jsonString);
 
-    class CMD_PWM_INPUT {
-    public:
-        static const int ID = 1;
-        static inline const std::string LeftMotor = "L";
-        static inline const std::string RightMotor = "R";
-    };
+    return {json["temp"].get<double>(),
+            json["roll"].get<double>(),
+            json["pitch"].get<double>(),
+            json["yaw"].get<double>(),
+            json["acce_X"].get<double>(),
+            json["acce_Y"].get<double>(),
+            json["acce_Z"].get<double>(),
+            json["gyro_X"].get<double>(),
+            json["gyro_Y"].get<double>(),
+            json["gyro_Z"].get<double>(),
+            json["magn_X"].get<double>(),
+            json["magn_Y"].get<double>(),
+            json["magn_Z"].get<double>()};
+}
 
-    class RETRIEVE_IMU_DATA {
-    public:
-        static const int ID = 126;
-    };
-
-    class OLED_SCREEN_CONTROL {
-    public:
-        static const int ID = 3;
-    };
+enum class WaveRoverCommandID
+{
+    SPEED_CTRL = 11,
+    PWM_INPUT = 1,
+    RETRIEVE_IMU_DATA = 71,
+    OLED_SCREEN_CONTROL = 3
 };
 
-struct Command {
+class WaveRoverCommand
+{
+public:
     using ParamType = std::variant<int, double, std::string>;
 
-    int waveShareIdentifier{};
-    std::unordered_map<std::string, ParamType> parameters;
+    WaveRoverCommand(WaveRoverCommandID waveShareIdentifier,
+                     std::unordered_map<std::string, ParamType> parameters,
+                     bool writeOnly)
+        : waveShareIdentifier_{waveShareIdentifier}
+        , parameters_{std::move(parameters)}
+        , writeOnly_{writeOnly}
+    {}
 
-private:
-    mutable nlohmann::json jsonData; // Cache for the JSON object
-    mutable std::string jsonString;  // Cache for the JSON string representation
-    mutable bool isDirty = true;     // Flag to indicate if recalculation is needed
-
-public:
-    const nlohmann::json& toJson() const {
+    const nlohmann::json& toJson() const
+    {
         if (isDirty) {
-            jsonData = {{"T", waveShareIdentifier}};
-            for (const auto& [key, value] : parameters) {
-                std::visit([this, &key](const auto& val) {
-                    this->jsonData[key] = val;
-                }, value);
+            jsonData = {{"T", waveShareIdentifier_}};
+            for (const auto& [key, value] : parameters_) {
+                std::visit([this, &key](const auto& val) { this->jsonData[key] = val; }, value);
             }
-            jsonString = jsonData.dump();  // Update the string representation as well
+            jsonString = jsonData.dump(); // Update the string representation as well
             isDirty = false;
         }
         return jsonData;
     }
 
-    const std::string& toJsonString() const {
+    const std::string& toJsonString() const
+    {
         if (isDirty) {
-            toJson();  // This will update jsonString as well
+            toJson(); // This will update jsonString as well
         }
         return jsonString;
     }
 
-    void updateParameter(const std::string& key, const ParamType& value) {
-        parameters[key] = value;
-        isDirty = true;  // Mark as dirty whenever a parameter is updated
-    }
-};
-
-class CommandFactory {
-public:
-    static Command createSpeedControlCommand(double leftSpeed, double rightSpeed) {
-        Command cmd;
-        cmd.waveShareIdentifier = CommandType::CMD_SPEED_CTRL::ID;
-        cmd.parameters[CommandType::CMD_SPEED_CTRL::LeftMotor] = leftSpeed;
-        cmd.parameters[CommandType::CMD_SPEED_CTRL::RightMotor] = rightSpeed;
-        return cmd;
+    void updateParameter(const std::string& key, const ParamType& value)
+    {
+        parameters_[key] = value;
+        isDirty = true; // Mark as dirty whenever a parameter is updated
     }
 
-    static Command createSpeedControlCommand(int leftSpeed, int rightSpeed) {
-        Command cmd;
-        cmd.waveShareIdentifier = CommandType::CMD_PWM_INPUT::ID;
-        cmd.parameters[CommandType::CMD_PWM_INPUT::LeftMotor] = leftSpeed;
-        cmd.parameters[CommandType::CMD_PWM_INPUT::RightMotor] = rightSpeed;
-        return cmd;
-    }
-
-    static Command createRetrieveImuDataCommand() {
-        Command cmd;
-        cmd.waveShareIdentifier = CommandType::RETRIEVE_IMU_DATA::ID;
-        // No additional parameters for this command
-        return cmd;
-    }
-
+    const bool isWriteOnly() const { return writeOnly_; }
 
 private:
-
+    WaveRoverCommandID waveShareIdentifier_;
+    std::unordered_map<std::string, ParamType> parameters_;
+    bool writeOnly_;
+    mutable nlohmann::json jsonData; // Cache for the JSON object
+    mutable std::string jsonString;  // Cache for the JSON string representation
+    mutable bool isDirty = true;     // Flag to indicate if recalculation is needed
 };
 
+class CommandFactory
+{
+public:
+    static WaveRoverCommand createSpeedControlCommand(int leftSpeed, int rightSpeed)
+    {
+        auto cmd = commands_.find(WaveRoverCommandID::PWM_INPUT)->second;
+        return cmd;
+    }
 
-}
+    static WaveRoverCommand createRetrieveImuDataCommand()
+    {
+        auto cmd = commands_.find(WaveRoverCommandID::RETRIEVE_IMU_DATA)->second;
+        return cmd;
+    }
+
+private:
+    static inline std::unordered_map<WaveRoverCommandID, WaveRoverCommand> commands_{
+        {WaveRoverCommandID::PWM_INPUT,
+         WaveRoverCommand(WaveRoverCommandID::PWM_INPUT,
+                          {
+                              {"L", 0},
+                              {"R", 0},
+                          },
+                          true)},
+        {WaveRoverCommandID::RETRIEVE_IMU_DATA,
+         WaveRoverCommand(WaveRoverCommandID::RETRIEVE_IMU_DATA,
+                          {
+
+                          },
+                          false)},
+    };
+};
+
+} // namespace platform::waverover::utils

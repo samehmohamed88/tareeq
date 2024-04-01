@@ -4,6 +4,7 @@ cc_library(
     name = "WaveRoverUtils",
     hdrs = ["WaveRoverUtils.hpp"],
     deps = [
+        "//platform/sensors/imu:IMUData",
         "@nlohmann_json//:json",
     ],
 )
@@ -13,5 +14,32 @@ cc_library(
     hdrs = ["WaveRoverManager.hpp"],
     deps = [
         ":WaveRoverUtils",
+    ],
+)
+
+cc_library(
+    name = "WaveRoverIMUController",
+    hdrs = ["WaveRoverIMUController.hpp"],
+    deps = [
+        "//platform/sensors/imu:IMUData",
+        "//platform/sensors/imu:IMUDeviceController",
+        "//platform/wave_rover:WaveRoverUtils",
+    ],
+)
+
+cc_library(
+    name = "WaveRoverMotorController",
+    hdrs = ["WaveRoverMotorController.hpp"],
+    deps = [
+        "//platform/motors:MotorController",
+        "//platform/wave_rover:WaveRoverUtils",
+    ],
+)
+
+cc_library(
+    name = "WaveRoverNetworkDeviceManager",
+    hdrs = ["WaveRoverNetworkDeviceManager.hpp"],
+    deps = [
+        "//platform/devices:DeviceManager",
     ],
 )

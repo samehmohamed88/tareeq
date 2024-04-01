@@ -1,15 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "IMUData",
+    hdrs = ["IMUData.hpp"],
+    deps = [],
+)
+
 cc_library(
     name = "IMUDeviceController",
     hdrs = ["IMUDeviceController.hpp"],
     deps = [
+        ":IMUData",
         "//platform/devices:DeviceInterface",
-    ],
-)
-
-cc_library(
-    name = "WaveRoverIMUController",
-    hdrs = ["WaveRoverIMUController.hpp"],
-    deps = [
-        ":IMUDeviceController",
     ],
 )

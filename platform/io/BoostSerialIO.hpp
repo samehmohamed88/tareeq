@@ -14,15 +14,15 @@
 namespace platform::devices {
 
 template <typename AsioOperations, typename ILogger>
-class BoostSerialPort : public ISerialPort
+class BoostSerialIO : public ISerialPort
 {
 public:
-    BoostSerialPort(std::shared_ptr<AsioOperations> asioOperations,
+    BoostSerialIO(std::shared_ptr<AsioOperations> asioOperations,
                     std::shared_ptr<ILogger> logger,
                     std::string port,
                     uint32_t baudRate = 115200);
 
-    ~BoostSerialPort() override;
+    ~BoostSerialIO() override;
 
     void write(const std::string& data) override;
 
@@ -50,7 +50,7 @@ private:
 };
 
 template <typename AsioOperations, typename ILogger>
-BoostSerialPort<AsioOperations, ILogger>::BoostSerialPort(std::shared_ptr<AsioOperations> asioOperations,
+BoostSerialIO<AsioOperations, ILogger>::BoostSerialIO(std::shared_ptr<AsioOperations> asioOperations,
                                                           std::shared_ptr<ILogger> logger,
                                                           std::string port,
                                                           uint32_t baudRate)
@@ -64,9 +64,9 @@ BoostSerialPort<AsioOperations, ILogger>::BoostSerialPort(std::shared_ptr<AsioOp
 }
 
 template <typename AsioOperations, typename ILogger>
-void BoostSerialPort<AsioOperations, ILogger>::initialize() {
+void BoostSerialIO<AsioOperations, ILogger>::initialize() {
     if (!isInitialized) {
-        logger_->logInfo(">>>>>>>>>> Initializing the BoostSerialPort boost::asio::serial_port object with port " + port_ + " and baud rate " + std::to_string(baudRate_));
+        logger_->logInfo(">>>>>>>>>> Initializing the BoostSerialIO boost::asio::serial_port object with port " + port_ + " and baud rate " + std::to_string(baudRate_));
         serial_.open(port_);
         serial_.set_option(boost::asio::serial_port_base::baud_rate(baudRate_));
 //        serial_.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
@@ -77,22 +77,22 @@ void BoostSerialPort<AsioOperations, ILogger>::initialize() {
 }
 
 template <typename AsioOperations, typename ILogger>
-void BoostSerialPort<AsioOperations, ILogger>::write(const std::string& data)
+void BoostSerialIO<AsioOperations, ILogger>::write(const std::string& data)
 {
-    logger_->logInfo("BoostSerialPort::write data " + data);
+    logger_->logInfo("BoostSerialIO::write data " + data);
     std::lock_guard<std::mutex> lock(write_mutex_);
     try {
-        logger_->logInfo("BoostSerialPort::write calling boost asio operations impl");
+        logger_->logInfo("BoostSerialIO::write calling boost asio operations impl");
         asioOperations_->template write<boost::asio::serial_port>(serial_, boost::asio::buffer(data));
     } catch (const boost::system::system_error& e) {
-        logger_->logError("BoostSerialPort : Error while writing: " + data);
-        logger_->logError("BoostSerialPort : Error while writing: " + std::string(e.what()));
+        logger_->logError("BoostSerialIO : Error while writing: " + data);
+        logger_->logError("BoostSerialIO : Error while writing: " + std::string(e.what()));
         throw e;
     }
 }
 
 template <typename AsioOperations, typename ILogger>
-void BoostSerialPort<AsioOperations, ILogger>::read(const ReadCallback& callback)
+void BoostSerialIO<AsioOperations, ILogger>::read(const ReadCallback& callback)
 {
 //    std::lock_guard<std::mutex> lock(read_mutex_);
 //    if (read_thread_.joinable()) {
@@ -118,7 +118,7 @@ void BoostSerialPort<AsioOperations, ILogger>::read(const ReadCallback& callback
 }
 
 template <typename AsioOperations, typename ILogger>
-void BoostSerialPort<AsioOperations, ILogger>::stop()
+void BoostSerialIO<AsioOperations, ILogger>::stop()
 {
     if (!io_context_.stopped()) {
         io_context_.stop(); // Stop the io_context to cancel any asynchronous operations
@@ -134,7 +134,7 @@ void BoostSerialPort<AsioOperations, ILogger>::stop()
 }
 
 template <typename AsioOperations, typename ILogger>
-BoostSerialPort<AsioOperations, ILogger>::~BoostSerialPort()
+BoostSerialIO<AsioOperations, ILogger>::~BoostSerialIO()
 {
     stop();
 }
