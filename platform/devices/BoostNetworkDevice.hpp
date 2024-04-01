@@ -140,15 +140,15 @@ void BoostNetworkDevice<AsioOperations, ILogger>::write(const std::string& comma
         http::read(socket_, buffer, res);
 
         // Write the message to standard out
-        std::cout << res << std::endl;
+        std::cout << " >>>>>>>>>>>>>>>>>>>> response " << res << std::endl;
 
         // Gracefully close the socket
-        beast::error_code ec;
-        socket_.shutdown(tcp::socket::shutdown_both, ec);
-
-        // not_connected happens sometimes so don't bother reporting it.
-        if (ec && ec != beast::errc::not_connected)
-            throw beast::system_error{ec};
+//        beast::error_code ec;
+//        socket_.shutdown(tcp::socket::shutdown_both, ec);
+//
+//        // not_connected happens sometimes so don't bother reporting it.
+//        if (ec && ec != beast::errc::not_connected)
+//            throw beast::system_error{ec};
 
         // If we get here then the connection is closed gracefully
     } catch (std::exception const& e) {
