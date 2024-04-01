@@ -18,6 +18,8 @@ public:
 
     virtual std::variant<bool, Error> setWheelSpeeds(double leftWheelSpeed, double rightWheelSpeed) = 0;
 
+    virtual std::variant<bool, Error> setMotorPwm(int leftMotorPwm, int rightMotorPwm) = 0;
+
 protected:
     std::shared_ptr<DeviceManager> deviceManager_;
 };

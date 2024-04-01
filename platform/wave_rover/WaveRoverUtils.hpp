@@ -13,14 +13,14 @@ class CommandType {
 public:
     class CMD_SPEED_CTRL {
     public:
-        static const int ID = 1;
+        static const int ID = 11;
         static inline const std::string LeftMotor = "L";
         static inline const std::string RightMotor = "R";
     };
 
     class CMD_PWM_INPUT {
     public:
-        static const int ID = 11;
+        static const int ID = 1;
         static inline const std::string LeftMotor = "L";
         static inline const std::string RightMotor = "R";
     };
@@ -85,11 +85,11 @@ public:
         return cmd;
     }
 
-    static Command createPwmInputCommand(double leftValue, double rightValue) {
+    static Command createSpeedControlCommand(int leftSpeed, int rightSpeed) {
         Command cmd;
-        cmd.waveShareIdentifier = CommandType::CMD_PWM_INPUT::ID;
-        cmd.parameters[CommandType::CMD_PWM_INPUT::LeftMotor] = leftValue;
-        cmd.parameters[CommandType::CMD_PWM_INPUT::RightMotor] = rightValue;
+        cmd.waveShareIdentifier = CommandType::CMD_SPEED_CTRL::ID;
+        cmd.parameters[CommandType::CMD_PWM_INPUT::LeftMotor] = leftSpeed;
+        cmd.parameters[CommandType::CMD_PWM_INPUT::RightMotor] = rightSpeed;
         return cmd;
     }
 
