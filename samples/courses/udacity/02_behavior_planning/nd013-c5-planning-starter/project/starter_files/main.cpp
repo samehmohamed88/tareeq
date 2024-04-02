@@ -124,7 +124,7 @@ void path_planner(vector<double>& x_points, vector<double>& y_points, vector<dou
   State lead_car_state;  // = to the vehicle ahead...
 
   if(spirals.size() == 0){
-  	cout << "Error: No spirals generated " << endl;
+  	cout << "Errors: No spirals generated " << endl;
   	return;
   }
 

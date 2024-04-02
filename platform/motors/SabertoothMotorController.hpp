@@ -17,7 +17,7 @@
 //class SabertoothDriver
 //{
 //public:
-//    enum class Error
+//    enum class Errors
 //    {
 //        None,
 //        NotInitialized,
@@ -34,11 +34,11 @@
 //
 //    explicit SabertoothDriver(const std::string& port, DriveType type);
 //
-//    std::variant<bool, Error> initialize();
+//    std::variant<bool, Errors> initialize();
 //
-//    std::variant<bool, Error> setSpeed(int speed);
+//    std::variant<bool, Errors> setSpeed(int speed);
 //
-//    std::variant<bool, Error> steer(int angle);
+//    std::variant<bool, Errors> steer(int angle);
 //
 //private:
 //    CppLinuxSerial::SerialPort serialPort;

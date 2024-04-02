@@ -64,7 +64,7 @@ private:
     const std::string server_;
     const std::string port_;
     const std::string localAddress_;
-
+    const boost::asio::ip::tcp::resolver::results_type results_;
 };
 
 template<typename AsioOperations, typename ILogger>
@@ -80,6 +80,7 @@ BoostNetworkIO<AsioOperations, ILogger>::BoostNetworkIO(std::shared_ptr<AsioOper
     , server_{std::move(server)}
     , port_{std::move(port)}
     , localAddress_{std::move(localAddress)}
+    , results_{resolver_.resolve(server_, port_)}
 
 {}
 
@@ -118,8 +119,8 @@ void BoostNetworkIO<AsioOperations, ILogger>::initialize() {
     }
 
     try {
-        auto const results = resolver_.resolve(server_, port_);
-        boost::asio::connect(socket_, results.begin(), results.end());
+//        auto const results = resolver_.resolve(server_, port_);
+        boost::asio::connect(socket_, results_.begin(), results_.end());
 
         initializeBaseRequest();
 
@@ -144,7 +145,7 @@ void BoostNetworkIO<AsioOperations, ILogger>::write(const std::string& request) 
         http::write(socket_, cmd_req);
 
     } catch (const beast::system_error& e) {
-        logger_->logError("Error sending request: " + std::string(e.what()));
+        logger_->logError("Errors sending request: " + std::string(e.what()));
         socket_.close();
         isInitialized = false;
     }
@@ -155,15 +156,15 @@ bool BoostNetworkIO<AsioOperations, ILogger>::reconnect() {
     try {
 
         // Close the socket after the command request
-        socket_.shutdown(tcp::socket::shutdown_both);
+//        socket_.shutdown(tcp::socket::shutdown_both);
         socket_.close();
 
         // Resolve the server address and port
-        auto const results = resolver_.resolve(server_, port_);
+//        auto const results = resolver_.resolve(server_, port_);
 
         // Create a new socket and connect it to the server
         socket_ = tcp::socket(io_context_);
-        boost::asio::connect(socket_, results.begin(), results.end());
+        boost::asio::connect(socket_, results_.begin(), results_.end());
 
         // Update the initialization status
         isInitialized = true;
@@ -199,7 +200,7 @@ std::optional<std::string> BoostNetworkIO<AsioOperations, ILogger>::read(const s
         return responseData;
 
     } catch (const beast::system_error& e) {
-        logger_->logError("Error in read operation: " + std::string(e.what()));
+        logger_->logError("Errors in read operation: " + std::string(e.what()));
         isInitialized = false;
         reconnect();  // Attempt to reconnect for next operation
     }
@@ -215,7 +216,7 @@ void BoostNetworkIO<AsioOperations, ILogger>::stop()
         socket_.shutdown(tcp::socket::shutdown_both, ec);
         socket_.close(ec);
         if (ec) {
-            logger_->logError("Error closing socket: " + ec.message());
+            logger_->logError("Errors closing socket: " + ec.message());
         }
         isInitialized = false;
     }

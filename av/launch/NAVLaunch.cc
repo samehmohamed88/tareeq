@@ -44,7 +44,7 @@ NAVLaunch::NAVLaunch(std::vector<std::string> dagFiles)
 //            modulesMap_[std::move(moduleName)] = std::move(moduleLaunchConfig);
 //
 //        } catch (const YAML::Exception& e) {
-//            std::cerr << "Error parsing YAML: " << e.what() << std::endl;
+//            std::cerr << "Errors parsing YAML: " << e.what() << std::endl;
 //            //            return -1;
 //        }
 //    }

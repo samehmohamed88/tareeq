@@ -345,7 +345,7 @@ std::string ZedCamera::getParam(std::string paramName, std::vector<std::vector<f
 
     if (error != "") {
         RCLCPP_WARN_STREAM(
-            get_logger(), "Error parsing " << paramName << " parameter: " << error.c_str());
+            get_logger(), "Errors parsing " << paramName << " parameter: " << error.c_str());
         RCLCPP_WARN_STREAM(get_logger(), "   " << paramName << " string was " << out_str.c_str());
 
         outVal.clear();
@@ -549,7 +549,7 @@ void ZedCamera::getDebugParams()
             rcutils_logging_set_logger_level(get_logger().get_name(), RCUTILS_LOG_SEVERITY_DEBUG);
 
         if (res != RCUTILS_RET_OK) {
-            RCLCPP_INFO(get_logger(), "Error setting DEBUG level for logger");
+            RCLCPP_INFO(get_logger(), "Errors setting DEBUG level for logger");
         } else {
             RCLCPP_INFO(get_logger(), " + Debug Mode enabled +");
         }
@@ -558,7 +558,7 @@ void ZedCamera::getDebugParams()
             rcutils_logging_set_logger_level(get_logger().get_name(), RCUTILS_LOG_SEVERITY_INFO);
 
         if (res != RCUTILS_RET_OK) {
-            RCLCPP_INFO(get_logger(), "Error setting INFO level for logger");
+            RCLCPP_INFO(get_logger(), "Errors setting INFO level for logger");
         }
     }
 
@@ -3543,14 +3543,14 @@ bool ZedCamera::startCamera()
         }
 
         if (mSvoMode) {
-            RCLCPP_WARN(get_logger(), "Error opening SVO: %s", sl::toString(mConnStatus).c_str());
+            RCLCPP_WARN(get_logger(), "Errors opening SVO: %s", sl::toString(mConnStatus).c_str());
             return false;
         } else if (mSimMode) {
             RCLCPP_WARN(
-                get_logger(), "Error connecting to the simulation server: %s", sl::toString(
+                get_logger(), "Errors connecting to the simulation server: %s", sl::toString(
                                                                                    mConnStatus).c_str());
         } else {
-            RCLCPP_WARN(get_logger(), "Error opening camera: %s", sl::toString(mConnStatus).c_str());
+            RCLCPP_WARN(get_logger(), "Errors opening camera: %s", sl::toString(mConnStatus).c_str());
             if (mConnStatus == sl::ERROR_CODE::CAMERA_DETECTION_ISSUE &&
                 sl_tools::isZEDM(mCamUserModel))
             {
@@ -3717,13 +3717,13 @@ bool ZedCamera::startCamera()
         sl::Mat roi_mask(resol, sl::MAT_TYPE::U8_C1, sl::MEM::CPU);
 
         if (!sl_tools::generateROI(sl_poly, roi_mask)) {
-            RCLCPP_WARN(get_logger(), " * Error generating the region of interest image mask.");
+            RCLCPP_WARN(get_logger(), " * Errors generating the region of interest image mask.");
         } else {
             sl::ERROR_CODE err = mZed.setRegionOfInterest(roi_mask);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    " * Error while setting ZED SDK region of interest: " << sl::toString(err).c_str());
+                    " * Errors while setting ZED SDK region of interest: " << sl::toString(err).c_str());
             } else {
                 RCLCPP_INFO(get_logger(), " * Region of Interest correctly set.");
             }
@@ -3742,7 +3742,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3752,7 +3752,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3762,7 +3762,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3773,7 +3773,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3783,7 +3783,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3793,7 +3793,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3803,7 +3803,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3813,7 +3813,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3823,7 +3823,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3833,7 +3833,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3843,7 +3843,7 @@ bool ZedCamera::startCamera()
         err = mZed.getCameraSettings(setting, value);
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error Getting default param for " << sl::toString(
+                get_logger(), "Errors Getting default param for " << sl::toString(
                                                                         setting).c_str() << ": " << sl::toString(err).c_str());
             exit(EXIT_FAILURE);
         }
@@ -3854,7 +3854,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3866,7 +3866,7 @@ bool ZedCamera::startCamera()
             // setting = sl::VIDEO_SETTINGS::AUTO_EXPOSURE_TIME_RANGE;
             // err = mZed.getCameraSettings(setting, value_min, value_max);
             // if(err!=sl::ERROR_CODE::SUCCESS) {
-            //   RCLCPP_ERROR_STREAM( get_logger(), "Error Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
+            //   RCLCPP_ERROR_STREAM( get_logger(), "Errors Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
             //   exit(EXIT_FAILURE);
             // }
             // DEBUG_STREAM_CTRL("[ZEDX] Default value for " << sl::toString(setting).c_str() << ": [" << value_min << "," << value_max << "]");
@@ -3875,7 +3875,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3887,7 +3887,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3899,7 +3899,7 @@ bool ZedCamera::startCamera()
             // setting = sl::VIDEO_SETTINGS::AUTO_ANALOG_GAIN_RANGE;
             // err = mZed.getCameraSettings(setting, value_min, value_max);
             // if(err!=sl::ERROR_CODE::SUCCESS) {
-            //   RCLCPP_ERROR_STREAM( get_logger(), "Error Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
+            //   RCLCPP_ERROR_STREAM( get_logger(), "Errors Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
             //   exit(EXIT_FAILURE);
             // }
             // DEBUG_STREAM_CTRL("[ZEDX] Default value for " << sl::toString(setting).c_str() << ": [" << value_min << "," << value_max << "]");
@@ -3908,7 +3908,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -3920,7 +3920,7 @@ bool ZedCamera::startCamera()
             // setting = sl::VIDEO_SETTINGS::AUTO_DIGITAL_GAIN_RANGE;
             // err = mZed.getCameraSettings(setting, value_min, value_max);
             // if(err!=sl::ERROR_CODE::SUCCESS) {
-            //   RCLCPP_ERROR_STREAM( get_logger(), "Error Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
+            //   RCLCPP_ERROR_STREAM( get_logger(), "Errors Getting default param for " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str());
             //   exit(EXIT_FAILURE);
             // }
             // DEBUG_STREAM_CTRL("[ZEDX] Default value for " << sl::toString(setting).c_str() << ": [" << value_min << "," << value_max << "]");
@@ -3929,7 +3929,7 @@ bool ZedCamera::startCamera()
             err = mZed.getCameraSettings(setting, value);
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_ERROR_STREAM(
-                    get_logger(), "Error Getting default param for " << sl::toString(
+                    get_logger(), "Errors Getting default param for " << sl::toString(
                                                                             setting).c_str() << ": " << sl::toString(err).c_str());
                 exit(EXIT_FAILURE);
             }
@@ -4023,7 +4023,7 @@ bool ZedCamera::startCamera()
         sl::FUSION_ERROR_CODE fus_err = mFusion.init(mFusionInitParams);
         if (fus_err != sl::FUSION_ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error initializing the Fusion module: " << sl::toString(
+                get_logger(), "Errors initializing the Fusion module: " << sl::toString(
                                                                               fus_err).c_str() << ".");
             exit(EXIT_FAILURE);
         }
@@ -4062,7 +4062,7 @@ bool ZedCamera::startCamera()
             mFusionConfig->pose);
         if (fus_err != sl::FUSION_ERROR_CODE::SUCCESS) {
             RCLCPP_ERROR_STREAM(
-                get_logger(), "Error initializing the Fusion module: " << sl::toString(fus_err).c_str());
+                get_logger(), "Errors initializing the Fusion module: " << sl::toString(fus_err).c_str());
             exit(EXIT_FAILURE);
         }
         DEBUG_GNSS(" Fusion subscribing OK");
@@ -4628,7 +4628,7 @@ bool ZedCamera::startSvoRecording(std::string & errMsg)
     errMsg = sl::toString(err);
 
     if (err != sl::ERROR_CODE::SUCCESS) {
-        RCLCPP_ERROR_STREAM(get_logger(), "Error starting SVO recording: " << errMsg);
+        RCLCPP_ERROR_STREAM(get_logger(), "Errors starting SVO recording: " << errMsg);
         return false;
     }
 
@@ -5300,7 +5300,7 @@ void ZedCamera::threadFunc_zedGrab()
 
                 if (!mRecStatus.status) {
                     rclcpp::Clock steady_clock(RCL_STEADY_TIME);
-                    RCLCPP_ERROR_THROTTLE(get_logger(), steady_clock, 1000.0, "Error saving frame to SVO");
+                    RCLCPP_ERROR_THROTTLE(get_logger(), steady_clock, 1000.0, "Errors saving frame to SVO");
                 }
             }
             mRecMutex.unlock();
@@ -7506,7 +7506,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting AEC_AGC: " << sl::toString(err).c_str() );
+                    "Errors setting AEC_AGC: " << sl::toString(err).c_str() );
             } else {
                 mTriggerAutoExpGain = false;
                 DEBUG_STREAM_CTRL(
@@ -7524,7 +7524,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
 
             err = mZed.getCameraSettings(sl::VIDEO_SETTINGS::GAIN, value);
@@ -7535,7 +7535,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
         }
 
@@ -7546,7 +7546,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             } else {
                 mTriggerAutoWB = false;
                 DEBUG_STREAM_CTRL(
@@ -7565,7 +7565,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
         }
 
@@ -7580,7 +7580,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
 
             setting = sl::VIDEO_SETTINGS::CONTRAST;
@@ -7592,7 +7592,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
 
             setting = sl::VIDEO_SETTINGS::HUE;
@@ -7604,7 +7604,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
         }
         // <---- BRIGHTNESS, CONTRAST, HUE controls not available for ZED X and ZED X Mini
@@ -7618,7 +7618,7 @@ void ZedCamera::applyVideoSettings()
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_WARN_STREAM(
                 get_logger(),
-                "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
         }
 
         setting = sl::VIDEO_SETTINGS::SHARPNESS;
@@ -7630,7 +7630,7 @@ void ZedCamera::applyVideoSettings()
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_WARN_STREAM(
                 get_logger(),
-                "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
         }
 
         setting = sl::VIDEO_SETTINGS::GAMMA;
@@ -7642,7 +7642,7 @@ void ZedCamera::applyVideoSettings()
         if (err != sl::ERROR_CODE::SUCCESS) {
             RCLCPP_WARN_STREAM(
                 get_logger(),
-                "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
         }
 
         if (sl_tools::isZEDX(mCamRealModel)) {
@@ -7659,7 +7659,7 @@ void ZedCamera::applyVideoSettings()
                 if (err != sl::ERROR_CODE::SUCCESS) {
                     RCLCPP_WARN_STREAM(
                         get_logger(),
-                        "Error setting " << sl::toString(setting).c_str() << ": " <<
+                        "Errors setting " << sl::toString(setting).c_str() << ": " <<
                             sl::toString(err).c_str() );
                 }
             }
@@ -7677,7 +7677,7 @@ void ZedCamera::applyVideoSettings()
             // } else if (err != sl::ERROR_CODE::SUCCESS) {
             //   RCLCPP_WARN_STREAM(
             //     get_logger(),
-            //     "Error setting AUTO_EXPOSURE_TIME_RANGE: " << sl::toString(err).c_str() );
+            //     "Errors setting AUTO_EXPOSURE_TIME_RANGE: " << sl::toString(err).c_str() );
             // }
 
             setting = sl::VIDEO_SETTINGS::EXPOSURE_COMPENSATION;
@@ -7692,7 +7692,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
 
             setting = sl::VIDEO_SETTINGS::ANALOG_GAIN;
@@ -7708,7 +7708,7 @@ void ZedCamera::applyVideoSettings()
                 if (err != sl::ERROR_CODE::SUCCESS) {
                     RCLCPP_WARN_STREAM(
                         get_logger(),
-                        "Error setting " << sl::toString(setting).c_str() << ": " <<
+                        "Errors setting " << sl::toString(setting).c_str() << ": " <<
                             sl::toString(err).c_str() );
                 }
             }
@@ -7725,7 +7725,7 @@ void ZedCamera::applyVideoSettings()
             // } else if (err != sl::ERROR_CODE::SUCCESS) {
             //   RCLCPP_WARN_STREAM(
             //     get_logger(),
-            //     "Error setting AUTO_ANALOG_GAIN_RANGE: " << sl::toString(err).c_str() );
+            //     "Errors setting AUTO_ANALOG_GAIN_RANGE: " << sl::toString(err).c_str() );
             // }
 
             if (!mCamAutoExpGain) {
@@ -7741,7 +7741,7 @@ void ZedCamera::applyVideoSettings()
                 if (err != sl::ERROR_CODE::SUCCESS) {
                     RCLCPP_WARN_STREAM(
                         get_logger(),
-                        "Error setting " << sl::toString(setting).c_str() << ": " <<
+                        "Errors setting " << sl::toString(setting).c_str() << ": " <<
                             sl::toString(err).c_str() );
                 }
             }
@@ -7758,7 +7758,7 @@ void ZedCamera::applyVideoSettings()
             // } else if (err != sl::ERROR_CODE::SUCCESS) {
             //   RCLCPP_WARN_STREAM(
             //     get_logger(),
-            //     "Error setting AUTO_DIGITAL_GAIN_RANGE: " << sl::toString(err).c_str() );
+            //     "Errors setting AUTO_DIGITAL_GAIN_RANGE: " << sl::toString(err).c_str() );
             // }
 
             setting = sl::VIDEO_SETTINGS::DENOISING;
@@ -7773,7 +7773,7 @@ void ZedCamera::applyVideoSettings()
             if (err != sl::ERROR_CODE::SUCCESS) {
                 RCLCPP_WARN_STREAM(
                     get_logger(),
-                    "Error setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
+                    "Errors setting " << sl::toString(setting).c_str() << ": " << sl::toString(err).c_str() );
             }
         }
     }
@@ -8378,7 +8378,7 @@ void ZedCamera::callback_enableObjDet(
             res->success = true;
             return;
         } else {
-            res->message = "Error occurred starting Object Detection. See log for more info";
+            res->message = "Errors occurred starting Object Detection. See log for more info";
             res->success = false;
             return;
         }
@@ -8435,7 +8435,7 @@ void ZedCamera::callback_enableBodyTrk(
             res->success = true;
             return;
         } else {
-            res->message = "Error occurred starting Body Tracking. See log for more info";
+            res->message = "Errors occurred starting Body Tracking. See log for more info";
             res->success = false;
             return;
         }
@@ -8485,7 +8485,7 @@ void ZedCamera::callback_enableMapping(
             res->success = true;
             return;
         } else {
-            res->message = "Error occurred starting Spatial Mapping. See log for more info";
+            res->message = "Errors occurred starting Spatial Mapping. See log for more info";
             res->success = false;
             return;
         }
@@ -8563,7 +8563,7 @@ void ZedCamera::callback_startSvoRec(
     std::string err;
 
     if (!startSvoRecording(err)) {
-        res->message = "Error starting SVO recording: " + err;
+        res->message = "Errors starting SVO recording: " + err;
         res->success = false;
         return;
     }
@@ -8881,7 +8881,7 @@ void ZedCamera::callback_updateDiagnostic(diagnostic_updater::DiagnosticStatusWr
                 stat.add("SVO Recording", "ERROR");
                 stat.summary(
                     diagnostic_msgs::msg::DiagnosticStatus::WARN,
-                    "Error adding frames to SVO file while recording. "
+                    "Errors adding frames to SVO file while recording. "
                     "Check "
                     "free disk space");
             }
@@ -9130,7 +9130,7 @@ void ZedCamera::callback_clickedPoint(const geometry_msgs::msg::PointStamped::Sh
 #endif
     if (err != sl::ERROR_CODE::SUCCESS) {
         RCLCPP_WARN(
-            get_logger(), "Error extracting plane at point [%.3f,%.3f,%.3f]: %s", X, Y, Z,
+            get_logger(), "Errors extracting plane at point [%.3f,%.3f,%.3f]: %s", X, Y, Z,
             sl::toString(err).c_str());
         return;
     }
@@ -9344,7 +9344,7 @@ void ZedCamera::callback_setRoi(
 
     if (req->roi == "") {
         std::string err_msg =
-            "Error while setting ZED SDK region of interest: a vector of normalized points describing a "
+            "Errors while setting ZED SDK region of interest: a vector of normalized points describing a "
             "polygon is required. e.g. '[[0.5,0.25],[0.75,0.5],[0.5,0.75],[0.25,0.5]]'";
 
         RCLCPP_WARN_STREAM(get_logger(), " * " << err_msg);
@@ -9358,7 +9358,7 @@ void ZedCamera::callback_setRoi(
     std::vector<std::vector<float>> parsed_poly = sl_tools::parseStringVector(req->roi, error);
 
     if (error != "") {
-        std::string err_msg = "Error while setting ZED SDK region of interest: ";
+        std::string err_msg = "Errors while setting ZED SDK region of interest: ";
         err_msg += error;
 
         RCLCPP_WARN_STREAM(get_logger(), " * " << err_msg);
@@ -9377,7 +9377,7 @@ void ZedCamera::callback_setRoi(
     sl::Resolution resol(mCamWidth, mCamHeight);
     sl::Mat roi_mask(resol, sl::MAT_TYPE::U8_C1, sl::MEM::CPU);
     if (!sl_tools::generateROI(sl_poly, roi_mask)) {
-        std::string err_msg = "Error generating the region of interest image mask. ";
+        std::string err_msg = "Errors generating the region of interest image mask. ";
         err_msg += error;
 
         RCLCPP_WARN_STREAM(get_logger(), "  * " << err_msg);
@@ -9388,7 +9388,7 @@ void ZedCamera::callback_setRoi(
     } else {
         sl::ERROR_CODE err = mZed.setRegionOfInterest(roi_mask);
         if (err != sl::ERROR_CODE::SUCCESS) {
-            std::string err_msg = "Error while setting ZED SDK region of interest: ";
+            std::string err_msg = "Errors while setting ZED SDK region of interest: ";
             err_msg += sl::toString(err).c_str();
 
             RCLCPP_WARN_STREAM(get_logger(), "  * " << err_msg);
@@ -9418,11 +9418,11 @@ void ZedCamera::callback_resetRoi(
     sl::ERROR_CODE err = mZed.setRegionOfInterest(empty_roi);
 
     if (err != sl::ERROR_CODE::SUCCESS) {
-        std::string err_msg = " * Error while resetting ZED SDK region of interest: ";
+        std::string err_msg = " * Errors while resetting ZED SDK region of interest: ";
         err_msg += sl::toString(err);
 
         RCLCPP_WARN_STREAM(
-            get_logger(), " * Error while resetting ZED SDK region of interest: " << err_msg);
+            get_logger(), " * Errors while resetting ZED SDK region of interest: " << err_msg);
 
         res->message = err_msg;
         res->success = false;
@@ -9538,7 +9538,7 @@ void ZedCamera::callback_clock(const rosgraph_msgs::msg::Clock::SharedPtr msg)
         mLastClock = msg_time;
     } catch (...) {
         RCLCPP_WARN_STREAM(
-            get_logger(), "Error comparing clock messages: " <<
+            get_logger(), "Errors comparing clock messages: " <<
                               static_cast<int>(msg_time.get_clock_type()) << " vs " <<
                               static_cast<int>(mLastClock.get_clock_type()));
 

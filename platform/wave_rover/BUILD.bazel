@@ -21,6 +21,7 @@ cc_library(
     name = "WaveRoverIMUController",
     hdrs = ["WaveRoverIMUController.hpp"],
     deps = [
+        "//platform/errors",
         "//platform/sensors/imu:IMUData",
         "//platform/sensors/imu:IMUDeviceController",
         "//platform/wave_rover:WaveRoverUtils",

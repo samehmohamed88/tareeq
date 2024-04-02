@@ -112,7 +112,7 @@ bool ZedCameraComponent::startCamera()
             break;
         }
 
-        RCLCPP_WARN(get_logger(), "Error opening camera: %s", sl::toString(connectionStatus_).c_str());
+        RCLCPP_WARN(get_logger(), "Errors opening camera: %s", sl::toString(connectionStatus_).c_str());
 
         if (connectionStatus_ == sl::ERROR_CODE::CAMERA_DETECTION_ISSUE )
         {

@@ -22,7 +22,7 @@ class ConsoleLogger : public ILogger
 public:
     void logInfo(const std::string& message) const override { std::cout << "Info: " << message << std::endl; }
 
-    void logError(const std::string& message) override { std::cerr << "Error: " << message << std::endl; }
+    void logError(const std::string& message) override { std::cerr << "Errors: " << message << std::endl; }
 };
 
 class Ros2Logger : public ILogger

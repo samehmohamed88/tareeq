@@ -21,7 +21,7 @@
 //    , initialized(false)
 //{}
 //
-//std::variant<bool, SabertoothDriver::Error> SabertoothDriver::initialize()
+//std::variant<bool, SabertoothDriver::Errors> SabertoothDriver::initialize()
 //{
 //    try {
 //        serialPort.Open();
@@ -30,14 +30,14 @@
 //        return true;
 //    } catch (const CppLinuxSerial::Exception& e) {
 //        std::cerr << "Serial port error: " << e.what() << std::endl;
-//        return Error::SerialPortError;
+//        return Errors::SerialPortError;
 //    }
 //}
 //
-//std::variant<bool, SabertoothDriver::Error> SabertoothDriver::setSpeed(int speed)
+//std::variant<bool, SabertoothDriver::Errors> SabertoothDriver::setSpeed(int speed)
 //{
 //    if (!initialized) {
-//        return Error::NotInitialized;
+//        return Errors::NotInitialized;
 //    }
 //
 //    // Example usage of speed control, can be adjusted based on drive type
@@ -51,10 +51,10 @@
 //    return true;
 //}
 //
-//std::variant<bool, SabertoothDriver::Error> SabertoothDriver::steer(int angle)
+//std::variant<bool, SabertoothDriver::Errors> SabertoothDriver::steer(int angle)
 //{
 //    if (!initialized) {
-//        return Error::NotInitialized;
+//        return Errors::NotInitialized;
 //    }
 //
 //    if (driveType == DriveType::Ackerman) {

@@ -6,7 +6,7 @@
   do {                                                                         \
     cublasStatus_t err = (expr);                                               \
     if (err != CUBLAS_STATUS_SUCCESS) {                                        \
-      fprintf(stderr, "CUBLAS Error: %d at %s:%d\n", err, __FILE__, __LINE__); \
+      fprintf(stderr, "CUBLAS Errors: %d at %s:%d\n", err, __FILE__, __LINE__); \
       exit(err);                                                               \
     }                                                                          \
   } while (0)

@@ -85,8 +85,8 @@ void BoostSerialIO<AsioOperations, ILogger>::write(const std::string& data)
         logger_->logInfo("BoostSerialIO::write calling boost asio operations impl");
         asioOperations_->template write<boost::asio::serial_port>(serial_, boost::asio::buffer(data));
     } catch (const boost::system::system_error& e) {
-        logger_->logError("BoostSerialIO : Error while writing: " + data);
-        logger_->logError("BoostSerialIO : Error while writing: " + std::string(e.what()));
+        logger_->logError("BoostSerialIO : Errors while writing: " + data);
+        logger_->logError("BoostSerialIO : Errors while writing: " + std::string(e.what()));
         throw e;
     }
 }
