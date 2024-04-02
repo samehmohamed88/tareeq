@@ -16,3 +16,27 @@ cc_library(
         "@boost//:asio",
     ],
 )
+
+cc_library(
+    name = "IOInterface",
+    hdrs = ["IOInterface.hpp"],
+)
+
+cc_library(
+    name = "BoostSerialIO",
+    hdrs = ["BoostSerialIO.hpp"],
+    deps = [
+        ":IOInterface",
+        "@boost//:asio",
+    ],
+)
+
+cc_library(
+    name = "BoostNetworkIO",
+    hdrs = ["BoostNetworkIO.hpp"],
+    deps = [
+        ":IOInterface",
+        "@boost//:asio",
+        "@boost//:beast",
+    ],
+)

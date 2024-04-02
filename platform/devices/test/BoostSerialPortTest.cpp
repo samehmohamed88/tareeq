@@ -1,6 +1,5 @@
 
-#include "platform/devices/BoostSerialPort.hpp"
-
+#include "platform/io/BoostSerialIO.hpp"
 #include "platform/test/mocks/MockIAsioOperations.hpp"
 #include "platform/test/mocks/MockLogger.hpp"
 
@@ -20,14 +19,14 @@ class BoostSerialPortTest : public ::testing::Test
 protected:
     std::shared_ptr<MockAsioOperations> mockAsioOperations;
     std::shared_ptr<MockLogger> mockLogger;
-    std::shared_ptr<BoostSerialPort<MockAsioOperations, MockLogger>> port;
+    std::shared_ptr<BoostSerialIO<MockAsioOperations, MockLogger>> port;
 
     void SetUp() override
     {
         mockAsioOperations = std::make_shared<MockAsioOperations>();
         mockLogger = std::make_shared<MockLogger>();
         port =
-            std::make_shared<BoostSerialPort<MockAsioOperations, MockLogger>>(mockAsioOperations, mockLogger, "fake_device");
+            std::make_shared<BoostSerialIO<MockAsioOperations, MockLogger>>(mockAsioOperations, mockLogger, "fake_device");
     }
 };
 

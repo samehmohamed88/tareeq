@@ -1,5 +1,5 @@
 
-#include "platform/devices/SerialDeviceManager.hpp"
+#include "platform/devices/DeviceManager.hpp"
 #include "platform/test/mocks/MockISerialPort.hpp"
 #include "platform/test/mocks/MockLogger.hpp"
 
@@ -19,14 +19,14 @@ class SerialDeviceTest : public ::testing::Test
 protected:
     std::shared_ptr<MockLogger> mockLogger_;
     std::shared_ptr<MockSerialPort> mockSerialPort_;
-    std::shared_ptr<SerialDeviceManager<MockSerialPort, MockLogger>> serialDeviceManager_;
+    std::shared_ptr<DeviceManager<MockSerialPort, MockLogger>> serialDeviceManager_;
 
     void SetUp() override
     {
         mockSerialPort_ = std::make_shared<MockSerialPort>();
         mockLogger_ = std::make_shared<MockLogger>();
         serialDeviceManager_ =
-            std::make_shared<SerialDeviceManager<MockSerialPort, MockLogger>>(mockSerialPort_, mockLogger_);
+            std::make_shared<DeviceManager<MockSerialPort, MockLogger>>(mockSerialPort_, mockLogger_);
     }
 };
 

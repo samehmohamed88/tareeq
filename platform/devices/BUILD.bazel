@@ -13,26 +13,7 @@ cc_library(
 )
 
 cc_library(
-    name = "SerialDeviceManager",
-    srcs = ["SerialDeviceManager.hpp"],
+    name = "DeviceManager",
+    srcs = ["DeviceManager.hpp"],
     deps = [],
-)
-
-cc_library(
-    name = "BoostSerialPort",
-    hdrs = ["BoostSerialPort.hpp"],
-    deps = [
-        ":ISerialPort",
-        "@boost//:asio",
-    ],
-)
-
-cc_library(
-    name = "BoostNetworkDevice",
-    hdrs = ["BoostNetworkDevice.hpp"],
-    deps = [
-        ":ISerialPort",
-        "@boost//:asio",
-        "@boost//:beast",
-    ],
 )

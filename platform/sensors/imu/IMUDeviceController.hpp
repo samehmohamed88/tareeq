@@ -1,14 +1,12 @@
 #pragma once
 
+#include "platform/sensors/imu/IMUData.hpp"
 #include "platform/devices/DeviceInterface.hpp"
 
 #include <tuple>
+#include <optional>
 
 namespace platform::sensors::imu {
-
-struct IMUData {
-    // IMU data fields like acceleration, gyroscope, magnetometer, etc.
-};
 
 template<typename Error, typename DeviceManager, typename ILogger>
 class IMUDeviceController : public devices::DeviceInterface<Error, ILogger>
@@ -16,16 +14,13 @@ class IMUDeviceController : public devices::DeviceInterface<Error, ILogger>
 public:
     IMUDeviceController(std::shared_ptr<DeviceManager> deviceManager, std::shared_ptr<const ILogger> logger);
 
-    virtual Error initialize() = 0;
+    virtual std::tuple<Error, std::optional<IMUData>> readData() = 0;
 
-    virtual std::tuple<Error, IMUData> readData() = 0;
+    virtual std::variant<bool, Error> calibrate() = 0;
 
-    virtual Error calibrate() = 0;
+    virtual std::variant<bool, Error> checkStatus() = 0;
 
-    virtual Error checkStatus() = 0;
-
-    virtual Error reset() = 0;
-
+    virtual std::variant<bool, Error> reset() = 0;
 
 protected:
     std::shared_ptr<DeviceManager> deviceManager_;
