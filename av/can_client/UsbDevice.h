@@ -178,7 +178,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::logUsbErrorAndReturn(libusb_error retur
             return DeviceStatus::CONNECTION_OVERFLOW;
         default:
             AERROR << " >>>>>> >>>> >>> "
-                   << "Untracked Error Occurred "
+                   << "Untracked Errors Occurred "
                    << returnCode
                    << " >>>>>> >>>> >>> ";
             return DeviceStatus::UNKNOWN_ERROR;
@@ -319,7 +319,7 @@ DeviceStatus UsbDevice<LibUsbInterface>::controlTransferWithRetry(const uint8_t 
             // Introduce a delay before retrying
             // chrono microseconds excepts an int value and the units time millisecond is a double value, so we cast
             std::this_thread::sleep_for(std::chrono::microseconds(int(sleepDuration.value())));
-            AERROR << "Control Write Error "
+            AERROR << "Control Write Errors "
                     << libusb_strerror((enum libusb_error)returnCode)
                    << " . Retrying ...";
         }

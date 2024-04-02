@@ -47,6 +47,7 @@ private:
 
     void internalWrite(const std::string& data) {
         try {
+            this->device_->reconnect();
             this->device_->write("/js?json=" + data);
         } catch (const std::exception& e) {
             // Handle the exception

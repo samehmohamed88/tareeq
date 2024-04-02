@@ -32,12 +32,12 @@ void SocketCANInterfaceImpl::initDevice() {
     socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
 
     if (socketFd_ == -1) {
-        throw exception::CANInitException(formatString("FAILED to initialise socketcan! Error: %d => %s", errno, strerror(errno)));
+        throw exception::CANInitException(formatString("FAILED to initialise socketcan! Errors: %d => %s", errno, strerror(errno)));
     }
     strcpy(ifaceRequest.ifr_name, interfaceName_.c_str());
 
     if ((tmpReturn = ioctl(socketFd_, SIOCGIFINDEX, &ifaceRequest)) == -1) {
-        throw exception::CANInitException(formatString("FAILED to perform IO control operation on socket %s! Error: %d => %s", interfaceName_.c_str(), errno,
+        throw exception::CANInitException(formatString("FAILED to perform IO control operation on socket %s! Errors: %d => %s", interfaceName_.c_str(), errno,
                                             strerror(errno)));
     }
     fdOptions = fcntl(socketFd_, F_GETFL);
@@ -50,7 +50,7 @@ void SocketCANInterfaceImpl::initDevice() {
 //            setCanFilterMask(_canFilterMask);
 
     if ((tmpReturn = bind(socketFd_, (struct sockaddr*)&address, sizeof(address))) == -1) {
-        throw exception::CANInitException(formatString("FAILED to bind to socket CAN! Error: %d => %s", errno, strerror(errno)));
+        throw exception::CANInitException(formatString("FAILED to bind to socket CAN! Errors: %d => %s", errno, strerror(errno)));
     }
 
     /*Define receive filter rules,we can set more than one filter rule!*/

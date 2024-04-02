@@ -28,8 +28,8 @@ DeviceInterface<Error, ILogger>::DeviceInterface(std::shared_ptr<const ILogger> 
     : logger_{logger}
 {}
 
-//template<typename Error, typename ILogger>
-//std::shared_ptr<const ILogger> DeviceInterface<Error, ILogger>::getLogger() const
+//template<typename Errors, typename ILogger>
+//std::shared_ptr<const ILogger> DeviceInterface<Errors, ILogger>::getLogger() const
 //{
 //    return logger_;
 //}

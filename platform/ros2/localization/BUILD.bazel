@@ -1,0 +1,14 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "IMUPublisher",
+    hdrs = ["IMUPublisher.hpp"],
+    deps = [
+        "//platform/errors",
+        "//platform/sensors/imu:IMUData",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_geometry2//:cpp_tf2_geometry_msgs",
+        "@ros2_geometry2//:tf2",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

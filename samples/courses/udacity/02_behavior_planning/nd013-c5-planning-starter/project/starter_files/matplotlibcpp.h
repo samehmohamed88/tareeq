@@ -188,7 +188,7 @@ struct _interpreter {
     Py_DECREF(matplotlibname);
     if (!matplotlib) {
       PyErr_Print();
-      throw std::runtime_error("Error loading module matplotlib!");
+      throw std::runtime_error("Errors loading module matplotlib!");
     }
 
     // matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
@@ -201,19 +201,19 @@ struct _interpreter {
     PyObject* pymod = PyImport_Import(pyplotname);
     Py_DECREF(pyplotname);
     if (!pymod) {
-      throw std::runtime_error("Error loading module matplotlib.pyplot!");
+      throw std::runtime_error("Errors loading module matplotlib.pyplot!");
     }
 
     s_python_colormap = PyImport_Import(cmname);
     Py_DECREF(cmname);
     if (!s_python_colormap) {
-      throw std::runtime_error("Error loading module matplotlib.cm!");
+      throw std::runtime_error("Errors loading module matplotlib.cm!");
     }
 
     PyObject* pylabmod = PyImport_Import(pylabname);
     Py_DECREF(pylabname);
     if (!pylabmod) {
-      throw std::runtime_error("Error loading module pylab!");
+      throw std::runtime_error("Errors loading module pylab!");
     }
 
     s_python_function_arrow = safe_import(pymod, "arrow");
@@ -524,13 +524,13 @@ void plot_surface(const std::vector<::std::vector<Numeric>>& x,
     mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
     Py_DECREF(mpl_toolkits);
     if (!mpl_toolkitsmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits!");
+      throw std::runtime_error("Errors loading module mpl_toolkits!");
     }
 
     axis3dmod = PyImport_Import(axis3d);
     Py_DECREF(axis3d);
     if (!axis3dmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!");
+      throw std::runtime_error("Errors loading module mpl_toolkits.mplot3d!");
     }
   }
 
@@ -622,13 +622,13 @@ void plot3(const std::vector<Numeric>& x, const std::vector<Numeric>& y,
     mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
     Py_DECREF(mpl_toolkits);
     if (!mpl_toolkitsmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits!");
+      throw std::runtime_error("Errors loading module mpl_toolkits!");
     }
 
     axis3dmod = PyImport_Import(axis3d);
     Py_DECREF(axis3d);
     if (!axis3dmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!");
+      throw std::runtime_error("Errors loading module mpl_toolkits.mplot3d!");
     }
   }
 
@@ -2186,13 +2186,13 @@ inline void set_zlabel(
     mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
     Py_DECREF(mpl_toolkits);
     if (!mpl_toolkitsmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits!");
+      throw std::runtime_error("Errors loading module mpl_toolkits!");
     }
 
     axis3dmod = PyImport_Import(axis3d);
     Py_DECREF(axis3d);
     if (!axis3dmod) {
-      throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!");
+      throw std::runtime_error("Errors loading module mpl_toolkits.mplot3d!");
     }
   }
 

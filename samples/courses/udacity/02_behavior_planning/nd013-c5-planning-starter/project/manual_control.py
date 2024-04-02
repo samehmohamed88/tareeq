@@ -643,7 +643,7 @@ class HUD(object):
         self._notifications.set_text(text, seconds=seconds)
 
     def error(self, text):
-        self._notifications.set_text('Error: %s' % text, (255, 0, 0))
+        self._notifications.set_text('Errors: %s' % text, (255, 0, 0))
 
     def render(self, display):
         if self._show_info:

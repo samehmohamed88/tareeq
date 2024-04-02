@@ -32,6 +32,22 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "ros2_imu_node_standalone",
+    srcs = ["ros2_imu_node_standalone.cpp"],
+    deps = [
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/ros2/localization:IMUPublisher",
+        "//platform/wave_rover:WaveRoverIMUController",
+        "//platform/wave_rover:WaveRoverNetworkDeviceManager",
+        "@com_google_googletest//:gtest",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
 py_binary(
     name = "serial_simple_ctrl",
     srcs = ["serial_simple_ctrl.py"],
