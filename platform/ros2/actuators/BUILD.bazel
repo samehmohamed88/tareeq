@@ -1,0 +1,8 @@
+cc_library(
+    name = "MobileBaseActuator",
+    hdrs = ["MobileBaseActuator.hpp"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

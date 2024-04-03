@@ -1,0 +1,24 @@
+cc_binary(
+    name = "read_imu_data",
+    srcs = ["read_imu_data.cpp"],
+    deps = [
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/sensors/imu:IMUData",
+        "//platform/wave_rover:WaveRoverIMUController",
+        "//platform/wave_rover:WaveRoverNetworkDeviceManager",
+    ],
+)
+
+cc_binary(
+    name = "run_wave_rover_motor_standalone",
+    srcs = ["run_wave_rover_motor_standalone.cpp"],
+    deps = [
+        "//platform/devices:DeviceManager",
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/wave_rover:WaveRoverMotorController",
+    ],
+)

@@ -1,0 +1,7 @@
+cc_binary(
+    name = "ps4_joystick_input",
+    srcs = ["ps4_joystick_input.cpp"],
+    deps = [
+        "@sdl2",
+    ],
+)
