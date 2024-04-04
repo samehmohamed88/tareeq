@@ -3,7 +3,7 @@
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
-#include "platform/wave_rover/WaveRoverMotorController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverMotorController.hpp"
 
 #include <chrono>
 #include <memory>
@@ -12,7 +12,7 @@
 int main()
 {
     using namespace platform::io;
-    using namespace platform::waverover;
+    using namespace platform::vehicle::waverover;
     using namespace platform::devices;
     using namespace platform::motors;
 

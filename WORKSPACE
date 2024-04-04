@@ -12,10 +12,9 @@ http_archive(
 )
 
 http_archive(
-    name = "nlohmann_json",
-    sha256 = "0d8ef5af7f9794e3263480193c491549b2ba6cc74bb018906202ada498a79406",
-    strip_prefix = "json-3.11.3",
-    url = "https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz",
+    name = "rules_rust",
+    integrity = "sha256-ww398ehv1QZQp26mRbOkXy8AZnsGGHpoXpVU4WfKl+4=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.40.0/rules_rust-v0.40.0.tar.gz"],
 )
 
 # Boost

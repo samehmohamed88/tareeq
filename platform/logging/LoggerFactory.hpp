@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-namespace platform::devices {
+namespace platform::logging {
 
 class ILogger
 {

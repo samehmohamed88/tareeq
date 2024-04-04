@@ -19,10 +19,10 @@ using namespace rclcpp;
 using namespace std::chrono_literals;
 
 using namespace platform::ros2::localization;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 
 using namespace platform::io;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 using namespace platform::devices;
 using namespace platform::sensors::imu;
 

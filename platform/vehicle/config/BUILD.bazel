@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "VehicleConfig",
+    srcs = [
+        "Chassis.hpp",
+        "Motors.hpp",
+    ],
+    hdrs = ["VehicleConfig.hpp"],
+    deps = [],
+)

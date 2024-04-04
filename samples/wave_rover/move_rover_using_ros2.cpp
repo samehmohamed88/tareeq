@@ -1,11 +1,12 @@
 
-#include "platform/ros2/localization/IMUPublisher.hpp"
+#include "platform/ros2/actuators/MobileBaseActuator.hpp"
 
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
-#include "platform/wave_rover/WaveRoverIMUController.hpp"
-#include "platform/wave_rover/WaveRoverNetworkDeviceManager.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverMotorController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverIMUController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverNetworkDeviceManager.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -16,38 +17,26 @@
 #include <filesystem>
 #include <cstdlib>
 
-
 namespace fs = std::filesystem;
+namespace rc = rclcpp;
+namespace io = platform::io;
+namespace wr = platform::vehicle::waverover;
+namespace mt = platform::motors;
+namespace lg = platform::logging;
 
 using namespace rclcpp;
 using namespace std::chrono_literals;
 
-using namespace platform::ros2::localization;
-using namespace platform::vehicle::waverover;
-
 using namespace platform::io;
 using namespace platform::vehicle::waverover;
-using namespace platform::devices;
-using namespace platform::sensors::imu;
+using namespace platform::motors;
+using namespace platform::logging;
 
 using BoostNetworkDeviceType = BoostNetworkIO<AsioOperationsImpl, ConsoleLogger>;
 using DeviceManagerType = WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, ConsoleLogger>;
-using IMUController = WaveRoverIMUController<DeviceManagerType, ConsoleLogger>;
+using MotorControllerType = WaveRoverMotorController<DeviceManagerType, ConsoleLogger>;
 
-class MinimalSubscriber : public rclcpp::Node {
-public:
-    MinimalSubscriber() : Node("minimal_subscriber") {
-        subscription_ = create_subscription<sensor_msgs::msg::Imu>(
-            "topic", 10, [this](const sensor_msgs::msg::Imu& msg) {
-                RCLCPP_INFO(get_logger(), "I heard: '%f'", msg.orientation.x);
-            });
-    }
-
-private:
-    rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr subscription_;
-};
-
-class IMUPublisherTest
+class WaveRoverManager
 {
 public:
 
@@ -55,13 +44,13 @@ public:
     std::shared_ptr<ConsoleLogger> logger_;
     std::shared_ptr<BoostNetworkDeviceType> boostNetworkIo_;
     std::shared_ptr<DeviceManagerType> deviceManager_;
-    std::unique_ptr<IMUController> waveRoverImuController_;
+    std::unique_ptr<MotorControllerType> motorController;
 
     std::shared_ptr<IMUPublisher<IMUController>> imu_publisher_;
 
     fs::path temp_log_dir;
 
-    IMUPublisherTest() {
+    WaveRoverManager() {
 
         asioOperations_ = std::make_shared<AsioOperationsImpl>();
         logger_ = LoggerFactory::createLogger("console");

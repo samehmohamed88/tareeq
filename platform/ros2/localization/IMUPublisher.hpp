@@ -23,7 +23,7 @@ class IMUPublisher : public rclcpp::Node
 {
 public:
     IMUPublisher(std::unique_ptr<IMUController> imuController, rclcpp::NodeOptions& options)
-        : Node("imu_publisher", rclcpp::NodeOptions().allow_undeclared_parameters(false))
+        : Node("IMUPublisher", rclcpp::NodeOptions().allow_undeclared_parameters(false))
         , imuController_{std::move(imuController)}
     {
 

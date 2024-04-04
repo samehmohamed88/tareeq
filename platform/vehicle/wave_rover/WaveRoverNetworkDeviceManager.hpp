@@ -1,14 +1,15 @@
 #pragma once
 
 #include "platform/devices/DeviceManager.hpp"
-#include "platform/wave_rover/WaveRoverUtils.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverUtils.hpp"
 
-#include <string>
-#include <memory>
 #include <exception>
+#include <memory>
 #include <optional>
+#include <string>
+#include <mutex>
 
-namespace platform::waverover {
+namespace platform::vehicle::waverover {
 
 template<
     typename BoostNetworkIO,

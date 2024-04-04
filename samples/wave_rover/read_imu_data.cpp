@@ -13,7 +13,7 @@
 int main()
 {
     using namespace platform::io;
-    using namespace platform::waverover;
+    using namespace platform::vehicle::waverover;
     using namespace platform::devices;
     using namespace platform::sensors::imu;
 
