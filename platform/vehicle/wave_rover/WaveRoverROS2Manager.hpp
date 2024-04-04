@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform/devices/DeviceManager.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverNetworkDeviceManager.hpp"
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
@@ -31,7 +31,7 @@ namespace localization = platform::ros2::localization;
 class WaveRoverROS2Manager
 {
 using BoostNetworkDeviceType = io::BoostNetworkIO<io::AsioOperationsImpl, logging::ConsoleLogger>;
-using DeviceManagerType = devices::DeviceManager<BoostNetworkDeviceType, logging::ConsoleLogger>;
+using DeviceManagerType = waverover::WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, logging::ConsoleLogger>;
 using MotorControllerType = waverover::WaveRoverMotorController<DeviceManagerType, logging::ConsoleLogger>;
 using IMUControllerType = waverover::WaveRoverIMUController<DeviceManagerType, logging::ConsoleLogger>;
 
