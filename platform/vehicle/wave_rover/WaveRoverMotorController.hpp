@@ -52,7 +52,7 @@ std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, I
     speedControlCommand_.updateParameter("L", 0);
     speedControlCommand_.updateParameter("R", 0);
 
-    const std::string& command = speedControlCommand_.toJsonString();
+    auto command = speedControlCommand_.toJsonString();
     this->logger_->logInfo("WaveRoverMotorController::stop() creating json output " + command);
     try {
         this->deviceManager_->write(command);
@@ -79,7 +79,7 @@ std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, I
     speedControlCommand_.updateParameter("L", leftMotorPwm);
     speedControlCommand_.updateParameter("R", rightMotorPwm);
 
-    const std::string& command = speedControlCommand_.toJsonString();
+    auto command = speedControlCommand_.toJsonString();
     this->logger_->logInfo("WaveRoverMotorController::setMotorPwm creating json output " + command);
 
     try {

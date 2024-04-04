@@ -1,10 +1,10 @@
 
-#include "platform/wave_rover/WaveRoverNetworkDeviceManager.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverNetworkDeviceManager.hpp"
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
 #include "platform/sensors/imu/IMUData.hpp"
-#include "platform/wave_rover/WaveRoverIMUController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverIMUController.hpp"
 
 #include <chrono>
 #include <memory>
@@ -17,19 +17,19 @@ int main()
     using namespace platform::devices;
     using namespace platform::sensors::imu;
 
-    using BoostNetworkDeviceType = BoostNetworkIO<AsioOperationsImpl, ConsoleLogger>;
-    using DeviceManagerType = WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, ConsoleLogger>;
+    using BoostNetworkDeviceType = BoostNetworkIO<AsioOperationsImpl, platform::logging::ConsoleLogger>;
+    using DeviceManagerType = WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, platform::logging::ConsoleLogger>;
 
     auto asioOperations = std::make_shared<AsioOperationsImpl>();
 
-    auto logger = LoggerFactory::createLogger("console");
+    auto logger = platform::logging::LoggerFactory::createLogger("console");
 
     auto boostNetworkIo = std::make_shared<BoostNetworkDeviceType>(asioOperations, logger);
     boostNetworkIo->initialize();
 
     auto deviceManager = std::make_shared<DeviceManagerType>(boostNetworkIo, logger);
 
-    auto waveRoverIMUController = std::make_shared<WaveRoverIMUController<DeviceManagerType, ConsoleLogger>>(deviceManager, logger);
+    auto waveRoverIMUController = std::make_shared<WaveRoverIMUController<DeviceManagerType, platform::logging::ConsoleLogger>>(deviceManager, logger);
 
     //    waveRoverMotorController->setMotorPwm(50, 50);
     //    std::this_thread::sleep_for(std::chrono::milliseconds(2000));

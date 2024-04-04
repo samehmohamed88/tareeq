@@ -36,7 +36,7 @@ public:
             // this is the address to retrieve
             // what was written to memory in above write call
             // Immediately send a follow-up request to /jsfb endpoint to get the response
-            this->device_->reconnect();
+//            this->device_->reconnect();
             return this->device_->read("/jsfb");
         } catch (const std::exception& e) {
             // Handle the exception
@@ -48,7 +48,7 @@ private:
 
     void internalWrite(const std::string& data) {
         try {
-            this->device_->reconnect();
+//            this->device_->reconnect();
             this->device_->write("/js?json=" + data);
         } catch (const std::exception& e) {
             // Handle the exception

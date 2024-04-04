@@ -12,7 +12,7 @@
 namespace platform::vehicle::waverover::utils {
 
 // Function to convert JSON string to IMUData struct
-platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
+inline platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
 {
     // Parse the JSON string
     auto json = nlohmann::json::parse(jsonString);

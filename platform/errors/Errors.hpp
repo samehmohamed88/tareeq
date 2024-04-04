@@ -19,12 +19,13 @@ enum class MotorError
     MOTOR_FAILURE,
 };
 
-std::string toString(MotorError motorControllerErrors) {
+inline std::string toString(MotorError motorControllerErrors) {
     switch (motorControllerErrors) {
         case MotorError::NONE: return "NONE";
         case MotorError::TIMEOUT: return "TIMEOUT";
         case MotorError::COMMUNICATION_ERROR: return "COMMUNICATION_ERROR";
         case MotorError::MOTOR_FAILURE: return "MOTOR_FAILURE";
+        default: return "NONE";
     }
 }
 
