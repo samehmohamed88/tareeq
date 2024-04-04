@@ -6,19 +6,26 @@ cc_binary(
         "//platform/io:BoostNetworkIO",
         "//platform/logging:LoggerFactory",
         "//platform/sensors/imu:IMUData",
-        "//platform/wave_rover:WaveRoverIMUController",
-        "//platform/wave_rover:WaveRoverNetworkDeviceManager",
+        "//platform/vehicle/wave_rover:WaveRoverIMUController",
+        "//platform/vehicle/wave_rover:WaveRoverNetworkDeviceManager",
     ],
 )
 
 cc_binary(
-    name = "run_wave_rover_motor_standalone",
-    srcs = ["run_wave_rover_motor_standalone.cpp"],
+    name = "move_rover_using_ros2",
+    srcs = ["move_rover_using_ros2.cpp"],
     deps = [
-        "//platform/devices:DeviceManager",
-        "//platform/io:AsioOperationsImpl",
-        "//platform/io:BoostNetworkIO",
-        "//platform/logging:LoggerFactory",
-        "//platform/wave_rover:WaveRoverMotorController",
+        "//platform/vehicle/wave_rover:WaveRoverROS2Manager",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+cc_binary(
+    name = "make_simple_http_command",
+    srcs = ["make_simple_http_command.cpp"],
+    deps = [
+        "@boost//:asio",
+        "@boost//:beast",
     ],
 )

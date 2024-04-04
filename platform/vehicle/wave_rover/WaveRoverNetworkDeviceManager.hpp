@@ -1,14 +1,15 @@
 #pragma once
 
 #include "platform/devices/DeviceManager.hpp"
-#include "platform/wave_rover/WaveRoverUtils.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverUtils.hpp"
 
-#include <string>
-#include <memory>
 #include <exception>
+#include <memory>
 #include <optional>
+#include <string>
+#include <mutex>
 
-namespace platform::waverover {
+namespace platform::vehicle::waverover {
 
 template<
     typename BoostNetworkIO,
@@ -35,7 +36,7 @@ public:
             // this is the address to retrieve
             // what was written to memory in above write call
             // Immediately send a follow-up request to /jsfb endpoint to get the response
-            this->device_->reconnect();
+//            this->device_->reconnect();
             return this->device_->read("/jsfb");
         } catch (const std::exception& e) {
             // Handle the exception
@@ -47,7 +48,7 @@ private:
 
     void internalWrite(const std::string& data) {
         try {
-            this->device_->reconnect();
+//            this->device_->reconnect();
             this->device_->write("/js?json=" + data);
         } catch (const std::exception& e) {
             // Handle the exception

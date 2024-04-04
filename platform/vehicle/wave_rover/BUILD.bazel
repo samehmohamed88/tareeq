@@ -10,10 +10,20 @@ cc_library(
 )
 
 cc_library(
-    name = "WaveRoverManager",
-    hdrs = ["WaveRoverManager.hpp"],
+    name = "WaveRoverROS2Manager",
+    srcs = ["WaveRoverROS2Manager.cpp"],
+    hdrs = ["WaveRoverROS2Manager.hpp"],
     deps = [
+        ":WaveRoverIMUController",
+        ":WaveRoverMotorController",
+        ":WaveRoverNetworkDeviceManager",
         ":WaveRoverUtils",
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/ros2/actuators:MobileBaseActuator",
+        "//platform/ros2/localization:IMUPublisher",
+        "//platform/vehicle/config:VehicleConfig",
     ],
 )
 
@@ -24,7 +34,7 @@ cc_library(
         "//platform/errors",
         "//platform/sensors/imu:IMUData",
         "//platform/sensors/imu:IMUDeviceController",
-        "//platform/wave_rover:WaveRoverUtils",
+        "//platform/vehicle/wave_rover:WaveRoverUtils",
     ],
 )
 
@@ -33,7 +43,7 @@ cc_library(
     hdrs = ["WaveRoverMotorController.hpp"],
     deps = [
         "//platform/motors:MotorController",
-        "//platform/wave_rover:WaveRoverUtils",
+        "//platform/vehicle/wave_rover:WaveRoverUtils",
     ],
 )
 

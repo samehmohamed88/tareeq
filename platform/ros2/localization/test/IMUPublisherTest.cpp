@@ -4,8 +4,8 @@
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
-#include "platform/wave_rover/WaveRoverIMUController.hpp"
-#include "platform/wave_rover/WaveRoverNetworkDeviceManager.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverIMUController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverNetworkDeviceManager.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include <gtest/gtest.h>
@@ -19,10 +19,10 @@ using namespace rclcpp;
 using namespace std::chrono_literals;
 
 using namespace platform::ros2::localization;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 
 using namespace platform::io;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 using namespace platform::devices;
 using namespace platform::sensors::imu;
 

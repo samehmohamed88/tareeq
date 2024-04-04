@@ -22,15 +22,15 @@ template <typename IMUController>
 class IMUPublisher : public rclcpp::Node
 {
 public:
-    IMUPublisher(std::unique_ptr<IMUController> imuController, rclcpp::NodeOptions& options)
-        : Node("imu_publisher", rclcpp::NodeOptions().allow_undeclared_parameters(false))
-        , imuController_{std::move(imuController)}
+    IMUPublisher(std::shared_ptr<IMUController> imuController, rclcpp::NodeOptions& options)
+        : Node("IMUPublisher", rclcpp::NodeOptions().allow_undeclared_parameters(false))
+        , imuController_{imuController}
     {
 
         // Declare parameters with default values as needed
         this->declare_parameter<std::string>("topic_name", "default_imu_topic");
         this->declare_parameter<std::string>("imu_frame_id", "default_imu_frame_id");
-        this->declare_parameter<int>("publish_rate_ms", 10);
+        this->declare_parameter<int>("publish_rate_ms", 1000);
 
         // Now safely access the parameters
         topic_name_ = this->get_parameter("topic_name").as_string();
@@ -46,7 +46,7 @@ public:
 
 private:
 
-    std::unique_ptr<IMUController> imuController_;
+    std::shared_ptr<IMUController> imuController_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
     int publish_rate_ms_ = 0;
@@ -85,6 +85,7 @@ private:
 
         // Populate IMU data here using imuController_
         auto [error, data] = imuController_->readData();
+
         if (error == errors::IMUError::NONE) {
             if (data.has_value()) {
                 imuDataToRosImuMessage(*data, imu_msg);

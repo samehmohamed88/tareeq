@@ -4,8 +4,8 @@
 #include "platform/io/AsioOperationsImpl.hpp"
 #include "platform/io/BoostNetworkIO.hpp"
 #include "platform/logging/LoggerFactory.hpp"
-#include "platform/wave_rover/WaveRoverIMUController.hpp"
-#include "platform/wave_rover/WaveRoverNetworkDeviceManager.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverIMUController.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverNetworkDeviceManager.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -23,16 +23,16 @@ using namespace rclcpp;
 using namespace std::chrono_literals;
 
 using namespace platform::ros2::localization;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 
 using namespace platform::io;
-using namespace platform::waverover;
+using namespace platform::vehicle::waverover;
 using namespace platform::devices;
 using namespace platform::sensors::imu;
 
-using BoostNetworkDeviceType = BoostNetworkIO<AsioOperationsImpl, ConsoleLogger>;
-using DeviceManagerType = WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, ConsoleLogger>;
-using IMUController = WaveRoverIMUController<DeviceManagerType, ConsoleLogger>;
+using BoostNetworkDeviceType = BoostNetworkIO<AsioOperationsImpl, platform::logging::ConsoleLogger>;
+using DeviceManagerType = WaveRoverNetworkDeviceManager<BoostNetworkDeviceType, platform::logging::ConsoleLogger>;
+using IMUController = WaveRoverIMUController<DeviceManagerType, platform::logging::ConsoleLogger>;
 
 class MinimalSubscriber : public rclcpp::Node {
 public:
@@ -52,7 +52,7 @@ class IMUPublisherTest
 public:
 
     std::shared_ptr<AsioOperationsImpl> asioOperations_;
-    std::shared_ptr<ConsoleLogger> logger_;
+    std::shared_ptr<platform::logging::ConsoleLogger> logger_;
     std::shared_ptr<BoostNetworkDeviceType> boostNetworkIo_;
     std::shared_ptr<DeviceManagerType> deviceManager_;
     std::unique_ptr<IMUController> waveRoverImuController_;
@@ -64,7 +64,7 @@ public:
     IMUPublisherTest() {
 
         asioOperations_ = std::make_shared<AsioOperationsImpl>();
-        logger_ = LoggerFactory::createLogger("console");
+        logger_ = platform::logging::LoggerFactory::createLogger("console");
 
         boostNetworkIo_ = std::make_shared<BoostNetworkDeviceType>(asioOperations_, logger_);
         boostNetworkIo_->initialize();

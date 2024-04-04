@@ -1,8 +1,7 @@
 #pragma once
 
+#include "include/nlohmann/json.hpp"
 #include "platform/sensors/imu/IMUData.hpp"
-
-#include <nlohmann/json.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -10,10 +9,10 @@
 #include <variant>
 #include <vector>
 
-namespace platform::waverover::utils {
+namespace platform::vehicle::waverover::utils {
 
 // Function to convert JSON string to IMUData struct
-platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
+inline platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
 {
     // Parse the JSON string
     auto json = nlohmann::json::parse(jsonString);
@@ -125,4 +124,4 @@ private:
     };
 };
 
-} // namespace platform::waverover::utils
+} // namespace platform::vehicle::waverover::utils

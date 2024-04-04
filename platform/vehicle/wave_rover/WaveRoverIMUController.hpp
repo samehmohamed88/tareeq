@@ -1,16 +1,16 @@
 #pragma once
 
+#include "platform/errors/Errors.hpp"
 #include "platform/sensors/imu/IMUData.hpp"
 #include "platform/sensors/imu/IMUDeviceController.hpp"
-#include "platform/wave_rover/WaveRoverUtils.hpp"
-#include "platform/errors/Errors.hpp"
+#include "platform/vehicle/wave_rover/WaveRoverUtils.hpp"
 
 #include <future>
-#include <optional>
 #include <memory>
+#include <optional>
 #include <unordered_map>
 
-namespace platform::waverover {
+namespace platform::vehicle::waverover {
 
 
 template<typename DeviceManager, typename ILogger>

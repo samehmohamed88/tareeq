@@ -120,9 +120,9 @@ void BoostNetworkIO<AsioOperations, ILogger>::initialize() {
 
     try {
 //        auto const results = resolver_.resolve(server_, port_);
-        boost::asio::connect(socket_, results_.begin(), results_.end());
 
-        initializeBaseRequest();
+
+//        initializeBaseRequest();
 
         isInitialized = true;
         logger_->logInfo("Connection established with " + server_ + ":" + port_);
@@ -139,10 +139,15 @@ void BoostNetworkIO<AsioOperations, ILogger>::initialize() {
 template<typename AsioOperations, typename ILogger>
 void BoostNetworkIO<AsioOperations, ILogger>::write(const std::string& request) {
     try {
+
         logger_->logInfo("BoostNetworkIO::write writing request " + request);
+
+        boost::asio::connect(socket_, results_.begin(), results_.end());
         http::request<http::string_body> cmd_req{http::verb::get, request, 11};
         cmd_req.set(http::field::host, server_);
+        cmd_req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
         http::write(socket_, cmd_req);
+        socket_.close();
 
     } catch (const beast::system_error& e) {
         logger_->logError("Errors sending request: " + std::string(e.what()));
@@ -183,15 +188,15 @@ std::optional<std::string> BoostNetworkIO<AsioOperations, ILogger>::read(const s
 
     try {
         logger_->logInfo("BoostNetworkIO::read setting up read request " + request);
+
+        boost::asio::connect(socket_, results_.begin(), results_.end());
         http::request<http::empty_body> data_req{http::verb::get, request, 11};
         data_req.set(http::field::host, server_);
-
         http::write(socket_, data_req);
 
         // Read the response
         beast::flat_buffer buffer;
         http::response<http::dynamic_body> res;
-
         http::read(socket_, buffer, res);
 
         // Convert and return the response body as a string
