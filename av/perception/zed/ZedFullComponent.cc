@@ -618,7 +618,7 @@ void ZedCamera::getGeneralParams()
         mCamUserModel = sl::MODEL::ZED;
     } else if (camera_model == "zedm") {
         mCamUserModel = sl::MODEL::ZED_M;
-    } else if (camera_model == "zed2") {
+    } else if (camera_model == "zed") {
         mCamUserModel = sl::MODEL::ZED2;
     } else if (camera_model == "zed2i") {
         mCamUserModel = sl::MODEL::ZED2i;
@@ -3613,7 +3613,7 @@ bool ZedCamera::startCamera()
             RCLCPP_WARN(
                 get_logger(),
                 "Camera model does not match user parameter. Please modify "
-                "the value of the parameter 'general.camera_model' to 'zed2'");
+                "the value of the parameter 'general.camera_model' to 'zed'");
         }
     } else if (mCamRealModel == sl::MODEL::ZED2i) {
         if (mCamUserModel != sl::MODEL::ZED2i) {

@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "EKF",
+    hdrs = ["EKF.hpp"],
+    deps = [
+        "@eigen3",
+        "@opencv//:header",
+        "@opencv//:highgui",
+    ],
+)

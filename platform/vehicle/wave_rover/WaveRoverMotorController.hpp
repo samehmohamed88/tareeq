@@ -1,9 +1,9 @@
 #pragma once
 
+#include "platform/errors/Errors.hpp"
 #include "platform/motors/MotorController.hpp"
 #include "platform/vehicle/config/VehicleConfig.hpp"
 #include "platform/vehicle/wave_rover/WaveRoverUtils.hpp"
-#include "platform/errors/Errors.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -36,6 +36,8 @@ private:
     utils::WaveRoverCommand speedControlCommand_;
     const double wheelRadiusCached_;
     const double wheelSeparationCached_;
+    const double maxLinearSpeed_;
+    const double maxAngularSpeed_;
     std::mutex setVehicleVelocity_;
 };
 
@@ -70,16 +72,15 @@ std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, I
 }
 
 template<typename DeviceManager, typename ILogger>
-std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, ILogger>::setMotorPwm(
-    int leftMotorPwm,
-    int rightMotorPwm)
+std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, ILogger>::setMotorPwm(int leftMotorPwm,
+                                                                                                     int rightMotorPwm)
 {
     this->logger_->logInfo("WaveRoverMotorController::setMotorPwm " + std::to_string(leftMotorPwm) + " " +
                            std::to_string(rightMotorPwm));
     speedControlCommand_.updateParameter("L", leftMotorPwm);
     speedControlCommand_.updateParameter("R", rightMotorPwm);
 
-    auto command = speedControlCommand_.toJsonString();
+    auto command = std::string("/js?json=") + speedControlCommand_.toJsonString();
     this->logger_->logInfo("WaveRoverMotorController::setMotorPwm creating json output " + command);
 
     try {
@@ -95,31 +96,55 @@ std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, I
     double linearVelocity,
     double angularVelocity)
 {
-    // max PWM is 255 (8 bit digit)
+    this->logger_->logInfo("WaveRoverMotorController::setDifferentialDrivePWM " + std::to_string(linearVelocity) + " " +
+                           std::to_string(angularVelocity));
+
     const int maxPWM = 255;
+    const double maxLinearSpeed = this->maxLinearSpeed_; // maximum linear speed of the robot
+    const double maxAngularSpeed = this->maxAngularSpeed_; // maximum angular speed of the robot
 
-    // TODO: maybe validate input and if invalid use previous values
-    // TODO: keep a history of 3 most recent velocity values?
-    double leftWheelSpeed = ((2 * linearVelocity) - (angularVelocity * wheelSeparationCached_)) / (wheelRadiusCached_);
-    double rightWheelSpeed = ((2 * linearVelocity) + (angularVelocity * wheelSeparationCached_)) / (wheelRadiusCached_);
+    // Normalize linear and angular velocities
+    linearVelocity = (linearVelocity / maxLinearSpeed) * maxPWM;
+    angularVelocity = (angularVelocity / maxAngularSpeed) * maxPWM;
 
+//    this->logger_->logInfo("WaveRoverMotorController::setDifferentialDrivePWM NORMALIZED  >>> " + std::to_string(linearVelocity) + " " +
+//                           std::to_string(angularVelocity));
+//
+//    this->logger_->logInfo("WaveRoverMotorController::setDifferentialDrivePWM  >>> " + std::to_string(wheelSeparationCached_) + " " +
+//                           std::to_string(wheelRadiusCached_));
+
+    // Compute wheel speeds based on normalized velocities
+    double leftWheelSpeed = ((linearVelocity - angularVelocity) * (wheelSeparationCached_ / 2)) / wheelRadiusCached_;
+    double rightWheelSpeed = ((linearVelocity + angularVelocity) * (wheelSeparationCached_ / 2)) / wheelRadiusCached_;
+
+
+//    this->logger_->logInfo("WaveRoverMotorController::setDifferentialDrivePWM leftWheelSpeed, "
+//                           "rightWheelSpeed: " +
+//                           std::to_string(leftWheelSpeed) + ", " + std::to_string(rightWheelSpeed));
+
+    // Apply scaling to maintain the ratio if any wheel speed exceeds maxPWM
     double maxWheelSpeed = std::max(std::abs(leftWheelSpeed), std::abs(rightWheelSpeed));
     if (maxWheelSpeed > maxPWM) {
         leftWheelSpeed *= maxPWM / maxWheelSpeed;
         rightWheelSpeed *= maxPWM / maxWheelSpeed;
     }
 
-    // we use this to threshold PWM values to above 50 or 0
-    // DC gear motors have poor low-speed characteristics
-    // the motor may not rotate when the absolute value of the PWM is too small
-    return this->setMotorPwm(
-        static_cast<int>(std::abs(leftWheelSpeed) < this->vehicleConfig_.getMotorConfig().getPwmThreshold() * maxPWM
-                             ? 0
-                             : leftWheelSpeed),
-        static_cast<int>(std::abs(rightWheelSpeed) < this->vehicleConfig_.getMotorConfig().getPwmThreshold() * maxPWM
-                             ? 0
-                             : rightWheelSpeed));
+//    this->logger_->logInfo("WaveRoverMotorController::setDifferentialDrivePWM (adjusted) leftWheelSpeed, "
+//                           "rightWheelSpeed: " +
+//                           std::to_string(leftWheelSpeed) + ", " + std::to_string(rightWheelSpeed));
+
+    // Threshold the PWM values to account for motor deadband
+    int leftPwm = std::abs(leftWheelSpeed) < this->vehicleConfig_.getMotorConfig().getPwmThreshold() * maxPWM
+                      ? 0
+                      : static_cast<int>(leftWheelSpeed);
+    int rightPwm = std::abs(rightWheelSpeed) < this->vehicleConfig_.getMotorConfig().getPwmThreshold() * maxPWM
+                       ? 0
+                       : static_cast<int>(rightWheelSpeed);
+
+    return this->setMotorPwm(leftPwm, rightPwm);
 }
+
+
 
 template<typename DeviceManager, typename ILogger>
 std::variant<bool, errors::MotorError> WaveRoverMotorController<DeviceManager, ILogger>::setVelocity(
@@ -136,8 +161,10 @@ WaveRoverMotorController<DeviceManager, ILogger>::WaveRoverMotorController(std::
                                                                            const vehicle::VehicleConfig& vehicleConfig)
     : motors::MotorController<errors::MotorError, DeviceManager, ILogger>(deviceManager, logger, vehicleConfig)
     , speedControlCommand_{utils::CommandFactory::createSpeedControlCommand(0, 0)}
-    , wheelRadiusCached_{2 * this->vehicleConfig_.getChassisConfig().getRearWheelRadius()}
+    , wheelRadiusCached_{this->vehicleConfig_.getChassisConfig().getRearWheelRadius()}
     , wheelSeparationCached_{this->vehicleConfig_.getChassisConfig().getRearWheelSeparation()}
+    , maxLinearSpeed_{1.0}
+    , maxAngularSpeed_{1.0}
 {}
 
 } // namespace platform::vehicle::waverover

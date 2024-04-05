@@ -1,0 +1,9 @@
+cc_test(
+    name = "EKFTest",
+    srcs = ["EKFTest.cpp"],
+    deps = [
+        "//av/localization:EKF",
+        "@com_google_googletest//:gtest_main",
+        "@eigen3",
+    ],
+)

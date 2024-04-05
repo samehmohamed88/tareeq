@@ -13,11 +13,76 @@ cc_library(
 )
 
 cc_library(
+    name = "headers_arm",
+    hdrs = glob(["targets/aarch64-linux/include/**"]),
+    includes = ["targets/aarch64-linux/include"],
+)
+
+cc_library(
+    name = "compat_arm",
+    srcs = [
+        "compat/libcuda.so",
+        "compat/libcuda.so.1",
+        "compat/libcuda.so.1.1",
+        "compat/libnvidia-nvvm.so",
+        "compat/libnvidia-nvvm.so.4",
+        "compat/libnvidia-ptxjitcompiler.so.1",
+    ],
+    deps = [
+        "headers_arm",
+    ],
+)
+
+cc_library(
+    name = "cudart_arm",
+    srcs = [
+        "targets/aarch64-linux/lib/libcudart.so",
+        "targets/aarch64-linux/lib/libcudart.so.12",
+        "targets/aarch64-linux/lib/libcudart.so.12.2.140",
+    ],
+    deps = [
+        "headers_arm",
+    ],
+)
+
+cc_library(
+    name = "cublas_arm",
+    srcs = [
+        "targets/aarch64-linux/lib/libcublas.so",
+        "targets/aarch64-linux/lib/libcublas.so.12",
+        "targets/aarch64-linux/lib/libcublas.so.12.1.3.1",
+        "targets/aarch64-linux/lib/libcublasLt.so",
+        "targets/aarch64-linux/lib/libcublasLt.so.12",
+        "targets/aarch64-linux/lib/libcublas.so.12.2.5.6",
+    ],
+    deps = [
+        "headers_arm",
+    ],
+)
+
+cc_library(
+    name = "compat",
+    srcs = [
+        "compat/libcuda.so",
+        "compat/libcuda.so.1",
+        "compat/libcuda.so.530.30.02",
+        "compat/libnvidia-nvvm.so",
+        "compat/libnvidia-nvvm.so.4",
+        "compat/libnvidia-nvvm.so.530.30.02",
+        "compat/libnvidia-ptxjitcompiler.so.1",
+        "compat/libnvidia-ptxjitcompiler.so.530.30.02",
+    ],
+    deps = [
+        "headers",
+    ],
+)
+
+cc_library(
     name = "cudart",
     srcs = [
         "targets/x86_64-linux/lib/libcudart.so",
         "targets/x86_64-linux/lib/libcudart.so.12",
-        "targets/x86_64-linux/lib/libcudart.so.12.2.140",
+        "targets/x86_64-linux/lib/libcudart.so.12.1.105",
     ],
     deps = [
         "headers",
@@ -29,10 +94,10 @@ cc_library(
     srcs = [
         "targets/x86_64-linux/lib/libcublas.so",
         "targets/x86_64-linux/lib/libcublas.so.12",
-        "targets/x86_64-linux/lib/libcublas.so.12.2.5.6",
+        "targets/x86_64-linux/lib/libcublas.so.12.1.3.1",
         "targets/x86_64-linux/lib/libcublasLt.so",
         "targets/x86_64-linux/lib/libcublasLt.so.12",
-        "targets/x86_64-linux/lib/libcublasLt.so.12.2.5.6",
+        "targets/x86_64-linux/lib/libcublasLt.so.12.1.3.1",
     ],
     deps = [
         "headers",
