@@ -11,7 +11,7 @@ build:gpu --config=tensorrt
 
 build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/x86_64-linux-gnu-gcc-9"
 
-build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda-11.1"
+build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
 build --action_env TF_CUDA_COMPUTE_CAPABILITIES="8.6"
 
 # This config refers to building with CUDA available.
@@ -26,5 +26,8 @@ build:cuda --define=using_cuda_nvcc=true
 build:tensorrt --action_env TF_NEED_TENSORRT=1
 build:teleop --define WITH_TELEOP=true
 
+# Build Nav with C++ 17 features.
+build --cxxopt=-std=c++17
+
 # Build Nav with C++ 20 features.
-build --cxxopt=-std=c++20
+#build --cxxopt=-std=c++20

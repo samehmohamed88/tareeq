@@ -8,25 +8,43 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include <cmath>
 
 namespace platform::vehicle::waverover::utils {
+
+/*
+ * // TODO: add orientation covariance
+imuMsg.linear_acceleration.x = (imuData.acceleration_X / 1000.0) * 9.81;
+imuMsg.linear_acceleration.y = (imuData.acceleration_Y / 1000.0) * 9.81;
+imuMsg.linear_acceleration.z = (imuData.acceleration_Z / 1000.0) * 9.81;
+
+// TODO: add linear acceleration covariance
+imuMsg.angular_velocity.x = imuData.gyro_X * (M_PI / 180.0);
+imuMsg.angular_velocity.y = imuData.gyro_Y * (M_PI / 180.0);
+imuMsg.angular_velocity.z = imuData.gyro_Z * (M_PI / 180.0);
+ */
 
 // Function to convert JSON string to IMUData struct
 inline platform::sensors::imu::IMUData jsonToIMUData(const std::string& jsonString)
 {
+    /// this is empirically found by taking 20 measurements
+    // of the IMU stationary on a flat even table
+    static constexpr double accelerometerScaleFactor = 1531.80;
+    static constexpr double g = 9.81; // Acceleration due to gravity in m/s^2
+
     // Parse the JSON string
     auto json = nlohmann::json::parse(jsonString);
 
     return {json["temp"].get<double>(),
-            json["roll"].get<double>(),
-            json["pitch"].get<double>(),
-            json["yaw"].get<double>(),
-            json["acce_X"].get<double>(),
-            json["acce_Y"].get<double>(),
-            json["acce_Z"].get<double>(),
-            json["gyro_X"].get<double>(),
-            json["gyro_Y"].get<double>(),
-            json["gyro_Z"].get<double>(),
+            json["roll"].get<double>() * (M_PI / 180.0),
+            json["pitch"].get<double>() * (M_PI / 180.0),
+            json["yaw"].get<double>() * (M_PI / 180.0),
+            (json["acce_X"].get<double>() / accelerometerScaleFactor) * g, // gets acceleration in m/s^2
+            (json["acce_Y"].get<double>() / accelerometerScaleFactor) * g, // gets acceleration in m/s^2
+            (json["acce_Z"].get<double>() / accelerometerScaleFactor) * g, // gets acceleration in m/s^2
+            json["gyro_X"].get<double>() * (M_PI / 180.0),
+            json["gyro_Y"].get<double>() * (M_PI / 180.0),
+            json["gyro_Z"].get<double>() * (M_PI / 180.0),
             json["magn_X"].get<double>(),
             json["magn_Y"].get<double>(),
             json["magn_Z"].get<double>()};

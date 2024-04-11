@@ -18,12 +18,12 @@ cc_library(
         ":WaveRoverMotorController",
         ":WaveRoverNetworkDeviceManager",
         ":WaveRoverUtils",
-        "//platform/io:AsioOperationsImpl",
-        "//platform/io:BoostNetworkIO",
         "//platform/logging:LoggerFactory",
         "//platform/ros2/actuators:MobileBaseActuator",
         "//platform/ros2/localization:IMUPublisher",
+        "//platform/ros2/localization:StateEstimationNode",
         "//platform/vehicle/config:VehicleConfig",
+        "//platform/zed:ZedIMUController",
     ],
 )
 
@@ -51,6 +51,7 @@ cc_library(
     name = "WaveRoverNetworkDeviceManager",
     hdrs = ["WaveRoverNetworkDeviceManager.hpp"],
     deps = [
-        "//platform/devices:DeviceManager",
+        "@boost//:asio",
+        "@boost//:beast",
     ],
 )

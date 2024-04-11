@@ -747,7 +747,7 @@ void ZedCameraComponent::getGeneralParams()
         cameraModel_ = sl::MODEL::ZED;
     } else if (camera_model == "zedm") {
         cameraModel_ = sl::MODEL::ZED_M;
-    } else if (camera_model == "zed2") {
+    } else if (camera_model == "zed") {
         cameraModel_ = sl::MODEL::ZED2;
     } else if (camera_model == "zed2i") {
         cameraModel_ = sl::MODEL::ZED2i;

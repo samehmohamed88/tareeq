@@ -21,6 +21,7 @@ USER $USERNAME
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN sudo bash /opt/tareeq/installers/install_python.sh
+RUN sudo bash /opt/tareeq/installers/install_zed_sdk.sh
 
 RUN sudo apt-get -y clean \
     && sudo rm -rf /var/lib/apt/lists/*

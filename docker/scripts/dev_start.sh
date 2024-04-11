@@ -40,7 +40,7 @@ volumes="${volumes} -v /media:/media \
     -v /etc/localtime:/etc/localtime:ro \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
-    -v ${CURR_DIR}/../../../:/tareeq
+    -v ${CURR_DIR}/../../:/tareeq
     --volume=${HOME}/CLION/clion-2023.3.2:/home/$tareeqUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$tareeqUSER/.java/.userPrefs \
     --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$tareeqUSER/.cache/JetBrains \

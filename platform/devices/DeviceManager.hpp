@@ -1,10 +1,12 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+
 #include <string>
 #include <memory>
 #include <exception>
 #include <optional>
+#include <mutex>
 
 namespace platform::devices {
 
