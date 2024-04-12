@@ -15,9 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-DOCKER_USER="tareeq"
+DOCKER_USER="admin"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
-DEV_CONTAINER="${DEV_CONTAINER_PREFIX}tareeq"
+DEV_CONTAINER="${DEV_CONTAINER_PREFIX}admin"
 
 function parse_arguments {
     local container_name=''

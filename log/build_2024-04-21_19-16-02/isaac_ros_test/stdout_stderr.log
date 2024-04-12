@@ -1,0 +1,51 @@
+running egg_info
+creating ../../build/isaac_ros_test/isaac_ros_test.egg-info
+writing ../../build/isaac_ros_test/isaac_ros_test.egg-info/PKG-INFO
+writing dependency_links to ../../build/isaac_ros_test/isaac_ros_test.egg-info/dependency_links.txt
+writing requirements to ../../build/isaac_ros_test/isaac_ros_test.egg-info/requires.txt
+writing top-level names to ../../build/isaac_ros_test/isaac_ros_test.egg-info/top_level.txt
+writing manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+reading manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+writing manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /tareeq/build/isaac_ros_test/build
+creating /tareeq/build/isaac_ros_test/build/lib
+creating /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/isaac_ros_base_test.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/__init__.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/cpu_profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/pcd_loader.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/tegrastats_profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/pose_utilities.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+copying isaac_ros_test/json_conversion.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+running install
+running install_lib
+creating /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/isaac_ros_base_test.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/__init__.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/cpu_profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/pcd_loader.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/tegrastats_profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/pose_utilities.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/json_conversion.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/isaac_ros_base_test.py to isaac_ros_base_test.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/__init__.py to __init__.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/profiler.py to profiler.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/cpu_profiler.py to cpu_profiler.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/pcd_loader.py to pcd_loader.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/tegrastats_profiler.py to tegrastats_profiler.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/pose_utilities.py to pose_utilities.cpython-38.pyc
+byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/json_conversion.py to json_conversion.cpython-38.pyc
+running install_data
+creating /tareeq/install/isaac_ros_test/share/ament_index
+creating /tareeq/install/isaac_ros_test/share/ament_index/resource_index
+creating /tareeq/install/isaac_ros_test/share/ament_index/resource_index/packages
+copying resource/isaac_ros_test -> /tareeq/install/isaac_ros_test/share/ament_index/resource_index/packages
+copying package.xml -> /tareeq/install/isaac_ros_test/share/isaac_ros_test
+running install_egg_info
+Copying ../../build/isaac_ros_test/isaac_ros_test.egg-info to /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test-0.9.0-py3.8.egg-info
+running install_scripts
+writing list of installed files to '/tareeq/build/isaac_ros_test/install.log'

@@ -1,9 +1,0 @@
-package(default_visibility = ["//visibility:public"])
-
-cc_library(
-    name = "LoggerFactory",
-    hdrs = ["LoggerFactory.hpp"],
-    deps = [
-        "@ros2_rclcpp//:rclcpp",
-    ],
-)

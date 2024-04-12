@@ -1,0 +1,10 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+
+ros2_cpp_binary(
+    name = "WaveRover",
+    srcs = ["LauchWaveRover.cpp"],
+    deps = [
+        "//platform/sensors/zed:ZedCamera",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

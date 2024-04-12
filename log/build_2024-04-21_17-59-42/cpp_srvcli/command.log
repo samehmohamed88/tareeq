@@ -1,0 +1,6 @@
+Invoking command in '/tareeq/build/cpp_srvcli': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake /tareeq/src/cpp_srvcli -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/cpp_srvcli
+Invoked command in '/tareeq/build/cpp_srvcli' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake /tareeq/src/cpp_srvcli -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/cpp_srvcli
+Invoking command in '/tareeq/build/cpp_srvcli': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/cpp_srvcli -- -j32 -l32
+Invoked command in '/tareeq/build/cpp_srvcli' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/cpp_srvcli -- -j32 -l32
+Invoking command in '/tareeq/build/cpp_srvcli': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/cpp_srvcli
+Invoked command in '/tareeq/build/cpp_srvcli' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/cpp_srvcli

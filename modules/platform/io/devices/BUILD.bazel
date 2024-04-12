@@ -1,0 +1,13 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "ISerialPort",
+    srcs = ["ISerialPort.hpp"],
+    deps = [],
+)
+
+cc_library(
+    name = "DeviceManager",
+    srcs = ["DeviceManager.hpp"],
+    deps = [],
+)

@@ -18,7 +18,7 @@
 CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 source "${CURR_DIR}/docker_base.sh"
 
-tareeqUSER="tareeq"
+tareeqUSER="admin"
 CACHE_ROOT_DIR="$USER/.cache"
 
 DOCKER_REPO="sameh4/tareeq"
@@ -26,7 +26,7 @@ DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${tareeqUSER}"
 
-VERSION_X86_64="pytorch-2.2.1-cuda12.1-cudnn8-devel.03.26.2024"
+VERSION_X86_64="nvidia_isaac_ros_zed_"
 
 info "Remove existing Tareeq Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}

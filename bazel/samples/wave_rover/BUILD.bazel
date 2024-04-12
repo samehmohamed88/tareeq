@@ -1,0 +1,110 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+
+config_setting(
+    name = "x86_64",
+    values = {"cpu": "k8"},
+)
+
+config_setting(
+    name = "aarch64",
+    values = {"cpu": "aarch64"},
+)
+
+ros2_cpp_binary(
+    name = "move_rover_using_ros2",
+    srcs = ["move_rover_using_ros2.cpp"],
+    set_up_ament = True,
+    deps = [
+        "//platform/vehicle/wave_rover:WaveRoverROS2Manager",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ] + select({
+        ":x86_64": ["@zed"],
+        ":aarch64": ["@zed//:zed_aarch64"],
+    }),
+)
+
+ros2_cpp_binary(
+    name = "teleop_keyboard",
+    srcs = ["teleop_keyboard.cpp"],
+    set_up_ament = True,
+    deps = [
+        "//platform/ros2/teleop:KeyboardTeleop",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "mobile_base_actuator",
+    srcs = ["mobile_base_actuator.cpp"],
+    set_up_ament = True,
+    deps = [
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/ros2/actuators:MobileBaseActuator",
+        "//platform/vehicle/wave_rover:WaveRoverMotorController",
+        "//platform/vehicle/wave_rover:WaveRoverNetworkDeviceManager",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+cc_binary(
+    name = "read_imu_data",
+    srcs = ["read_imu_data.cpp"],
+    deps = [
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/sensors/imu:IMUData",
+        "//platform/vehicle/wave_rover:WaveRoverIMUController",
+        "//platform/vehicle/wave_rover:WaveRoverNetworkDeviceManager",
+    ],
+)
+
+cc_binary(
+    name = "make_simple_http_command",
+    srcs = ["make_simple_http_command.cpp"],
+    deps = [
+        "//platform/vehicle/wave_rover:WaveRoverUtils",
+        "@boost//:asio",
+        "@boost//:beast",
+    ],
+)
+
+cc_binary(
+    name = "boost_network_io",
+    srcs = ["boost_network_io.cpp"],
+    deps = [
+        "//platform/vehicle/wave_rover:WaveRoverNetworkDeviceManager",
+        "@boost//:asio",
+        "@boost//:beast",
+    ],
+)
+
+cc_binary(
+    name = "read_imu_over_serial",
+    srcs = ["read_imu_using_serial_device_manager.cpp"],
+    deps = [
+        "//platform/io:BoostSerialDeviceManager",
+        "//platform/sensors:SensorRegistry",
+        "@fmt",
+    ],
+)
+
+cc_binary(
+    name = "simple_serial_connection",
+    srcs = ["simple_serial_connection.cpp"],
+    deps = ["@boost//:asio"],
+)
+
+cc_binary(
+    name = "simple_serial_threaded",
+    srcs = ["simple_serial_threaded.cpp"],
+    deps = [
+        "@boost//:asio",
+        #        "@boost//:program_options",
+        "@boost//:thread",
+    ],
+)

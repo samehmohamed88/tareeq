@@ -1,0 +1,4 @@
+Invoking command in '/tareeq/build/cpp_pubsub': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/cpp_pubsub -- -j32 -l32
+Invoked command in '/tareeq/build/cpp_pubsub' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/cpp_pubsub -- -j32 -l32
+Invoking command in '/tareeq/build/cpp_pubsub': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/cpp_pubsub
+Invoked command in '/tareeq/build/cpp_pubsub' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/cpp_pubsub

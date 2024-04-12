@@ -1,0 +1,257 @@
+[0.137s] Invoking command in '/tareeq/build/isaac_ros_nova_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake /tareeq/isaac_ros_common/isaac_ros_nova_interfaces -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/isaac_ros_nova_interfaces
+[0.204s] -- The C compiler identification is GNU 9.4.0
+[0.269s] -- The CXX compiler identification is GNU 9.4.0
+[0.286s] -- Detecting C compiler ABI info
+[0.388s] -- Detecting C compiler ABI info - done
+[0.405s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.405s] -- Detecting C compile features
+[0.405s] -- Detecting C compile features - done
+[0.414s] -- Detecting CXX compiler ABI info
+[0.517s] -- Detecting CXX compiler ABI info - done
+[0.539s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.539s] -- Detecting CXX compile features
+[0.540s] -- Detecting CXX compile features - done
+[0.544s] -- Found ament_cmake_auto: 1.3.6 (/opt/ros/humble/share/ament_cmake_auto/cmake)
+[0.931s] -- Found Python3: /usr/bin/python3.8 (found version "3.8.10") found components: Interpreter
+[1.073s] -- Loading isaac_ros_common extras
+[1.073s] -- CMAKE_BUILD_TYPE: Release
+[1.094s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.191s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+[1.191s] -- Looking for pthread_create in pthreads
+[1.280s] -- Looking for pthread_create in pthreads - not found
+[1.280s] -- Looking for pthread_create in pthread
+[1.368s] -- Looking for pthread_create in pthread - found
+[1.369s] -- Found Threads: TRUE
+[1.386s] -- Found CUDA: /usr/local/cuda (found version "11.8")
+[1.387s] -- Loading isaac_ros_common extras (modules)
+[1.434s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.440s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.451s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.467s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.493s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.572s] -- Found rmw_implementation_cmake: 6.1.1 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.575s] -- Found rmw_fastrtps_cpp: 6.2.5 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.721s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")
+[1.752s] -- Found FastRTPS: /opt/ros/humble/include
+[1.813s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.853s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[4.858s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[5.660s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[5.686s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3.6")
+[5.690s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[5.725s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.10", minimum required is "3.5")
+[5.725s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[5.725s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8
+[5.725s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so
+[5.746s] -- Found PythonExtra: .so
+[5.810s] -- Found ament_lint_auto: 0.12.9 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[5.837s] -- Added test 'copyright' to check source files copyright and LICENSE
+[5.838s] -- Added test 'lint_cmake' to check CMake code style
+[5.839s] -- Added test 'xmllint' to check XML markup files
+[5.843s] -- Configuring done (5.7s)
+[5.877s] -- Generating done (0.0s)
+[5.892s] -- Build files have been written to: /tareeq/build/isaac_ros_nova_interfaces
+[5.902s] Invoked command in '/tareeq/build/isaac_ros_nova_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake /tareeq/isaac_ros_common/isaac_ros_nova_interfaces -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/isaac_ros_nova_interfaces
+[5.904s] Invoking command in '/tareeq/build/isaac_ros_nova_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/isaac_ros_nova_interfaces -- -j32 -l32
+[5.940s] [1/41] cd /tareeq/build/isaac_ros_nova_interfaces && /usr/bin/cmake -E copy_directory /tareeq/build/isaac_ros_nova_interfaces/rosidl_generator_py/isaac_ros_nova_interfaces /tareeq/build/isaac_ros_nova_interfaces/ament_cmake_python/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[6.248s] [2/41] Generating C code for ROS interfaces
+[6.327s] [3/41] Generating C++ code for ROS interfaces
+[6.387s] [4/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__functions.c.o
+[6.417s] [5/41] cd /tareeq/build/isaac_ros_nova_interfaces/ament_cmake_python/isaac_ros_nova_interfaces && /usr/bin/python3.8 setup.py egg_info
+[6.417s] running egg_info
+[6.417s] creating isaac_ros_nova_interfaces.egg-info
+[6.417s] writing isaac_ros_nova_interfaces.egg-info/PKG-INFO
+[6.417s] writing dependency_links to isaac_ros_nova_interfaces.egg-info/dependency_links.txt
+[6.417s] writing top-level names to isaac_ros_nova_interfaces.egg-info/top_level.txt
+[6.417s] writing manifest file 'isaac_ros_nova_interfaces.egg-info/SOURCES.txt'
+[6.417s] reading manifest file 'isaac_ros_nova_interfaces.egg-info/SOURCES.txt'
+[6.417s] writing manifest file 'isaac_ros_nova_interfaces.egg-info/SOURCES.txt'
+[6.482s] [6/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__functions.c.o
+[6.592s] [7/41] Linking C shared library libisaac_ros_nova_interfaces__rosidl_generator_c.so
+[6.793s] [8/41] Generating C++ type support dispatch for ROS interfaces
+[6.835s] [9/41] Generating C++ introspection for ROS interfaces
+[6.889s] [10/41] Generating C++ type support for eProsima Fast-RTPS
+[7.213s] [11/41] Generating C type support dispatch for ROS interfaces
+[7.384s] [12/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_nova_interfaces/msg/encoder_ticks__type_support.cpp.o
+[7.404s] [13/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_nova_interfaces/msg/correlated_timestamp__type_support.cpp.o
+[7.436s] [14/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_nova_interfaces/msg/correlated_timestamp__type_support.cpp.o
+[7.469s] [15/41] Generating C type support for eProsima Fast-RTPS
+[7.498s] [16/41] Generating C introspection for ROS interfaces
+[7.549s] [17/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_nova_interfaces/msg/encoder_ticks__type_support.cpp.o
+[7.654s] [18/41] Linking CXX shared library libisaac_ros_nova_interfaces__rosidl_typesupport_c.so
+[7.680s] [19/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support.c.o
+[7.683s] [20/41] Linking CXX shared library libisaac_ros_nova_interfaces__rosidl_typesupport_cpp.so
+[7.691s] [21/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_nova_interfaces/msg/detail/dds_fastrtps/correlated_timestamp__type_support.cpp.o
+[7.693s] [22/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support.c.o
+[7.725s] [23/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support.cpp.o
+[7.751s] [24/41] Linking C shared library libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_c.so
+[7.761s] [25/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_nova_interfaces/msg/detail/dds_fastrtps/encoder_ticks__type_support.cpp.o
+[7.815s] [26/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support.cpp.o
+[7.893s] [27/41] Linking CXX shared library libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[7.896s] [28/41] Linking CXX shared library libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_cpp.so
+[8.094s] [29/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support_c.cpp.o
+[8.106s] [30/41] Building CXX object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support_c.cpp.o
+[8.178s] [31/41] Linking CXX shared library libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c.so
+[9.097s] [32/41] Generating Python code for ROS interfaces
+[9.097s] [33/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_nova_interfaces/msg/_encoder_ticks_s.c.o
+[9.097s] [34/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_nova_interfaces/msg/_correlated_timestamp_s.c.o
+[9.097s] [35/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o
+[9.097s] [36/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_c.c.o
+[9.098s] [37/41] Building C object CMakeFiles/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o
+[9.098s] [38/41] Linking C shared library rosidl_generator_py/isaac_ros_nova_interfaces/libisaac_ros_nova_interfaces__rosidl_generator_py.so
+[9.162s] [39/41] Linking C shared library rosidl_generator_py/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[9.162s] [40/41] Linking C shared library rosidl_generator_py/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[9.170s] [41/41] Linking C shared library rosidl_generator_py/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[9.172s] Invoked command in '/tareeq/build/isaac_ros_nova_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/isaac_ros_nova_interfaces -- -j32 -l32
+[9.211s] Invoking command in '/tareeq/build/isaac_ros_nova_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/isaac_ros_nova_interfaces
+[9.511s] -- Install configuration: "Release"
+[9.512s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/ament_index/resource_index/rosidl_interfaces/isaac_ros_nova_interfaces
+[9.512s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.512s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.513s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.513s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__functions.c
+[9.513s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__functions.c
+[9.513s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support.h
+[9.514s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__struct.h
+[9.514s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support.h
+[9.514s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__functions.h
+[9.515s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__struct.h
+[9.515s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__functions.h
+[9.515s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/rosidl_generator_c__visibility_control.h
+[9.516s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/correlated_timestamp.h
+[9.516s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/encoder_ticks.h
+[9.516s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/library_path.sh
+[9.516s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/library_path.dsv
+[9.517s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_generator_c.so
+[9.517s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_generator_c.so" to ""
+[9.517s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.518s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.518s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.518s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__rosidl_typesupport_fastrtps_c.h
+[9.518s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__rosidl_typesupport_fastrtps_c.h
+[9.519s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[9.519s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c.so
+[9.519s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[9.520s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.520s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.520s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.520s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__traits.hpp
+[9.520s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__traits.hpp
+[9.521s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__builder.hpp
+[9.521s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__struct.hpp
+[9.521s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__builder.hpp
+[9.521s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__struct.hpp
+[9.521s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/encoder_ticks.hpp
+[9.522s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/correlated_timestamp.hpp
+[9.522s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.522s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.522s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.523s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__rosidl_typesupport_fastrtps_cpp.hpp
+[9.523s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__rosidl_typesupport_fastrtps_cpp.hpp
+[9.523s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/dds_fastrtps
+[9.523s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[9.524s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[9.524s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[9.524s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.524s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.524s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.524s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support.c
+[9.525s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support.c
+[9.525s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__rosidl_typesupport_introspection_c.h
+[9.525s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__rosidl_typesupport_introspection_c.h
+[9.525s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[9.526s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_c.so
+[9.526s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[9.526s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_c.so
+[9.526s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_c.so" to ""
+[9.526s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces
+[9.526s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg
+[9.527s] -- Up-to-date: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail
+[9.527s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__type_support.cpp
+[9.527s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__type_support.cpp
+[9.527s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/correlated_timestamp__rosidl_typesupport_introspection_cpp.hpp
+[9.527s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/include/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces/msg/detail/encoder_ticks__rosidl_typesupport_introspection_cpp.hpp
+[9.527s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_cpp.so
+[9.528s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[9.528s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_cpp.so
+[9.528s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_typesupport_cpp.so" to ""
+[9.528s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/pythonpath.sh
+[9.528s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/pythonpath.dsv
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces-2.1.0-py3.8.egg-info
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces-2.1.0-py3.8.egg-info/top_level.txt
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces-2.1.0-py3.8.egg-info/PKG-INFO
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces-2.1.0-py3.8.egg-info/dependency_links.txt
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces-2.1.0-py3.8.egg-info/SOURCES.txt
+[9.529s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces
+[9.530s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[9.530s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/__init__.py
+[9.530s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[9.530s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[9.530s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/__init__.py
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_correlated_timestamp_s.c
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_encoder_ticks_s.c
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_encoder_ticks.py
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_correlated_timestamp.py
+[9.531s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[9.532s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_c.c
+[9.532s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/_isaac_ros_nova_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[9.532s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/libisaac_ros_nova_interfaces__rosidl_generator_py.so
+[9.532s] Listing '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces'...
+[9.533s] Compiling '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/__init__.py'...
+[9.533s] Listing '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg'...
+[9.533s] Compiling '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/__init__.py'...
+[9.533s] Compiling '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_correlated_timestamp.py'...
+[9.533s] Compiling '/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/msg/_encoder_ticks.py'...
+[9.533s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[9.533s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so" to ""
+[9.533s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[9.534s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so" to ""
+[9.534s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[9.534s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/python3.8/site-packages/isaac_ros_nova_interfaces/isaac_ros_nova_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so" to ""
+[9.534s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_generator_py.so
+[9.534s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_nova_interfaces/lib/libisaac_ros_nova_interfaces__rosidl_generator_py.so" to ""
+[9.534s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/msg/CorrelatedTimestamp.idl
+[9.534s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/msg/EncoderTicks.idl
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/msg/CorrelatedTimestamp.msg
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/msg/EncoderTicks.msg
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/ament_index/resource_index/package_run_dependencies/isaac_ros_nova_interfaces
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/ament_index/resource_index/parent_prefix_path/isaac_ros_nova_interfaces
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/ament_prefix_path.sh
+[9.535s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/ament_prefix_path.dsv
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/path.sh
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/environment/path.dsv
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/local_setup.bash
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/local_setup.sh
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/local_setup.zsh
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/local_setup.dsv
+[9.536s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/package.dsv
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/ament_index/resource_index/packages/isaac_ros_nova_interfaces
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_generator_cExport.cmake
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_generator_cExport-release.cmake
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cExport-release.cmake
+[9.537s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_generator_cppExport.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_typesupport_fastrtps_cppExport-release.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cExport-release.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_cExport.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_cExport-release.cmake
+[9.538s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_introspection_cppExport-release.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_cppExport.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfaces__rosidl_typesupport_cppExport-release.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_generator_pyExport.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/export_isaac_ros_nova_interfaces__rosidl_generator_pyExport-release.cmake
+[9.539s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/rosidl_cmake-extras.cmake
+[9.540s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[9.540s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[9.540s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[9.541s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[9.541s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[9.541s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[9.541s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfacesConfig.cmake
+[9.542s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/cmake/isaac_ros_nova_interfacesConfig-version.cmake
+[9.543s] -- Installing: /tareeq/install/isaac_ros_nova_interfaces/share/isaac_ros_nova_interfaces/package.xml
+[9.564s] Invoked command in '/tareeq/build/isaac_ros_nova_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/isaac_ros_nova_interfaces

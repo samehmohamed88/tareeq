@@ -1,0 +1,6 @@
+source;share/isaac_ros_test/hook/pythonpath.ps1
+source;share/isaac_ros_test/hook/pythonpath.dsv
+source;share/isaac_ros_test/hook/pythonpath.sh
+source;share/isaac_ros_test/hook/ament_prefix_path.ps1
+source;share/isaac_ros_test/hook/ament_prefix_path.dsv
+source;share/isaac_ros_test/hook/ament_prefix_path.sh

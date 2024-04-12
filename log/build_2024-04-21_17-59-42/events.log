@@ -1,0 +1,167 @@
+[0.000000] (-) TimerEvent: {}
+[0.000186] (cpp_pubsub) JobQueued: {'identifier': 'cpp_pubsub', 'dependencies': OrderedDict()}
+[0.000381] (cpp_srvcli) JobQueued: {'identifier': 'cpp_srvcli', 'dependencies': OrderedDict()}
+[0.000494] (cpp_pubsub) JobStarted: {'identifier': 'cpp_pubsub'}
+[0.038801] (cpp_srvcli) JobStarted: {'identifier': 'cpp_srvcli'}
+[0.076514] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'cmake'}
+[0.077509] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'build'}
+[0.078825] (cpp_pubsub) Command: {'cmd': ['/usr/bin/cmake', '--build', '/tareeq/build/cpp_pubsub', '--', '-j32', '-l32'], 'cwd': '/tareeq/build/cpp_pubsub', 'env': OrderedDict([('NPP_VERSION', '11.8.0.86'), ('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('DALI_BUILD', '5838886'), ('DOCKER_GRP', 'sameh.mohamed'), ('CUSOLVER_VERSION', '11.4.1.48'), ('USER_UID', '1001'), ('CUBLAS_VERSION', '11.11.3.6'), ('ROS_PYTHON_VERSION', '3'), ('HOSTNAME', 'in-dev-docker'), ('DCGM_VERSION', '2.2.9'), ('CUFFT_VERSION', '10.9.0.58'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=9.0'), ('DOCKER_USER', 'sameh.mohamed'), ('CUDA_CACHE_DISABLE', '1'), ('NCCL_VERSION', '2.15.1'), ('CUSPARSE_VERSION', '11.7.5.86'), ('ENV', '/etc/shinit_v2'), ('PWD', '/tareeq/build/cpp_pubsub'), ('OPENUCX_VERSION', '1.14.0'), ('NSIGHT_SYSTEMS_VERSION', '2022.3.1.43'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,video,graphics,utility'), ('POLYGRAPHY_VERSION', '0.38.0'), ('TF_ENABLE_WINOGRAD_NONFUSED', '1'), ('TRT_VERSION', '8.5.0.12'), ('USER_GID', '1001'), ('NVIDIA_PRODUCT_NAME', 'Triton Server'), ('RDMACORE_VERSION', '36.0'), ('HOME', '/home/admin'), ('USERNAME', 'admin'), ('LANG', 'en_US.UTF-8'), ('HISTFILE', '/tareeq/.dev_bash_hist'), ('USE_GPU_HOST', '1'), ('CUDA_VERSION', '11.8.0.062'), ('CURAND_VERSION', '10.3.0.86'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CUTENSOR_VERSION', '1.6.1.5'), ('TRITON_SERVER_GPU_ENABLED', '1'), ('DOCKER_USER_ID', '1001'), ('HPCX_VERSION', '2.12.1a0'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.8/site-packages'), ('COLCON', '1'), ('TERM', 'xterm'), ('TRITON_SERVER_VERSION', '2.26.0'), ('GDRCOPY_VERSION', '2.3'), ('USER', 'sameh.mohamed'), ('OPENMPI_VERSION', '4.1.4'), ('NVJPEG_VERSION', '11.9.0.86'), ('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs:'), ('DOCKER_GRP_ID', '1001'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('BASH_ENV', '/etc/bash.bashrc'), ('TF_AUTOTUNE_THRESHOLD', '2'), ('CUDNN_VERSION', '8.6.0.163'), ('NSIGHT_COMPUTE_VERSION', '2022.3.0.22'), ('DALI_VERSION', '1.17.0'), ('NVIDIA_TRITON_SERVER_VERSION', '22.09'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/opt/tritonserver/backends/onnxruntime:/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/tritonserver/lib'), ('NVIDIA_BUILD_ID', '44909143'), ('ROS_LOCALHOST_ONLY', '0'), ('OMPI_MCA_coll_hcoll_enable', '0'), ('OPAL_PREFIX', '/opt/hpcx/ompi'), ('CUDA_DRIVER_VERSION', '520.61.03'), ('_CUDA_COMPAT_PATH', '/usr/local/cuda/compat'), ('PATH', '/opt/ros/humble/bin:/opt/tritonserver/bin:/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ucx/bin:/opt/nvidia/tao'), ('TRITON_SERVER_USER', 'triton-server'), ('PYTHONWARNINGS', 'ignore:::setuptools.command.install,ignore:::setuptools.command.easy_install,ignore:::pkg_resources'), ('MOFED_VERSION', '5.4-rdmacore36.0'), ('TRTOSS_VERSION', ''), ('DOCKER_IMG', 'sameh4/tareeq:isaac_ros_dev-x86_64'), ('DEBIAN_FRONTEND', 'noninteractive'), ('ROS_ROOT', '/opt/ros/humble'), ('ROS_DISTRO', 'humble'), ('TF_ADJUST_HUE_FUSED', '1'), ('TF_ADJUST_SATURATION_FUSED', '1'), ('SHARP_COLL_ENABLE_CUDA', '0'), ('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.090401] (cpp_srvcli) JobProgress: {'identifier': 'cpp_srvcli', 'progress': 'cmake'}
+[0.090748] (cpp_srvcli) Command: {'cmd': ['/usr/bin/cmake', '/tareeq/src/cpp_srvcli', '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON', '-G', 'Ninja', '-DCMAKE_INSTALL_PREFIX=/tareeq/install/cpp_srvcli'], 'cwd': '/tareeq/build/cpp_srvcli', 'env': OrderedDict([('NPP_VERSION', '11.8.0.86'), ('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('DALI_BUILD', '5838886'), ('DOCKER_GRP', 'sameh.mohamed'), ('CUSOLVER_VERSION', '11.4.1.48'), ('USER_UID', '1001'), ('CUBLAS_VERSION', '11.11.3.6'), ('ROS_PYTHON_VERSION', '3'), ('HOSTNAME', 'in-dev-docker'), ('DCGM_VERSION', '2.2.9'), ('CUFFT_VERSION', '10.9.0.58'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=9.0'), ('DOCKER_USER', 'sameh.mohamed'), ('CUDA_CACHE_DISABLE', '1'), ('NCCL_VERSION', '2.15.1'), ('CUSPARSE_VERSION', '11.7.5.86'), ('ENV', '/etc/shinit_v2'), ('PWD', '/tareeq/build/cpp_srvcli'), ('OPENUCX_VERSION', '1.14.0'), ('NSIGHT_SYSTEMS_VERSION', '2022.3.1.43'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,video,graphics,utility'), ('POLYGRAPHY_VERSION', '0.38.0'), ('TF_ENABLE_WINOGRAD_NONFUSED', '1'), ('TRT_VERSION', '8.5.0.12'), ('USER_GID', '1001'), ('NVIDIA_PRODUCT_NAME', 'Triton Server'), ('RDMACORE_VERSION', '36.0'), ('HOME', '/home/admin'), ('USERNAME', 'admin'), ('LANG', 'en_US.UTF-8'), ('HISTFILE', '/tareeq/.dev_bash_hist'), ('USE_GPU_HOST', '1'), ('CUDA_VERSION', '11.8.0.062'), ('CURAND_VERSION', '10.3.0.86'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CUTENSOR_VERSION', '1.6.1.5'), ('TRITON_SERVER_GPU_ENABLED', '1'), ('DOCKER_USER_ID', '1001'), ('HPCX_VERSION', '2.12.1a0'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.8/site-packages'), ('COLCON', '1'), ('TERM', 'xterm'), ('TRITON_SERVER_VERSION', '2.26.0'), ('GDRCOPY_VERSION', '2.3'), ('USER', 'sameh.mohamed'), ('OPENMPI_VERSION', '4.1.4'), ('NVJPEG_VERSION', '11.9.0.86'), ('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs:'), ('DOCKER_GRP_ID', '1001'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('BASH_ENV', '/etc/bash.bashrc'), ('TF_AUTOTUNE_THRESHOLD', '2'), ('CUDNN_VERSION', '8.6.0.163'), ('NSIGHT_COMPUTE_VERSION', '2022.3.0.22'), ('DALI_VERSION', '1.17.0'), ('NVIDIA_TRITON_SERVER_VERSION', '22.09'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/opt/tritonserver/backends/onnxruntime:/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/tritonserver/lib'), ('NVIDIA_BUILD_ID', '44909143'), ('ROS_LOCALHOST_ONLY', '0'), ('OMPI_MCA_coll_hcoll_enable', '0'), ('OPAL_PREFIX', '/opt/hpcx/ompi'), ('CUDA_DRIVER_VERSION', '520.61.03'), ('_CUDA_COMPAT_PATH', '/usr/local/cuda/compat'), ('PATH', '/opt/ros/humble/bin:/opt/tritonserver/bin:/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ucx/bin:/opt/nvidia/tao'), ('TRITON_SERVER_USER', 'triton-server'), ('PYTHONWARNINGS', 'ignore:::setuptools.command.install,ignore:::setuptools.command.easy_install,ignore:::pkg_resources'), ('MOFED_VERSION', '5.4-rdmacore36.0'), ('TRTOSS_VERSION', ''), ('DOCKER_IMG', 'sameh4/tareeq:isaac_ros_dev-x86_64'), ('DEBIAN_FRONTEND', 'noninteractive'), ('ROS_ROOT', '/opt/ros/humble'), ('ROS_DISTRO', 'humble'), ('TF_ADJUST_HUE_FUSED', '1'), ('TF_ADJUST_SATURATION_FUSED', '1'), ('SHARP_COLL_ENABLE_CUDA', '0'), ('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.094532] (cpp_pubsub) StdoutLine: {'line': b'ninja: no work to do.\n'}
+[0.095130] (cpp_pubsub) CommandEnded: {'returncode': 0}
+[0.099766] (-) TimerEvent: {}
+[0.128636] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'install'}
+[0.136673] (cpp_pubsub) Command: {'cmd': ['/usr/bin/cmake', '--install', '/tareeq/build/cpp_pubsub'], 'cwd': '/tareeq/build/cpp_pubsub', 'env': OrderedDict([('NPP_VERSION', '11.8.0.86'), ('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('DALI_BUILD', '5838886'), ('DOCKER_GRP', 'sameh.mohamed'), ('CUSOLVER_VERSION', '11.4.1.48'), ('USER_UID', '1001'), ('CUBLAS_VERSION', '11.11.3.6'), ('ROS_PYTHON_VERSION', '3'), ('HOSTNAME', 'in-dev-docker'), ('DCGM_VERSION', '2.2.9'), ('CUFFT_VERSION', '10.9.0.58'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=9.0'), ('DOCKER_USER', 'sameh.mohamed'), ('CUDA_CACHE_DISABLE', '1'), ('NCCL_VERSION', '2.15.1'), ('CUSPARSE_VERSION', '11.7.5.86'), ('ENV', '/etc/shinit_v2'), ('PWD', '/tareeq/build/cpp_pubsub'), ('OPENUCX_VERSION', '1.14.0'), ('NSIGHT_SYSTEMS_VERSION', '2022.3.1.43'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,video,graphics,utility'), ('POLYGRAPHY_VERSION', '0.38.0'), ('TF_ENABLE_WINOGRAD_NONFUSED', '1'), ('TRT_VERSION', '8.5.0.12'), ('USER_GID', '1001'), ('NVIDIA_PRODUCT_NAME', 'Triton Server'), ('RDMACORE_VERSION', '36.0'), ('HOME', '/home/admin'), ('USERNAME', 'admin'), ('LANG', 'en_US.UTF-8'), ('HISTFILE', '/tareeq/.dev_bash_hist'), ('USE_GPU_HOST', '1'), ('CUDA_VERSION', '11.8.0.062'), ('CURAND_VERSION', '10.3.0.86'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CUTENSOR_VERSION', '1.6.1.5'), ('TRITON_SERVER_GPU_ENABLED', '1'), ('DOCKER_USER_ID', '1001'), ('HPCX_VERSION', '2.12.1a0'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.8/site-packages'), ('COLCON', '1'), ('TERM', 'xterm'), ('TRITON_SERVER_VERSION', '2.26.0'), ('GDRCOPY_VERSION', '2.3'), ('USER', 'sameh.mohamed'), ('OPENMPI_VERSION', '4.1.4'), ('NVJPEG_VERSION', '11.9.0.86'), ('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs:'), ('DOCKER_GRP_ID', '1001'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('BASH_ENV', '/etc/bash.bashrc'), ('TF_AUTOTUNE_THRESHOLD', '2'), ('CUDNN_VERSION', '8.6.0.163'), ('NSIGHT_COMPUTE_VERSION', '2022.3.0.22'), ('DALI_VERSION', '1.17.0'), ('NVIDIA_TRITON_SERVER_VERSION', '22.09'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/opt/tritonserver/backends/onnxruntime:/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/tritonserver/lib'), ('NVIDIA_BUILD_ID', '44909143'), ('ROS_LOCALHOST_ONLY', '0'), ('OMPI_MCA_coll_hcoll_enable', '0'), ('OPAL_PREFIX', '/opt/hpcx/ompi'), ('CUDA_DRIVER_VERSION', '520.61.03'), ('_CUDA_COMPAT_PATH', '/usr/local/cuda/compat'), ('PATH', '/opt/ros/humble/bin:/opt/tritonserver/bin:/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ucx/bin:/opt/nvidia/tao'), ('TRITON_SERVER_USER', 'triton-server'), ('PYTHONWARNINGS', 'ignore:::setuptools.command.install,ignore:::setuptools.command.easy_install,ignore:::pkg_resources'), ('MOFED_VERSION', '5.4-rdmacore36.0'), ('TRTOSS_VERSION', ''), ('DOCKER_IMG', 'sameh4/tareeq:isaac_ros_dev-x86_64'), ('DEBIAN_FRONTEND', 'noninteractive'), ('ROS_ROOT', '/opt/ros/humble'), ('ROS_DISTRO', 'humble'), ('TF_ADJUST_HUE_FUSED', '1'), ('TF_ADJUST_SATURATION_FUSED', '1'), ('SHARP_COLL_ENABLE_CUDA', '0'), ('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.144311] (cpp_pubsub) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[0.144567] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/lib/cpp_pubsub/talker\n'}
+[0.145212] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/ament_index/resource_index/package_run_dependencies/cpp_pubsub\n'}
+[0.145332] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/ament_index/resource_index/parent_prefix_path/cpp_pubsub\n'}
+[0.145428] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.sh\n'}
+[0.145757] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.dsv\n'}
+[0.146389] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/environment/path.sh\n'}
+[0.146708] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/environment/path.dsv\n'}
+[0.146911] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/local_setup.bash\n'}
+[0.147197] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/local_setup.sh\n'}
+[0.147449] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/local_setup.zsh\n'}
+[0.147592] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/local_setup.dsv\n'}
+[0.147862] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/package.dsv\n'}
+[0.148003] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/ament_index/resource_index/packages/cpp_pubsub\n'}
+[0.148245] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig.cmake\n'}
+[0.148380] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig-version.cmake\n'}
+[0.148571] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /tareeq/install/cpp_pubsub/share/cpp_pubsub/package.xml\n'}
+[0.148800] (cpp_pubsub) CommandEnded: {'returncode': 0}
+[0.199935] (-) TimerEvent: {}
+[0.272448] (cpp_pubsub) JobEnded: {'identifier': 'cpp_pubsub', 'rc': 0}
+[0.273265] (cpp_srvcli) StdoutLine: {'line': b'-- The C compiler identification is GNU 9.4.0\n'}
+[0.273436] (cpp_srvcli) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 9.4.0\n'}
+[0.273538] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.299998] (-) TimerEvent: {}
+[0.337568] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.359321] (cpp_srvcli) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.359588] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.359949] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.366878] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.400092] (-) TimerEvent: {}
+[0.475217] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.496303] (cpp_srvcli) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.496560] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.496958] (cpp_srvcli) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.499911] (cpp_srvcli) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.6 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.500159] (-) TimerEvent: {}
+[0.600304] (-) TimerEvent: {}
+[0.700496] (-) TimerEvent: {}
+[0.800670] (-) TimerEvent: {}
+[0.900822] (-) TimerEvent: {}
+[1.000999] (-) TimerEvent: {}
+[1.101204] (-) TimerEvent: {}
+[1.201388] (-) TimerEvent: {}
+[1.301544] (-) TimerEvent: {}
+[1.401701] (-) TimerEvent: {}
+[1.501855] (-) TimerEvent: {}
+[1.602015] (-) TimerEvent: {}
+[1.702183] (-) TimerEvent: {}
+[1.802335] (-) TimerEvent: {}
+[1.902484] (-) TimerEvent: {}
+[1.987399] (cpp_srvcli) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3.8 (found version "3.8.10") found components: Interpreter\n'}
+[2.002555] (-) TimerEvent: {}
+[2.063084] (cpp_srvcli) StdoutLine: {'line': b'-- Found rclcpp: 16.0.7 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[2.102639] (-) TimerEvent: {}
+[2.106875] (cpp_srvcli) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[2.112408] (cpp_srvcli) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[2.123419] (cpp_srvcli) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[2.146787] (cpp_srvcli) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[2.167969] (cpp_srvcli) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.202712] (-) TimerEvent: {}
+[2.242360] (cpp_srvcli) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.1 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[2.245152] (cpp_srvcli) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.5 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[2.302784] (-) TimerEvent: {}
+[2.392745] (cpp_srvcli) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")\n'}
+[2.402870] (-) TimerEvent: {}
+[2.426007] (cpp_srvcli) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/humble/include\n'}
+[2.479149] (cpp_srvcli) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[2.490900] (cpp_srvcli) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[2.502945] (-) TimerEvent: {}
+[2.593069] (cpp_srvcli) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed\n'}
+[2.593289] (cpp_srvcli) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads\n'}
+[2.603029] (-) TimerEvent: {}
+[2.682627] (cpp_srvcli) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads - not found\n'}
+[2.682845] (cpp_srvcli) StdoutLine: {'line': b'-- Looking for pthread_create in pthread\n'}
+[2.703103] (-) TimerEvent: {}
+[2.789333] (cpp_srvcli) StdoutLine: {'line': b'-- Looking for pthread_create in pthread - found\n'}
+[2.790146] (cpp_srvcli) StdoutLine: {'line': b'-- Found Threads: TRUE\n'}
+[2.803189] (-) TimerEvent: {}
+[2.903344] (-) TimerEvent: {}
+[2.955130] (cpp_srvcli) StdoutLine: {'line': b'-- Found example_interfaces: 0.9.3 (/opt/ros/humble/share/example_interfaces/cmake)\n'}
+[3.003431] (-) TimerEvent: {}
+[3.103621] (-) TimerEvent: {}
+[3.153814] (cpp_srvcli) StdoutLine: {'line': b'-- Configuring done (3.1s)\n'}
+[3.166573] (cpp_srvcli) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[3.179530] (cpp_srvcli) StdoutLine: {'line': b'-- Build files have been written to: /tareeq/build/cpp_srvcli\n'}
+[3.188598] (cpp_srvcli) CommandEnded: {'returncode': 0}
+[3.189510] (cpp_srvcli) JobProgress: {'identifier': 'cpp_srvcli', 'progress': 'build'}
+[3.189549] (cpp_srvcli) Command: {'cmd': ['/usr/bin/cmake', '--build', '/tareeq/build/cpp_srvcli', '--', '-j32', '-l32'], 'cwd': '/tareeq/build/cpp_srvcli', 'env': OrderedDict([('NPP_VERSION', '11.8.0.86'), ('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('DALI_BUILD', '5838886'), ('DOCKER_GRP', 'sameh.mohamed'), ('CUSOLVER_VERSION', '11.4.1.48'), ('USER_UID', '1001'), ('CUBLAS_VERSION', '11.11.3.6'), ('ROS_PYTHON_VERSION', '3'), ('HOSTNAME', 'in-dev-docker'), ('DCGM_VERSION', '2.2.9'), ('CUFFT_VERSION', '10.9.0.58'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=9.0'), ('DOCKER_USER', 'sameh.mohamed'), ('CUDA_CACHE_DISABLE', '1'), ('NCCL_VERSION', '2.15.1'), ('CUSPARSE_VERSION', '11.7.5.86'), ('ENV', '/etc/shinit_v2'), ('PWD', '/tareeq/build/cpp_srvcli'), ('OPENUCX_VERSION', '1.14.0'), ('NSIGHT_SYSTEMS_VERSION', '2022.3.1.43'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,video,graphics,utility'), ('POLYGRAPHY_VERSION', '0.38.0'), ('TF_ENABLE_WINOGRAD_NONFUSED', '1'), ('TRT_VERSION', '8.5.0.12'), ('USER_GID', '1001'), ('NVIDIA_PRODUCT_NAME', 'Triton Server'), ('RDMACORE_VERSION', '36.0'), ('HOME', '/home/admin'), ('USERNAME', 'admin'), ('LANG', 'en_US.UTF-8'), ('HISTFILE', '/tareeq/.dev_bash_hist'), ('USE_GPU_HOST', '1'), ('CUDA_VERSION', '11.8.0.062'), ('CURAND_VERSION', '10.3.0.86'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CUTENSOR_VERSION', '1.6.1.5'), ('TRITON_SERVER_GPU_ENABLED', '1'), ('DOCKER_USER_ID', '1001'), ('HPCX_VERSION', '2.12.1a0'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.8/site-packages'), ('COLCON', '1'), ('TERM', 'xterm'), ('TRITON_SERVER_VERSION', '2.26.0'), ('GDRCOPY_VERSION', '2.3'), ('USER', 'sameh.mohamed'), ('OPENMPI_VERSION', '4.1.4'), ('NVJPEG_VERSION', '11.9.0.86'), ('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs:'), ('DOCKER_GRP_ID', '1001'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('BASH_ENV', '/etc/bash.bashrc'), ('TF_AUTOTUNE_THRESHOLD', '2'), ('CUDNN_VERSION', '8.6.0.163'), ('NSIGHT_COMPUTE_VERSION', '2022.3.0.22'), ('DALI_VERSION', '1.17.0'), ('NVIDIA_TRITON_SERVER_VERSION', '22.09'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/opt/tritonserver/backends/onnxruntime:/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/tritonserver/lib'), ('NVIDIA_BUILD_ID', '44909143'), ('ROS_LOCALHOST_ONLY', '0'), ('OMPI_MCA_coll_hcoll_enable', '0'), ('OPAL_PREFIX', '/opt/hpcx/ompi'), ('CUDA_DRIVER_VERSION', '520.61.03'), ('_CUDA_COMPAT_PATH', '/usr/local/cuda/compat'), ('PATH', '/opt/ros/humble/bin:/opt/tritonserver/bin:/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ucx/bin:/opt/nvidia/tao'), ('TRITON_SERVER_USER', 'triton-server'), ('PYTHONWARNINGS', 'ignore:::setuptools.command.install,ignore:::setuptools.command.easy_install,ignore:::pkg_resources'), ('MOFED_VERSION', '5.4-rdmacore36.0'), ('TRTOSS_VERSION', ''), ('DOCKER_IMG', 'sameh4/tareeq:isaac_ros_dev-x86_64'), ('DEBIAN_FRONTEND', 'noninteractive'), ('ROS_ROOT', '/opt/ros/humble'), ('ROS_DISTRO', 'humble'), ('TF_ADJUST_HUE_FUSED', '1'), ('TF_ADJUST_SATURATION_FUSED', '1'), ('SHARP_COLL_ENABLE_CUDA', '0'), ('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[3.203724] (-) TimerEvent: {}
+[3.303909] (-) TimerEvent: {}
+[3.404126] (-) TimerEvent: {}
+[3.504343] (-) TimerEvent: {}
+[3.604561] (-) TimerEvent: {}
+[3.704780] (-) TimerEvent: {}
+[3.805005] (-) TimerEvent: {}
+[3.905228] (-) TimerEvent: {}
+[4.005447] (-) TimerEvent: {}
+[4.105671] (-) TimerEvent: {}
+[4.205889] (-) TimerEvent: {}
+[4.306132] (-) TimerEvent: {}
+[4.406352] (-) TimerEvent: {}
+[4.506593] (-) TimerEvent: {}
+[4.606828] (-) TimerEvent: {}
+[4.707070] (-) TimerEvent: {}
+[4.807332] (-) TimerEvent: {}
+[4.907589] (-) TimerEvent: {}
+[5.007836] (-) TimerEvent: {}
+[5.108082] (-) TimerEvent: {}
+[5.208328] (-) TimerEvent: {}
+[5.308587] (-) TimerEvent: {}
+[5.408844] (-) TimerEvent: {}
+[5.509101] (-) TimerEvent: {}
+[5.609355] (-) TimerEvent: {}
+[5.709604] (-) TimerEvent: {}
+[5.809850] (-) TimerEvent: {}
+[5.910075] (-) TimerEvent: {}
+[6.010300] (-) TimerEvent: {}
+[6.110530] (-) TimerEvent: {}
+[6.193681] (cpp_srvcli) StdoutLine: {'line': b'[1/4] Building CXX object CMakeFiles/server.dir/src/add_two_ints_server.cpp.o\n'}
+[6.210612] (-) TimerEvent: {}
+[6.239488] (cpp_srvcli) StdoutLine: {'line': b'[2/4] Building CXX object CMakeFiles/client.dir/src/add_two_ints_client.cpp.o\n'}
+[6.310711] (-) TimerEvent: {}
+[6.348573] (cpp_srvcli) StdoutLine: {'line': b'[3/4] Linking CXX executable server\n'}
+[6.382485] (cpp_srvcli) StdoutLine: {'line': b'[4/4] Linking CXX executable client\n'}
+[6.385193] (cpp_srvcli) CommandEnded: {'returncode': 0}
+[6.410852] (-) TimerEvent: {}
+[6.423012] (cpp_srvcli) JobProgress: {'identifier': 'cpp_srvcli', 'progress': 'install'}
+[6.423079] (cpp_srvcli) Command: {'cmd': ['/usr/bin/cmake', '--install', '/tareeq/build/cpp_srvcli'], 'cwd': '/tareeq/build/cpp_srvcli', 'env': OrderedDict([('NPP_VERSION', '11.8.0.86'), ('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('NVIDIA_VISIBLE_DEVICES', 'all'), ('DALI_BUILD', '5838886'), ('DOCKER_GRP', 'sameh.mohamed'), ('CUSOLVER_VERSION', '11.4.1.48'), ('USER_UID', '1001'), ('CUBLAS_VERSION', '11.11.3.6'), ('ROS_PYTHON_VERSION', '3'), ('HOSTNAME', 'in-dev-docker'), ('DCGM_VERSION', '2.2.9'), ('CUFFT_VERSION', '10.9.0.58'), ('NVIDIA_REQUIRE_CUDA', 'cuda>=9.0'), ('DOCKER_USER', 'sameh.mohamed'), ('CUDA_CACHE_DISABLE', '1'), ('NCCL_VERSION', '2.15.1'), ('CUSPARSE_VERSION', '11.7.5.86'), ('ENV', '/etc/shinit_v2'), ('PWD', '/tareeq/build/cpp_srvcli'), ('OPENUCX_VERSION', '1.14.0'), ('NSIGHT_SYSTEMS_VERSION', '2022.3.1.43'), ('NVIDIA_DRIVER_CAPABILITIES', 'compute,video,graphics,utility'), ('POLYGRAPHY_VERSION', '0.38.0'), ('TF_ENABLE_WINOGRAD_NONFUSED', '1'), ('TRT_VERSION', '8.5.0.12'), ('USER_GID', '1001'), ('NVIDIA_PRODUCT_NAME', 'Triton Server'), ('RDMACORE_VERSION', '36.0'), ('HOME', '/home/admin'), ('USERNAME', 'admin'), ('LANG', 'en_US.UTF-8'), ('HISTFILE', '/tareeq/.dev_bash_hist'), ('USE_GPU_HOST', '1'), ('CUDA_VERSION', '11.8.0.062'), ('CURAND_VERSION', '10.3.0.86'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CUTENSOR_VERSION', '1.6.1.5'), ('TRITON_SERVER_GPU_ENABLED', '1'), ('DOCKER_USER_ID', '1001'), ('HPCX_VERSION', '2.12.1a0'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.8/site-packages'), ('COLCON', '1'), ('TERM', 'xterm'), ('TRITON_SERVER_VERSION', '2.26.0'), ('GDRCOPY_VERSION', '2.3'), ('USER', 'sameh.mohamed'), ('OPENMPI_VERSION', '4.1.4'), ('NVJPEG_VERSION', '11.9.0.86'), ('LIBRARY_PATH', '/usr/local/cuda/lib64/stubs:'), ('DOCKER_GRP_ID', '1001'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('BASH_ENV', '/etc/bash.bashrc'), ('TF_AUTOTUNE_THRESHOLD', '2'), ('CUDNN_VERSION', '8.6.0.163'), ('NSIGHT_COMPUTE_VERSION', '2022.3.0.22'), ('DALI_VERSION', '1.17.0'), ('NVIDIA_TRITON_SERVER_VERSION', '22.09'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/opt/tritonserver/backends/onnxruntime:/usr/local/cuda/compat/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/opt/tritonserver/lib'), ('NVIDIA_BUILD_ID', '44909143'), ('ROS_LOCALHOST_ONLY', '0'), ('OMPI_MCA_coll_hcoll_enable', '0'), ('OPAL_PREFIX', '/opt/hpcx/ompi'), ('CUDA_DRIVER_VERSION', '520.61.03'), ('_CUDA_COMPAT_PATH', '/usr/local/cuda/compat'), ('PATH', '/opt/ros/humble/bin:/opt/tritonserver/bin:/usr/local/mpi/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ucx/bin:/opt/nvidia/tao'), ('TRITON_SERVER_USER', 'triton-server'), ('PYTHONWARNINGS', 'ignore:::setuptools.command.install,ignore:::setuptools.command.easy_install,ignore:::pkg_resources'), ('MOFED_VERSION', '5.4-rdmacore36.0'), ('TRTOSS_VERSION', ''), ('DOCKER_IMG', 'sameh4/tareeq:isaac_ros_dev-x86_64'), ('DEBIAN_FRONTEND', 'noninteractive'), ('ROS_ROOT', '/opt/ros/humble'), ('ROS_DISTRO', 'humble'), ('TF_ADJUST_HUE_FUSED', '1'), ('TF_ADJUST_SATURATION_FUSED', '1'), ('SHARP_COLL_ENABLE_CUDA', '0'), ('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[6.431053] (cpp_srvcli) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[6.431302] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/lib/cpp_srvcli/server\n'}
+[6.439242] (cpp_srvcli) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/tareeq/install/cpp_srvcli/lib/cpp_srvcli/server" to ""\n'}
+[6.439411] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/lib/cpp_srvcli/client\n'}
+[6.442868] (cpp_srvcli) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/tareeq/install/cpp_srvcli/lib/cpp_srvcli/client" to ""\n'}
+[6.443047] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/ament_index/resource_index/package_run_dependencies/cpp_srvcli\n'}
+[6.443211] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/ament_index/resource_index/parent_prefix_path/cpp_srvcli\n'}
+[6.443397] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/environment/ament_prefix_path.sh\n'}
+[6.443553] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/environment/ament_prefix_path.dsv\n'}
+[6.443710] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/environment/path.sh\n'}
+[6.443866] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/environment/path.dsv\n'}
+[6.444092] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/local_setup.bash\n'}
+[6.444267] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/local_setup.sh\n'}
+[6.444434] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/local_setup.zsh\n'}
+[6.444621] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/local_setup.dsv\n'}
+[6.444803] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/package.dsv\n'}
+[6.444958] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/ament_index/resource_index/packages/cpp_srvcli\n'}
+[6.445123] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/cmake/cpp_srvcliConfig.cmake\n'}
+[6.445271] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/cmake/cpp_srvcliConfig-version.cmake\n'}
+[6.445435] (cpp_srvcli) StdoutLine: {'line': b'-- Installing: /tareeq/install/cpp_srvcli/share/cpp_srvcli/package.xml\n'}
+[6.446400] (cpp_srvcli) CommandEnded: {'returncode': 0}
+[6.510983] (-) TimerEvent: {}
+[6.571543] (cpp_srvcli) JobEnded: {'identifier': 'cpp_srvcli', 'rc': 0}
+[6.572653] (-) EventReactorShutdown: {}

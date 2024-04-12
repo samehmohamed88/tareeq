@@ -1,0 +1,13 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "QMI8658ImuSensor",
+    hdrs = ["QMI8658ImuSensor.hpp"],
+    deps = [
+        "//platform/io:Status",
+        "//platform/logging:Logger",
+        "//platform/sensors:ImuData",
+        "//platform/sensors:SensorDataFactories",
+        "@eigen3",
+    ],
+)

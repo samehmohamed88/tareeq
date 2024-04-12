@@ -1,0 +1,6 @@
+#build --repo_env=CC=clang
+#build --repo_env=CXX=clang++
+#build --linkopt="-fuse-ld=lld"
+
+# Build with C++ 20 features.
+build --cxxopt=-std=c++20

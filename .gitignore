@@ -167,3 +167,9 @@ tests/rustdoc-gui/src/**.lock
 # Before adding new lines, see the comment at the top.
 
 *.mcap
+
+isaac_ros_common
+isaac_ros_visual_slam
+
+install/
+log/

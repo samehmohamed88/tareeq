@@ -1,0 +1,53 @@
+[0.948s] Invoking command in '/tareeq/isaac_ros_common/isaac_ros_test': PYTHONPATH=/tareeq/build/isaac_ros_test/prefix_override:/tareeq/install/isaac_ros_test/lib/python3.8/site-packages:${PYTHONPATH} _=/usr/bin/env /usr/bin/python3 setup.py egg_info --egg-base ../../build/isaac_ros_test build --build-base /tareeq/build/isaac_ros_test/build install --record /tareeq/build/isaac_ros_test/install.log --single-version-externally-managed
+[1.262s] running egg_info
+[1.263s] creating ../../build/isaac_ros_test/isaac_ros_test.egg-info
+[1.274s] writing ../../build/isaac_ros_test/isaac_ros_test.egg-info/PKG-INFO
+[1.274s] writing dependency_links to ../../build/isaac_ros_test/isaac_ros_test.egg-info/dependency_links.txt
+[1.275s] writing requirements to ../../build/isaac_ros_test/isaac_ros_test.egg-info/requires.txt
+[1.275s] writing top-level names to ../../build/isaac_ros_test/isaac_ros_test.egg-info/top_level.txt
+[1.275s] writing manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+[1.301s] reading manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+[1.301s] writing manifest file '../../build/isaac_ros_test/isaac_ros_test.egg-info/SOURCES.txt'
+[1.302s] running build
+[1.302s] running build_py
+[1.302s] creating /tareeq/build/isaac_ros_test/build
+[1.302s] creating /tareeq/build/isaac_ros_test/build/lib
+[1.302s] creating /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.302s] copying isaac_ros_test/isaac_ros_base_test.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.302s] copying isaac_ros_test/__init__.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.302s] copying isaac_ros_test/profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.302s] copying isaac_ros_test/cpu_profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.303s] copying isaac_ros_test/pcd_loader.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.303s] copying isaac_ros_test/tegrastats_profiler.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.303s] copying isaac_ros_test/pose_utilities.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.303s] copying isaac_ros_test/json_conversion.py -> /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test
+[1.304s] running install
+[1.308s] running install_lib
+[1.322s] creating /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.322s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/isaac_ros_base_test.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.322s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/__init__.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.322s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.322s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/cpu_profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.323s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/pcd_loader.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.323s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/tegrastats_profiler.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.323s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/pose_utilities.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.323s] copying /tareeq/build/isaac_ros_test/build/lib/isaac_ros_test/json_conversion.py -> /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test
+[1.324s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/isaac_ros_base_test.py to isaac_ros_base_test.cpython-38.pyc
+[1.325s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/__init__.py to __init__.cpython-38.pyc
+[1.326s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/profiler.py to profiler.cpython-38.pyc
+[1.326s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/cpu_profiler.py to cpu_profiler.cpython-38.pyc
+[1.326s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/pcd_loader.py to pcd_loader.cpython-38.pyc
+[1.327s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/tegrastats_profiler.py to tegrastats_profiler.cpython-38.pyc
+[1.328s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/pose_utilities.py to pose_utilities.cpython-38.pyc
+[1.328s] byte-compiling /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test/json_conversion.py to json_conversion.cpython-38.pyc
+[1.329s] running install_data
+[1.342s] creating /tareeq/install/isaac_ros_test/share/ament_index
+[1.342s] creating /tareeq/install/isaac_ros_test/share/ament_index/resource_index
+[1.343s] creating /tareeq/install/isaac_ros_test/share/ament_index/resource_index/packages
+[1.343s] copying resource/isaac_ros_test -> /tareeq/install/isaac_ros_test/share/ament_index/resource_index/packages
+[1.343s] copying package.xml -> /tareeq/install/isaac_ros_test/share/isaac_ros_test
+[1.343s] running install_egg_info
+[1.355s] Copying ../../build/isaac_ros_test/isaac_ros_test.egg-info to /tareeq/install/isaac_ros_test/lib/python3.8/site-packages/isaac_ros_test-0.9.0-py3.8.egg-info
+[1.356s] running install_scripts
+[1.413s] writing list of installed files to '/tareeq/build/isaac_ros_test/install.log'
+[1.438s] Invoked command in '/tareeq/isaac_ros_common/isaac_ros_test' returned '0': PYTHONPATH=/tareeq/build/isaac_ros_test/prefix_override:/tareeq/install/isaac_ros_test/lib/python3.8/site-packages:${PYTHONPATH} _=/usr/bin/env /usr/bin/python3 setup.py egg_info --egg-base ../../build/isaac_ros_test build --build-base /tareeq/build/isaac_ros_test/build install --record /tareeq/build/isaac_ros_test/install.log --single-version-externally-managed

@@ -1,0 +1,37 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "Sensor",
+    hdrs = [
+        "Sensor.hpp",
+    ],
+    deps = [
+        "//platform/io:Status",
+    ],
+)
+
+cc_library(
+    name = "SensorRegistry",
+    srcs = ["SensorRegistry.cpp"],
+    hdrs = ["SensorRegistry.hpp"],
+    deps = [
+        ":Sensor",
+        "//platform/sensors/imus:QMI8658ImuSensor",
+        "//platform/vehicles/wave_rover:WaveRoverImuReader",
+    ],
+)
+
+cc_library(
+    name = "ImuData",
+    hdrs = ["ImuData.hpp"],
+    deps = ["@eigen3"],
+)
+
+cc_library(
+    name = "SensorDataFactories",
+    hdrs = ["SensorDataFactories.hpp"],
+    deps = [
+        "@eigen3",
+        "@nlohmann_json//:json",
+    ],
+)

@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "Status",
+    hdrs = ["Status.hpp"],
+    deps = [],
+)
+
+cc_library(
+    name = "IOInterface",
+    hdrs = ["IOInterface.hpp"],
+    deps = [":Status"],
+)
+
+cc_library(
+    name = "BoostSerialDevice",
+    srcs = ["BoostSerialDevice.cpp"],
+    hdrs = ["BoostSerialDevice.hpp"],
+    deps = [
+        ":IOInterface",
+        ":Status",
+        "@boost//:asio",
+    ],
+)
+
+cc_library(
+    name = "BoostSerialDeviceManager",
+    srcs = ["BoostSerialDeviceManager.cpp"],
+    hdrs = ["BoostSerialDeviceManager.hpp"],
+    deps = [
+        ":BoostSerialDevice",
+        ":Status",
+        "//platform/logging:Logger",
+    ],
+)

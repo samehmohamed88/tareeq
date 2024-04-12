@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "${TOP_DIR}/scripts/nav.bashrc"
+TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+source "${TOP_DIR}/scripts/tareeq.bashrc"
 
 unset TOP_DIR
 

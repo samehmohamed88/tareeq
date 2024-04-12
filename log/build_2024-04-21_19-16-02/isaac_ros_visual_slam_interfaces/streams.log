@@ -1,0 +1,407 @@
+[0.267s] Invoking command in '/tareeq/build/isaac_ros_visual_slam_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake /tareeq/isaac_ros_visual_slam/isaac_ros_visual_slam_interfaces -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/isaac_ros_visual_slam_interfaces
+[0.332s] -- The C compiler identification is GNU 9.4.0
+[0.404s] -- The CXX compiler identification is GNU 9.4.0
+[0.422s] -- Detecting C compiler ABI info
+[0.516s] -- Detecting C compiler ABI info - done
+[0.533s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.534s] -- Detecting C compile features
+[0.534s] -- Detecting C compile features - done
+[0.542s] -- Detecting CXX compiler ABI info
+[0.644s] -- Detecting CXX compiler ABI info - done
+[0.666s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.667s] -- Detecting CXX compile features
+[0.668s] -- Detecting CXX compile features - done
+[0.672s] -- Found ament_cmake_auto: 1.3.6 (/opt/ros/humble/share/ament_cmake_auto/cmake)
+[1.081s] -- Found Python3: /usr/bin/python3.8 (found version "3.8.10") found components: Interpreter
+[1.231s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.239s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.285s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.333s] -- Loading isaac_ros_common extras
+[1.333s] -- CMAKE_BUILD_TYPE: Release
+[1.354s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.452s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+[1.452s] -- Looking for pthread_create in pthreads
+[1.535s] -- Looking for pthread_create in pthreads - not found
+[1.535s] -- Looking for pthread_create in pthread
+[1.629s] -- Looking for pthread_create in pthread - found
+[1.631s] -- Found Threads: TRUE
+[1.640s] -- Found CUDA: /usr/local/cuda (found version "11.8")
+[1.641s] -- Loading isaac_ros_common extras (modules)
+[1.737s] -- Found rmw_implementation_cmake: 6.1.1 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.740s] -- Found rmw_fastrtps_cpp: 6.2.5 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.887s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")
+[1.917s] -- Found FastRTPS: /opt/ros/humble/include
+[1.972s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[3.183s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[4.494s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[6.208s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[6.231s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3.6")
+[6.234s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[6.262s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.10", minimum required is "3.5")
+[6.262s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[6.263s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8
+[6.263s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so
+[6.289s] -- Found PythonExtra: .so
+[6.455s] -- Found ament_lint_auto: 0.12.9 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[6.498s] -- Added test 'copyright' to check source files copyright and LICENSE
+[6.502s] -- Added test 'lint_cmake' to check CMake code style
+[6.504s] -- Added test 'xmllint' to check XML markup files
+[6.511s] -- Configuring done (6.2s)
+[6.591s] -- Generating done (0.1s)
+[6.620s] -- Build files have been written to: /tareeq/build/isaac_ros_visual_slam_interfaces
+[6.648s] Invoked command in '/tareeq/build/isaac_ros_visual_slam_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake /tareeq/isaac_ros_visual_slam/isaac_ros_visual_slam_interfaces -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja -DCMAKE_INSTALL_PREFIX=/tareeq/install/isaac_ros_visual_slam_interfaces
+[6.649s] Invoking command in '/tareeq/build/isaac_ros_visual_slam_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/isaac_ros_visual_slam_interfaces -- -j32 -l32
+[6.778s] [1/73] cd /tareeq/build/isaac_ros_visual_slam_interfaces && /usr/bin/cmake -E copy_directory /tareeq/build/isaac_ros_visual_slam_interfaces/rosidl_generator_py/isaac_ros_visual_slam_interfaces /tareeq/build/isaac_ros_visual_slam_interfaces/ament_cmake_python/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[7.433s] [2/73] cd /tareeq/build/isaac_ros_visual_slam_interfaces/ament_cmake_python/isaac_ros_visual_slam_interfaces && /usr/bin/python3.8 setup.py egg_info
+[7.434s] running egg_info
+[7.434s] creating isaac_ros_visual_slam_interfaces.egg-info
+[7.435s] writing isaac_ros_visual_slam_interfaces.egg-info/PKG-INFO
+[7.436s] writing dependency_links to isaac_ros_visual_slam_interfaces.egg-info/dependency_links.txt
+[7.436s] writing top-level names to isaac_ros_visual_slam_interfaces.egg-info/top_level.txt
+[7.437s] writing manifest file 'isaac_ros_visual_slam_interfaces.egg-info/SOURCES.txt'
+[7.437s] reading manifest file 'isaac_ros_visual_slam_interfaces.egg-info/SOURCES.txt'
+[7.438s] writing manifest file 'isaac_ros_visual_slam_interfaces.egg-info/SOURCES.txt'
+[8.196s] [3/73] Generating C++ code for ROS interfaces
+[8.262s] [4/73] Generating C code for ROS interfaces
+[8.397s] [5/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__functions.c.o
+[8.409s] [6/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/srv/detail/reset__functions.c.o
+[8.432s] [7/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__functions.c.o
+[8.446s] [8/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__functions.c.o
+[8.899s] [9/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__functions.c.o
+[8.899s] [10/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_c.dir/rosidl_generator_c/isaac_ros_visual_slam_interfaces/action/detail/save_map__functions.c.o
+[8.899s] [11/73] Linking C shared library libisaac_ros_visual_slam_interfaces__rosidl_generator_c.so
+[8.900s] [12/73] Generating C++ type support dispatch for ROS interfaces
+[9.248s] [13/73] Generating C++ introspection for ROS interfaces
+[9.248s] [14/73] Generating C++ type support for eProsima Fast-RTPS
+[9.248s] [15/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/msg/visual_slam_status__type_support.cpp.o
+[9.248s] [16/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/srv/set_odometry_pose__type_support.cpp.o
+[9.310s] [17/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/srv/get_all_poses__type_support.cpp.o
+[9.311s] [18/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/srv/reset__type_support.cpp.o
+[9.710s] [19/73] Generating C type support dispatch for ROS interfaces
+[9.710s] [20/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/srv/get_all_poses__type_support.cpp.o
+[9.711s] [21/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/msg/visual_slam_status__type_support.cpp.o
+[9.711s] [22/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/srv/reset__type_support.cpp.o
+[9.711s] [23/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/srv/set_odometry_pose__type_support.cpp.o
+[9.711s] [24/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/action/load_map_and_localize__type_support.cpp.o
+[9.712s] [25/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support.cpp.o
+[9.712s] [26/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/isaac_ros_visual_slam_interfaces/action/save_map__type_support.cpp.o
+[9.712s] [27/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support.cpp.o
+[9.713s] [28/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/action/save_map__type_support.cpp.o
+[9.713s] [29/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/isaac_ros_visual_slam_interfaces/action/load_map_and_localize__type_support.cpp.o
+[9.713s] [30/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support.cpp.o
+[9.713s] [31/73] Linking CXX shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_c.so
+[9.714s] [32/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support.cpp.o
+[9.714s] [33/73] Linking CXX shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.so
+[10.124s] [34/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/msg/detail/dds_fastrtps/visual_slam_status__type_support.cpp.o
+[10.124s] [35/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/srv/detail/dds_fastrtps/reset__type_support.cpp.o
+[10.124s] [36/73] Generating C introspection for ROS interfaces
+[10.124s] [37/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/srv/detail/dds_fastrtps/set_odometry_pose__type_support.cpp.o
+[10.125s] [38/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/srv/detail/dds_fastrtps/get_all_poses__type_support.cpp.o
+[10.125s] [39/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support.c.o
+[10.125s] [40/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support.c.o
+[10.125s] [41/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support.c.o
+[10.125s] [42/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support.c.o
+[10.125s] [43/73] Generating C type support for eProsima Fast-RTPS
+[10.125s] [44/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support.cpp.o
+[10.125s] [45/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support.cpp.o
+[10.125s] [46/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support.c.o
+[10.125s] [47/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support.c.o
+[10.125s] [48/73] Linking C shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.so
+[10.125s] [49/73] Linking CXX shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.so
+[10.125s] [50/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/action/detail/dds_fastrtps/load_map_and_localize__type_support.cpp.o
+[10.125s] [51/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/isaac_ros_visual_slam_interfaces/action/detail/dds_fastrtps/save_map__type_support.cpp.o
+[10.125s] [52/73] Linking CXX shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[10.139s] [53/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support_c.cpp.o
+[10.141s] [54/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support_c.cpp.o
+[10.145s] [55/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support_c.cpp.o
+[10.157s] [56/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support_c.cpp.o
+[10.387s] [57/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support_c.cpp.o
+[10.387s] [58/73] Building CXX object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support_c.cpp.o
+[10.387s] [59/73] Linking CXX shared library libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.so
+[11.977s] [60/73] Generating Python code for ROS interfaces
+[12.113s] [61/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/msg/_visual_slam_status_s.c.o
+[12.116s] [62/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/srv/_reset_s.c.o
+[12.122s] [63/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/srv/_set_odometry_pose_s.c.o
+[12.135s] [64/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/srv/_get_all_poses_s.c.o
+[12.215s] [65/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/action/_load_map_and_localize_s.c.o
+[12.221s] [66/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_generator_py.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/action/_save_map_s.c.o
+[12.276s] [67/73] Linking C shared library rosidl_generator_py/isaac_ros_visual_slam_interfaces/libisaac_ros_visual_slam_interfaces__rosidl_generator_py.so
+[12.340s] [68/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o
+[12.353s] [69/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_c.c.o
+[12.355s] [70/73] Building C object CMakeFiles/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o
+[12.399s] [71/73] Linking C shared library rosidl_generator_py/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[12.405s] [72/73] Linking C shared library rosidl_generator_py/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[12.413s] [73/73] Linking C shared library rosidl_generator_py/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[12.417s] Invoked command in '/tareeq/build/isaac_ros_visual_slam_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --build /tareeq/build/isaac_ros_visual_slam_interfaces -- -j32 -l32
+[12.464s] Invoking command in '/tareeq/build/isaac_ros_visual_slam_interfaces': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/isaac_ros_visual_slam_interfaces
+[12.469s] -- Install configuration: "Release"
+[12.470s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/ament_index/resource_index/rosidl_interfaces/isaac_ros_visual_slam_interfaces
+[12.470s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.470s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.470s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/save_map.h
+[12.470s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.471s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__functions.h
+[12.472s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__functions.c
+[12.473s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support.h
+[12.473s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__functions.c
+[12.474s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__struct.h
+[12.475s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__functions.h
+[12.475s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__struct.h
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support.h
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/load_map_and_localize.h
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__struct.h
+[12.476s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__struct.h
+[12.477s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__functions.c
+[12.477s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support.h
+[12.477s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__functions.c
+[12.477s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__struct.h
+[12.478s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__functions.h
+[12.478s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support.h
+[12.478s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__functions.h
+[12.478s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__functions.c
+[12.479s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support.h
+[12.479s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__functions.h
+[12.479s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/reset.h
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/get_all_poses.h
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/set_odometry_pose.h
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__functions.c
+[12.480s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__functions.h
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support.h
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__struct.h
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/rosidl_generator_c__visibility_control.h
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/visual_slam_status.h
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/library_path.sh
+[12.481s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/library_path.dsv
+[12.482s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_generator_c.so
+[12.483s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_generator_c.so" to ""
+[12.483s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.483s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.483s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.483s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__rosidl_typesupport_fastrtps_c.h
+[12.484s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__rosidl_typesupport_fastrtps_c.h
+[12.484s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.484s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.484s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__rosidl_typesupport_fastrtps_c.h
+[12.484s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__rosidl_typesupport_fastrtps_c.h
+[12.484s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__rosidl_typesupport_fastrtps_c.h
+[12.485s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.485s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.485s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__rosidl_typesupport_fastrtps_c.h
+[12.485s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[12.485s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.so
+[12.486s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[12.486s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.486s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.486s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.486s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support.c
+[12.487s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__rosidl_typesupport_introspection_c.h
+[12.487s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__rosidl_typesupport_introspection_c.h
+[12.487s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support.c
+[12.488s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.488s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.488s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__rosidl_typesupport_introspection_c.h
+[12.488s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__rosidl_typesupport_introspection_c.h
+[12.488s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__rosidl_typesupport_introspection_c.h
+[12.489s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support.c
+[12.489s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support.c
+[12.489s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support.c
+[12.490s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.490s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.490s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__rosidl_typesupport_introspection_c.h
+[12.490s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support.c
+[12.490s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[12.491s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.so
+[12.491s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[12.492s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_c.so
+[12.492s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_c.so" to ""
+[12.492s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.493s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.493s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.493s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__traits.hpp
+[12.493s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__builder.hpp
+[12.493s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__builder.hpp
+[12.494s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__struct.hpp
+[12.494s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__struct.hpp
+[12.495s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__traits.hpp
+[12.496s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/load_map_and_localize.hpp
+[12.496s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/save_map.hpp
+[12.496s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.496s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.496s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__struct.hpp
+[12.497s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__builder.hpp
+[12.497s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__traits.hpp
+[12.497s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__builder.hpp
+[12.497s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__builder.hpp
+[12.497s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__struct.hpp
+[12.498s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__traits.hpp
+[12.498s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__traits.hpp
+[12.498s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__struct.hpp
+[12.498s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/reset.hpp
+[12.498s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/get_all_poses.hpp
+[12.499s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/set_odometry_pose.hpp
+[12.499s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.499s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.499s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__struct.hpp
+[12.499s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__builder.hpp
+[12.499s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__traits.hpp
+[12.499s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/visual_slam_status.hpp
+[12.500s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.500s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.500s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.500s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__rosidl_typesupport_fastrtps_cpp.hpp
+[12.500s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/dds_fastrtps
+[12.500s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__rosidl_typesupport_fastrtps_cpp.hpp
+[12.501s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.501s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.501s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__rosidl_typesupport_fastrtps_cpp.hpp
+[12.501s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__rosidl_typesupport_fastrtps_cpp.hpp
+[12.501s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/dds_fastrtps
+[12.502s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__rosidl_typesupport_fastrtps_cpp.hpp
+[12.502s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.502s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.502s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__rosidl_typesupport_fastrtps_cpp.hpp
+[12.502s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/dds_fastrtps
+[12.502s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[12.502s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[12.503s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[12.504s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces
+[12.504s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action
+[12.504s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail
+[12.504s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__rosidl_typesupport_introspection_cpp.hpp
+[12.504s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__type_support.cpp
+[12.504s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/load_map_and_localize__rosidl_typesupport_introspection_cpp.hpp
+[12.505s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/action/detail/save_map__type_support.cpp
+[12.505s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv
+[12.506s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail
+[12.506s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__rosidl_typesupport_introspection_cpp.hpp
+[12.506s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__rosidl_typesupport_introspection_cpp.hpp
+[12.506s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__rosidl_typesupport_introspection_cpp.hpp
+[12.506s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/reset__type_support.cpp
+[12.506s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/get_all_poses__type_support.cpp
+[12.507s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/srv/detail/set_odometry_pose__type_support.cpp
+[12.507s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg
+[12.507s] -- Up-to-date: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail
+[12.507s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__rosidl_typesupport_introspection_cpp.hpp
+[12.507s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/include/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces/msg/detail/visual_slam_status__type_support.cpp
+[12.508s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.so
+[12.509s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[12.509s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.so
+[12.511s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_typesupport_cpp.so" to ""
+[12.511s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/pythonpath.sh
+[12.511s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/pythonpath.dsv
+[12.511s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces-2.1.0-py3.8.egg-info
+[12.511s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces-2.1.0-py3.8.egg-info/top_level.txt
+[12.512s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces-2.1.0-py3.8.egg-info/PKG-INFO
+[12.512s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces-2.1.0-py3.8.egg-info/dependency_links.txt
+[12.512s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces-2.1.0-py3.8.egg-info/SOURCES.txt
+[12.512s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces
+[12.512s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action
+[12.513s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_save_map_s.c
+[12.514s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_load_map_and_localize_s.c
+[12.515s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/__init__.py
+[12.516s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_save_map.py
+[12.517s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_load_map_and_localize.py
+[12.519s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[12.520s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/__init__.py
+[12.520s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv
+[12.520s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_get_all_poses_s.c
+[12.520s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_set_odometry_pose.py
+[12.520s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/__init__.py
+[12.521s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_get_all_poses.py
+[12.521s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_set_odometry_pose_s.c
+[12.521s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_reset_s.c
+[12.521s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_reset.py
+[12.522s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[12.522s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[12.523s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg
+[12.523s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg/__init__.py
+[12.523s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg/_visual_slam_status_s.c
+[12.523s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg/_visual_slam_status.py
+[12.524s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[12.524s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/_isaac_ros_visual_slam_interfaces_s.ep.rosidl_typesupport_c.c
+[12.525s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[12.526s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/libisaac_ros_visual_slam_interfaces__rosidl_generator_py.so
+[12.570s] Listing '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/__init__.py'...
+[12.570s] Listing '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/__init__.py'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_load_map_and_localize.py'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/action/_save_map.py'...
+[12.570s] Listing '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg/__init__.py'...
+[12.570s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/msg/_visual_slam_status.py'...
+[12.571s] Listing '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv'...
+[12.571s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/__init__.py'...
+[12.571s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_get_all_poses.py'...
+[12.571s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_reset.py'...
+[12.571s] Compiling '/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/srv/_set_odometry_pose.py'...
+[12.573s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[12.575s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so" to ""
+[12.576s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[12.577s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so" to ""
+[12.577s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[12.579s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/python3.8/site-packages/isaac_ros_visual_slam_interfaces/isaac_ros_visual_slam_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so" to ""
+[12.579s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_generator_py.so
+[12.580s] -- Set non-toolchain portion of runtime path of "/tareeq/install/isaac_ros_visual_slam_interfaces/lib/libisaac_ros_visual_slam_interfaces__rosidl_generator_py.so" to ""
+[12.580s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/msg/VisualSlamStatus.idl
+[12.581s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/GetAllPoses.idl
+[12.581s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/Reset.idl
+[12.581s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/SetOdometryPose.idl
+[12.582s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/action/LoadMapAndLocalize.idl
+[12.582s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/action/SaveMap.idl
+[12.582s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/msg/VisualSlamStatus.msg
+[12.582s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/GetAllPoses.srv
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/GetAllPoses_Request.msg
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/GetAllPoses_Response.msg
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/Reset.srv
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/Reset_Request.msg
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/Reset_Response.msg
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/SetOdometryPose.srv
+[12.583s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/SetOdometryPose_Request.msg
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/srv/SetOdometryPose_Response.msg
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/action/LoadMapAndLocalize.action
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/action/SaveMap.action
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/ament_index/resource_index/package_run_dependencies/isaac_ros_visual_slam_interfaces
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/ament_index/resource_index/parent_prefix_path/isaac_ros_visual_slam_interfaces
+[12.584s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/ament_prefix_path.sh
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/ament_prefix_path.dsv
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/path.sh
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/environment/path.dsv
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/local_setup.bash
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/local_setup.sh
+[12.585s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/local_setup.zsh
+[12.586s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/local_setup.dsv
+[12.586s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/package.dsv
+[12.586s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/ament_index/resource_index/packages/isaac_ros_visual_slam_interfaces
+[12.586s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_generator_cExport.cmake
+[12.586s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_generator_cExport-release.cmake
+[12.587s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[12.587s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cExport-release.cmake
+[12.587s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[12.587s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cExport-release.cmake
+[12.588s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cExport.cmake
+[12.588s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cExport-release.cmake
+[12.588s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_generator_cppExport.cmake
+[12.588s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[12.588s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_typesupport_fastrtps_cppExport-release.cmake
+[12.589s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[12.589s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_introspection_cppExport-release.cmake
+[12.589s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cppExport.cmake
+[12.589s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfaces__rosidl_typesupport_cppExport-release.cmake
+[12.590s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_generator_pyExport.cmake
+[12.590s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/export_isaac_ros_visual_slam_interfaces__rosidl_generator_pyExport-release.cmake
+[12.590s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/rosidl_cmake-extras.cmake
+[12.590s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[12.590s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[12.591s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[12.591s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[12.591s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[12.591s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[12.591s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfacesConfig.cmake
+[12.592s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/cmake/isaac_ros_visual_slam_interfacesConfig-version.cmake
+[12.592s] -- Installing: /tareeq/install/isaac_ros_visual_slam_interfaces/share/isaac_ros_visual_slam_interfaces/package.xml
+[12.594s] Invoked command in '/tareeq/build/isaac_ros_visual_slam_interfaces' returned '0': AMENT_PREFIX_PATH=/tareeq/install/isaac_ros_common:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/tareeq/install/isaac_ros_common:/opt/ros/humble LD_LIBRARY_PATH=/tareeq/install/isaac_ros_common/lib:${LD_LIBRARY_PATH} _=/usr/bin/env /usr/bin/cmake --install /tareeq/build/isaac_ros_visual_slam_interfaces

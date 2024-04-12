@@ -1,7 +1,0 @@
-package(default_visibility = ["//visibility:public"])
-
-cc_library(
-    name = "errors",
-    hdrs = ["Errors.hpp"],
-    deps = [],
-)
