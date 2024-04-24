@@ -1,7 +1,7 @@
 #pragma once
 
-#include "component/Component.h"
-#include "component/StopWatch.h"
+#include "av/component/Component.h"
+#include "av/component/StopWatch.h"
 
 #include <rclcpp/node_options.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
@@ -14,7 +14,7 @@
 #include <thread>
 #include <deque>
 
-namespace nav {
+namespace av {
 namespace perception {
 
 #define TIMEZERO_ROS rclcpp::Time(0, 0, RCL_ROS_TIME)

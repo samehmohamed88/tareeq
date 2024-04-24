@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace nav {
+namespace av {
 namespace component {
 
 class ComponentConfig

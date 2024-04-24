@@ -1,6 +1,6 @@
 #pragma once
 
-namespace nav {
+namespace av {
 namespace component {
 
 class ComponentFactory {

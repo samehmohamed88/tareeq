@@ -1,3 +1,5 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_binary")
+
 config_setting(
     name = "x86_64",
     values = {"cpu": "k8"},
@@ -17,5 +19,15 @@ cc_binary(
     }) + [
         "@zed_interfaces//:cpp_zed_interfaces",
         "@zed_ros2_wrapper",
+    ],
+)
+
+ros2_cpp_binary(
+    name = "zed_wrapper",
+    srcs = ["zed_wrapper.cpp"],
+    set_up_ament = True,
+    deps = [
+        "@ros2_rclcpp//:rclcpp",
+        "@zed_ros2_wrapper//:zed_components",
     ],
 )

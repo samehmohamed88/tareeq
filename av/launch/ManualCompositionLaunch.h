@@ -2,7 +2,7 @@
 
 #include "launch/NAVLaunch.h"
 
-namespace nav {
+namespace av {
 namespace launch {
 
 class ManualCompositionLaunch : public NAVLaunch

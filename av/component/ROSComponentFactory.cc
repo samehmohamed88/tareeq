@@ -1,7 +1,7 @@
 #include "component/ROSComponentFactory.h"
 #include "rclcpp/rclcpp.hpp"
 
-namespace nav {
+namespace av {
 namespace component {
 
 //rclcpp_components::NodeInstanceWrapper ROSComponentFactory::create_node_instance(const rclcpp::NodeOptions& options) {

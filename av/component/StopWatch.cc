@@ -1,4 +1,4 @@
-#include "component/StopWatch.h"
+#include "av/component/StopWatch.h"
 
 #include <rcl/time.h>
 #include <rclcpp/clock.hpp>
@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-namespace nav {
+namespace av {
 namespace component {
 
 StopWatch::StopWatch(rclcpp::Clock::SharedPtr clock)

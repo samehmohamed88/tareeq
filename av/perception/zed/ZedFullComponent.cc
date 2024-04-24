@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "perception/zed/ZedFullComponent.h"
+#include "av/perception/zed/ZedFullComponent.h"
 
-#include "perception/zed/sl_logging.hpp"
+#include "av/perception/zed/sl_logging.hpp"
 
 #include <diagnostic_msgs/msg/diagnostic_status.hpp>
 #include <rcl_interfaces/msg/parameter_descriptor.hpp>
@@ -45,7 +45,7 @@
 
 #include <sl/Camera.hpp>
 
-#include "perception/zed/sl_tools.hpp"
+#include "av/perception/zed/sl_tools.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;

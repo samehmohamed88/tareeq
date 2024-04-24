@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace nav {
+namespace av {
 namespace component {
 
 /// @brief Stop Timer used to measure time intervals
