@@ -17,6 +17,8 @@ USER $USERNAME
 RUN sudo bash /opt/tareeq/installers/install_python.sh
 RUN sudo bash /opt/tareeq/installers/install_zed_sdk.sh
 
+RUN sudo chown -R tareeq:tareeq /usr/local/zed
+
 RUN sudo apt-get -y clean \
     && sudo rm -rf /var/lib/apt/lists/*
 

@@ -28,6 +28,7 @@ cpp_ros2_interface_library(
     name = "_cpp_zed_interfaces",
     visibility = ["//visibility:private"],
     deps = [":zed_interfaces"],
+
 )
 
 ros2_cpp_library(
@@ -38,4 +39,5 @@ ros2_cpp_library(
     includes = [".",],
     visibility = ["//visibility:public"],
     deps = [":_cpp_zed_interfaces"],
+    copts = ["-std=c++17"],
 )

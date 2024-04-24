@@ -4,7 +4,7 @@ cc_library(
     name = "MockLogger",
     hdrs = ["mocks/MockLogger.hpp"],
     deps = [
-        "//platform/logging:LoggerFactory",
+        #        "//platform/logging:LoggerFactory",
         "@com_google_googletest//:gtest",
     ],
 )

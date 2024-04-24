@@ -1,15 +1,15 @@
-
+load("//third_party/cuda:workspace.bzl", cuda = "repo")
 load("//third_party/eigen3:workspace.bzl", eigen3 = "repo")
 load("//third_party/lz4:workspace.bzl", lz4 = "repo")
 load("//third_party/mcap:workspace.bzl", mcap = "repo")
 load("//third_party/opencv:workspace.bzl", opencv = "repo")
 load("//third_party/ros2/rules_ros2:workspace.bzl", rules_ros2 = "repo")
-load("//third_party/sdl2:workspace.bzl", sdl2 = "repo")
-load("//third_party/yaml-cpp:workspace.bzl", yaml_cpp = "repo")
-load("//third_party/zstd:workspace.bzl", zstd = "repo")
-load("//third_party/zed:workspace.bzl", zed = "repo")
 load("//third_party/ros2/zed_ros2/zed_ros2_interfaces:workspace.bzl", zed_ros2_interfaces = "repo")
 load("//third_party/ros2/zed_ros2/zed_ros2_wrapper:workspace.bzl", zed_ros2_wrapper = "repo")
+load("//third_party/sdl2:workspace.bzl", sdl2 = "repo")
+load("//third_party/yaml-cpp:workspace.bzl", yaml_cpp = "repo")
+load("//third_party/zed:workspace.bzl", zed = "repo")
+load("//third_party/zstd:workspace.bzl", zstd = "repo")
 
 #load("//third_party/carla:workspace.bzl", carla = "reo")
 #load("//third_party/libtorch:workspace.bzl", libtorch = "repo")
@@ -32,9 +32,8 @@ def initialize_third_party():
     cuda()
     zed()
     zed_ros2_interfaces()
+    zed_ros2_wrapper()
 
-    #    zed_ros2_interfaces()
-    #
     #    libtorch()
     #    cudnn8()
     #    tensorrt()

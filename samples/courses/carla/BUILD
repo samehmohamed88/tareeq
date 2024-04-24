@@ -3,6 +3,6 @@ cc_binary(
     srcs = ["SimpleClient.cc"],
     linkopts = ["-pthread"],
     deps = [
-        "@carla",
+        #        "@carla",
     ],
 )
