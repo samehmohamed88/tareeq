@@ -16,27 +16,27 @@
 # limitations under the License.
 ###############################################################################
 
-NAV_ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-NAV_IN_DOCKER=false
+TAREEQ_ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+TAREEQ_IN_DOCKER=false
 
 # If inside docker container
 if [ -f /.dockerenv ]; then
-  NAV_IN_DOCKER=true
-  NAV_ROOT_DIR="/apollo"
+  TAREEQ_IN_DOCKER=true
+  TAREEQ_ROOT_DIR="/tareeq"
 fi
 
-export NAV_CONFIG_HOME="${NAV_CONFIG_HOME:=$HOME/.apollo}"
+export TAREEQ_CONFIG_HOME="${TAREEQ_CONFIG_HOME:=$HOME/.apollo}"
 
-export NAV_ROOT_DIR="${NAV_ROOT_DIR}"
-export NAV_IN_DOCKER="${NAV_IN_DOCKER}"
-export NAV_CACHE_DIR="${NAV_ROOT_DIR}/.cache"
-export NAV_SYSROOT_DIR="/opt/apollo/sysroot"
+export TAREEQ_ROOT_DIR="${TAREEQ_ROOT_DIR}"
+export TAREEQ_IN_DOCKER="${TAREEQ_IN_DOCKER}"
+export TAREEQ_CACHE_DIR="${TAREEQ_ROOT_DIR}/.cache"
+export TAREEQ_SYSROOT_DIR="/opt/apollo/sysroot"
 
 export TAB="    " # 4 spaces
 
 export GPU_SETUP_COMPLETED
 
-source ${NAV_ROOT_DIR}/scripts/common.bashrc
+source ${TAREEQ_ROOT_DIR}/scripts/common.bashrc
 
 : ${VERBOSE:=yes}
 
@@ -257,7 +257,7 @@ function run() {
     echo "${@}"
     "${@}" || exit $?
   else
-    local errfile="${NAV_ROOT_DIR}/.errors.log"
+    local errfile="${TAREEQ_ROOT_DIR}/.errors.log"
     echo "${@}" >"${errfile}"
     if ! "${@}" >>"${errfile}" 2>&1; then
       local exitcode=$?
@@ -270,21 +270,21 @@ function run() {
 #commit_id=$(git log -1 --pretty=%H)
 function git_sha1() {
   if [ -x "$(which git 2>/dev/null)" ] &&
-    [ -d "${NAV_ROOT_DIR}/.git" ]; then
+    [ -d "${TAREEQ_ROOT_DIR}/.git" ]; then
     git rev-parse --short HEAD 2>/dev/null || true
   fi
 }
 
 function git_date() {
   if [ -x "$(which git 2>/dev/null)" ] &&
-    [ -d "${NAV_ROOT_DIR}/.git" ]; then
+    [ -d "${TAREEQ_ROOT_DIR}/.git" ]; then
     git log -1 --pretty=%ai | cut -d " " -f 1 || true
   fi
 }
 
 function git_branch() {
   if [ -x "$(which git 2>/dev/null)" ] &&
-    [ -d "${NAV_ROOT_DIR}/.git" ]; then
+    [ -d "${TAREEQ_ROOT_DIR}/.git" ]; then
     git rev-parse --abbrev-ref HEAD
   else
     echo "@non-git"
@@ -326,6 +326,6 @@ function setup_gpu_support() {
   fi
 }
 
-if ${NAV_IN_DOCKER} ; then
+if ${TAREEQ_IN_DOCKER} ; then
   setup_gpu_support
 fi

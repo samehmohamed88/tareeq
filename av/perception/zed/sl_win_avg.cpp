@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "perception/zed/sl_win_avg.hpp"
+#include "av/perception/zed/sl_win_avg.hpp"
 
 namespace sl_tools
 {

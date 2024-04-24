@@ -16,9 +16,9 @@
 #ifndef ZED_CAMERA_COMPONENT_HPP_
 #define ZED_CAMERA_COMPONENT_HPP_
 
-#include "perception/zed/StereoLabTypes.h"
-#include "perception/zed/sl_tools.hpp"
-#include "perception/zed/visibility_control.hpp"
+#include "av/perception/zed/StereoLabTypes.h"
+#include "av/perception/zed/sl_tools.hpp"
+#include "av/perception/zed/visibility_control.hpp"
 
 #include <sl/Camera.hpp>
 #include <sl/Fusion.hpp>
@@ -299,7 +299,7 @@ private:
     bool mPoseSmoothing = false;
     bool mAreaMemory = true;
     std::string mAreaMemoryDbPath = "";
-    sl::POSITIONAL_TRACKING_MODE mPosTrkMode = sl::POSITIONAL_TRACKING_MODE::QUALITY;
+    sl::POSITIONAL_TRACKING_MODE mPosTrkMode = sl::POSITIONAL_TRACKING_MODE::GEN_2;
     bool mImuFusion = true;
     bool mFloorAlignment = false;
     bool mTwoDMode = false;

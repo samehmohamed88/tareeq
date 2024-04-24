@@ -8,7 +8,7 @@
 
 #include <string>
 
-namespace nav {
+namespace av {
 namespace perception {
 
 MTPNInferenceComponent::MTPNInferenceComponent(const rclcpp::NodeOptions& options)

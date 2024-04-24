@@ -1,3 +1,4 @@
+package(default_visibility = ["//visibility:public"])
 #cc_library(
 #    name = "CameraNode",
 #    srcs = ["ZedFullComponent.cc"],
@@ -25,8 +26,8 @@ cc_library(
         #        "visibility_control.hpp",
     ],
     deps = [
-        "//component:Component",
-        "//component:StopWatch",
+        "//av/component:Component",
+        "//av/component:StopWatch",
         #        "@geographic_info//:cpp_geographic_msgs",
         #        "@robot_localization//:robot_localization_package",
         #        "@ros2_angles",
@@ -64,7 +65,7 @@ cc_library(
         "visibility_control.hpp",
     ],
     deps = [
-        "//component:Component",
+        #        "//component:Component",
         "@geographic_info//:cpp_geographic_msgs",
         "@robot_localization//:robot_localization_package",
         "@ros2_angles",

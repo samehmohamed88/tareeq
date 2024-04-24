@@ -26,7 +26,7 @@ DEV_INSIDE="in-dev-docker"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
 DEV_CONTAINER="${DEV_CONTAINER_PREFIX}${tareeqUSER}"
 
-VERSION_X86_64="pytorch-2.2.1-cuda12.1-cudnn8-devel.03.26.2024"
+VERSION_X86_64="pytorch-2.2.1-cuda12.1-cudnn8-devel.04.24.2024"
 
 info "Remove existing Tareeq Development container ..."
 remove_container_if_exists ${DEV_CONTAINER}
@@ -79,7 +79,7 @@ ${DOCKER_RUN_CMD} -itd \
     -e DOCKER_IMG="${DEV_IMAGE}" \
     -e USE_GPU_HOST="${USE_GPU_HOST}" \
     -e NVIDIA_VISIBLE_DEVICES=all \
-    -e NVIDIA_DRIVER_CAPABILITIES=compute,video,graphics,utility \
+    -e NVIDIA_DRIVER_CAPABILITIES=all \
     ${volumes} \
     --net host \
     -w /tareeq \

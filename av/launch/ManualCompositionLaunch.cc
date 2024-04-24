@@ -2,7 +2,7 @@
 
 #include "launch/ManualCompositionLaunch.h"
 
-namespace nav {
+namespace av {
 namespace launch {
 
 void ManualCompositionLaunch::launch() {

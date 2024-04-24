@@ -6,7 +6,7 @@
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/msg/image.hpp>
 
-namespace nav {
+namespace av {
 namespace perception {
 
 class MTPNInferenceComponent : public rclcpp::Node

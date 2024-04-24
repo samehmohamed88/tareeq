@@ -14,6 +14,6 @@ cc_library(
     srcs = ["SabertoothMotorController.cpp"],
     hdrs = ["SabertoothMotorController.hpp"],
     deps = [
-        "@cpp_linux_serial",
+        #        "@cpp_linux_serial",
     ],
 )

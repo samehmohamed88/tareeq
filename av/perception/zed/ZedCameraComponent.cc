@@ -1,6 +1,6 @@
-#include "perception/zed/ZedCameraComponent.h"
-#include "component/StopWatch.h"
-#include "component/Component.h"
+#include "av/perception/zed/ZedCameraComponent.h"
+#include "av/component/StopWatch.h"
+#include "av/component/Component.h"
 
 #include <rclcpp/node_options.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
@@ -16,7 +16,7 @@
 using namespace std::chrono_literals;
 //using namespace std::placeholders;
 
-namespace nav {
+namespace av {
 namespace perception {
 
 #ifndef DEG2RAD
@@ -779,7 +779,7 @@ void ZedCameraComponent::getGeneralParams()
     getParam(
         "general.camera_max_reconnect", maxReconnectAttempts_, maxReconnectAttempts_, " * Camera reconnection attemps before shutting down: ");
     getParam("general.grab_frame_rate", cameraGrabFrameRate_, cameraGrabFrameRate_, " * Camera framerate: ");
-    
+
     std::string resolution = "AUTO";
     getParam("general.grab_resolution", resolution, resolution);
     if (resolution == "AUTO") {
@@ -970,12 +970,12 @@ rclcpp::Time ZedCameraComponent::slTime2Ros(sl::Timestamp t, rcl_clock_type_t cl
 } // namespace perception
 } // namespace nav
 
-#include "rclcpp_components/register_node_macro.hpp"
+//#include "rclcpp_components/register_node_macro.hpp"
 
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-RCLCPP_COMPONENTS_REGISTER_NODE(nav::perception::ZedCameraComponent);
+//RCLCPP_COMPONENTS_REGISTER_NODE(av::perception::ZedCameraComponent);
 
 // #include "class_loader/register_macro.hpp"
 //

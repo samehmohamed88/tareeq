@@ -4,7 +4,7 @@
 #include "rclcpp/node_options.hpp"
 #include "rclcpp_components/node_factory.hpp"
 
-namespace nav {
+namespace av {
 namespace component {
 
 class ROSComponentFactory : public rclcpp_components::NodeFactory

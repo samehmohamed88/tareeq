@@ -23,7 +23,7 @@
 #include <sensor_msgs/msg/image.hpp>
 #include <sl/Camera.hpp>
 
-#include "perception/zed/sl_win_avg.hpp"
+#include "av/perception/zed/sl_win_avg.hpp"
 
 namespace sl_tools
 {
