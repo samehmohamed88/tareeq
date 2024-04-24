@@ -1,42 +1,35 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "IAsioOperations",
-    hdrs = ["IAsioOperations.hpp"],
-    deps = [
-        "@boost//:asio",
-    ],
-)
-
-cc_library(
-    name = "AsioOperationsImpl",
-    srcs = ["AsioOperationsImpl.hpp"],
-    deps = [
-        ":IAsioOperations",
-        "@boost//:asio",
-    ],
+    name = "Status",
+    hdrs = ["Status.hpp"],
+    deps = [],
 )
 
 cc_library(
     name = "IOInterface",
     hdrs = ["IOInterface.hpp"],
+    deps = [":Status"],
 )
 
 cc_library(
-    name = "BoostSerialIO",
-    hdrs = ["BoostSerialIO.hpp"],
+    name = "BoostSerialDevice",
+    srcs = ["BoostSerialDevice.cpp"],
+    hdrs = ["BoostSerialDevice.hpp"],
     deps = [
         ":IOInterface",
+        ":Status",
         "@boost//:asio",
     ],
 )
 
 cc_library(
-    name = "BoostNetworkIO",
-    hdrs = ["BoostNetworkIO.hpp"],
+    name = "BoostSerialDeviceManager",
+    srcs = ["BoostSerialDeviceManager.cpp"],
+    hdrs = ["BoostSerialDeviceManager.hpp"],
     deps = [
-        ":IOInterface",
-        "@boost//:asio",
-        "@boost//:beast",
+        ":BoostSerialDevice",
+        ":Status",
+        "//platform/logging:Logger",
     ],
 )

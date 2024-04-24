@@ -1,9 +1,25 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "LoggerFactory",
-    hdrs = ["LoggerFactory.hpp"],
+    name = "ROS2Logger",
+    hdrs = ["ROS2Logger.hpp"],
     deps = [
         "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+cc_library(
+    name = "StdLogger",
+    hdrs = ["StdLogger.hpp"],
+    deps = [
+    ],
+)
+
+cc_library(
+    name = "Logger",
+    hdrs = ["Logger.hpp"],
+    deps = [
+        ":ROS2Logger",
+        "@fmt",
     ],
 )

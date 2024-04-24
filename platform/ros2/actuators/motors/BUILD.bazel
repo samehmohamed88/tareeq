@@ -1,0 +1,19 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "MotorController",
+    hdrs = ["MotorController.hpp"],
+    deps = [
+        "//platform/devices:DeviceInterface",
+        "//platform/vehicle/config:VehicleConfig",
+    ],
+)
+
+cc_library(
+    name = "SabertoothMotorController",
+    srcs = ["SabertoothMotorController.cpp"],
+    hdrs = ["SabertoothMotorController.hpp"],
+    deps = [
+        "@cpp_linux_serial",
+    ],
+)

@@ -1,0 +1,15 @@
+cc_test(
+    name = "IMUPublisherTest",
+    srcs = ["IMUPublisherTest.cpp"],
+    deps = [
+        "//platform/io:AsioOperationsImpl",
+        "//platform/io:BoostNetworkIO",
+        "//platform/logging:LoggerFactory",
+        "//platform/ros2/localization:IMUPublisher",
+        "//platform/vehicle/wave_rover:WaveRoverIMUController",
+        "//platform/vehicle/wave_rover:WaveRoverNetworkDeviceManager",
+        "@com_google_googletest//:gtest",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)

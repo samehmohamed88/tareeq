@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "JoystickNode",
+    srcs = ["JoystickNode.cpp"],
+    hdrs = ["JoystickNode.hpp"],
+    deps = [
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_common_interfaces//:cpp_sensor_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
+
+cc_library(
+    name = "KeyboardTeleop",
+    srcs = ["KeyboardTeleop.cpp"],
+    hdrs = ["KeyboardTeleop.hpp"],
+    deps = [
+        "//platform/ros2/recording:McapRecorder",
+        "@ros2_common_interfaces//:cpp_geometry_msgs",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_components",
+        "@ros2_rcutils//:rcutils",
+    ],
+)
