@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
-TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "${TOP_DIR}/scripts/nav.bashrc"
+TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "${TOP_DIR}/scripts/tareeq.bashrc"
 
 unset TOP_DIR
 
@@ -89,7 +89,7 @@ function determine_gpu_use_host() {
 function remove_container_if_exists() {
     local container="$1"
     if docker ps -a --format '{{.Names}}' | grep -q "${container}"; then
-        info "Removing existing Apollo container: ${container}"
+        info "Removing existing Tareeq container: ${container}"
         docker stop "${container}" >/dev/null
         docker rm -v -f "${container}" 2>/dev/null
     fi
@@ -99,7 +99,7 @@ function postrun_start_user() {
     local container="$1"
     if [ "${CUSTOM_USER-$USER}" != "root" ]; then
         docker exec -u root "${container}" \
-            bash -c '/apollo/scripts/docker_start_user.sh'
+            bash -c '/tareeq/scripts/docker_start_user.sh'
     fi
 }
 
