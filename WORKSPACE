@@ -1,9 +1,18 @@
 workspace(name = "tareeq")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("//third_party:repos.bzl", "initialize_third_party")
 
-initialize_third_party()
+#load("//third_party:repos.bzl", "initialize_third_party")
+#
+#initialize_third_party()
+
+load("//tools:environ.bzl", "environment_repository")
+
+environment_repository(
+    name = "tareeq_bazel_environ",
+    envvars = ["ROS2_DISTRO_PREFIX"],
+)
+
 
 http_archive(
     name = "com_google_googletest",
@@ -11,11 +20,6 @@ http_archive(
     urls = ["https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz"],
 )
 
-http_archive(
-    name = "rules_rust",
-    integrity = "sha256-ww398ehv1QZQp26mRbOkXy8AZnsGGHpoXpVU4WfKl+4=",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.40.0/rules_rust-v0.40.0.tar.gz"],
-)
 
 # Boost
 # Famous C++ library that has given rise to many new additions to the C++ Standard Library
@@ -32,69 +36,53 @@ load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
 
 boost_deps()
 
-load("@com_github_mvukov_rules_ros2//repositories:repositories.bzl", "ros2_repositories", "ros2_workspace_repositories")
-
-ros2_workspace_repositories()
-
-ros2_repositories()
-
-load("@com_github_mvukov_rules_ros2//repositories:deps.bzl", "ros2_deps")
-
-ros2_deps()
-
-load("@rules_python//python:repositories.bzl", "py_repositories", "python_register_toolchains")
-
-py_repositories()
-
-python_register_toolchains(
-    name = "rules_ros2_python",
-    python_version = "3.10",
+# Use the ROS 2 bazel rules
+local_repository(
+    name = "bazel_ros2_rules",
+    path = "./bazel_ros2_rules",
 )
 
-load("@com_github_mvukov_rules_ros2//repositories:pip_annotations.bzl", "PIP_ANNOTATIONS")
-load("@rules_python//python:pip.bzl", "pip_parse")
-load("@rules_ros2_python//:defs.bzl", python_interpreter_target = "interpreter")
+load("@bazel_ros2_rules//deps:defs.bzl", "add_bazel_ros2_rules_dependencies")
 
-pip_parse(
-    name = "rules_ros2_pip_deps",
-    annotations = PIP_ANNOTATIONS,
-    python_interpreter_target = python_interpreter_target,
-    requirements_lock = "@com_github_mvukov_rules_ros2//:requirements_lock.txt",
+add_bazel_ros2_rules_dependencies()
+
+load(
+    "@bazel_ros2_rules//ros2:defs.bzl",
+    "ros2_archive",
+    "ros2_local_repository",
 )
 
 load(
-    "@rules_ros2_pip_deps//:requirements.bzl",
-    install_rules_ros2_pip_deps = "install_deps",
+    "@tareeq_bazel_environ//:environ.bzl",
+    "ROS2_DISTRO_PREFIX",
 )
 
-install_rules_ros2_pip_deps()
+# Please keep this list sorted
+ROS2_PACKAGES = [
+    "action_msgs",
+    "builtin_interfaces",
+    "console_bridge_vendor",
+    "rclcpp",
+    "rclcpp_action",
+    "rclpy",
+    "ros2cli",
+    "ros2cli_common_extensions",
+    "rosbag2",
+    "rosidl_default_generators",
+    "tf2_py",
+] + [
+    # These are possible RMW implementations. Uncomment one and only one to
+    # change implementations
+    "rmw_cyclonedds_cpp",
+    # "rmw_fastrtps_cpp",
+]
 
-http_archive(
-    name = "rules_rust",
-    integrity = "sha256-ww398ehv1QZQp26mRbOkXy8AZnsGGHpoXpVU4WfKl+4=",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.40.0/rules_rust-v0.40.0.tar.gz"],
+RESOLVED_PREFIX = (
+    ROS2_DISTRO_PREFIX if ROS2_DISTRO_PREFIX else "/opt/ros/humble"
 )
 
-load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
-
-rules_rust_dependencies()
-
-rust_register_toolchains(
-    edition = "2021",
-    versions = ["1.76.0"],
+ros2_local_repository(
+    name = "ros2",
+    include_packages = ROS2_PACKAGES,
+    workspaces = [RESOLVED_PREFIX, "workspaces/isaac_ros-dev"],
 )
-
-load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
-
-crate_universe_dependencies(bootstrap = True)
-
-# #local_repository(
-# #    name = "rules_cuda",
-# #    path = "third_party/rules_cuda",
-# #)
-# #
-# #load("@rules_cuda//cuda:repositories.bzl", "register_detected_cuda_toolchains", "rules_cuda_dependencies")
-# #
-# #rules_cuda_dependencies()
-# #
-# #register_detected_cuda_toolchains()
