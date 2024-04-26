@@ -1,14 +1,20 @@
+
+
 # Create the IO library
-add_library(io SHARED
+add_library(${IO_LIBRARY_NAME} SHARED
   BoostSerialDevice.cpp
   BoostSerialDeviceManager.cpp
-  IOInterface.cpp
-  Status.cpp
+  #IOInterface.cpp
+  #Status.cpp
 )
 
 # Include directories and link libraries
-ament_target_dependencies(io rclcpp)
-target_include_directories(io PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> # Use the current source directory
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>   # Maintain standard ROS2 install structure
+ament_target_dependencies(${IO_LIBRARY_NAME} rclcpp)
+target_include_directories(${IO_LIBRARY_NAME} PUBLIC
+  $<BUILD_INTERFACE:${TAREEQ_PROJECT_ROOT}> # Use the project root
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
+
+target_link_libraries(${IO_LIBRARY_NAME} PUBLIC)
+
+ament_export_targets(${IO_LIBRARY_NAME})
