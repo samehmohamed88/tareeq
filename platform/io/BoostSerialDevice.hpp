@@ -2,6 +2,7 @@
 
 #include "platform/io/IOInterface.hpp"
 #include "platform/io/Status.hpp"
+#include "platform/logging/Logger.hpp"
 
 #include <boost/asio.hpp>
 
@@ -22,7 +23,7 @@ public:
     /// @param port The name of the serial port (e.g., COM1 or /dev/ttyUSB0).
     /// @param baudRate The baud rate for the serial connection.
     /// @param isRequestEchoed Flag to determine if the device echoes the sent requests.
-    BoostSerialDevice(std::string port, uint32_t baudRate, bool isRequestEchoed = true);
+    BoostSerialDevice(std::string port, uint32_t baudRate, bool isRequestEchoed = false);
 
     /// Initializes the serial port settings.
     /// This method sets up the serial port with the specified configurations and prepares it for use.
@@ -81,6 +82,7 @@ private:
     boost::asio::serial_port serialPort_; ///< Boost.Asio serial port object.
     bool isRequestEchoed_;                ///< Flag indicating whether the device echoes back the sent requests.
     boost::asio::streambuf response_;      ///< Buffer for storing responses from the serial port.
+    platform::logging::Logger logger_{std::string("BoostSerialDevice")};
 };
 
 } // namespace platform::io

@@ -7,24 +7,13 @@ load("@ros2//:rosidl.bzl", "rosidl_interfaces_group")
 load("//tools:cmd_test.bzl", "cmd_test")
 
 ros_cc_binary(
-    name = "listener_cc",
-    srcs = ["listener.cc"],
+    name = "TareeqAV",
+    srcs = ["TareeqAV.cpp"],
     rmw_implementation = "rmw_fastrtps_cpp",
     shim = "reexec",
     tags = ["requires-network"],
     deps = [
-        "@ros2//:rclcpp_action_cc",
-        "@ros2//:rclcpp_cc",
-    ],
-)
-
-ros_cc_binary(
-    name = "talker_cc",
-    srcs = ["talker.cc"],
-    rmw_implementation = "rmw_fastrtps_cpp",
-    shim = "reexec",
-    tags = ["requires-network"],
-    deps = [
+        "//platform/actuators:MobileBaseActuator",
         "@ros2//:rclcpp_action_cc",
         "@ros2//:rclcpp_cc",
     ],

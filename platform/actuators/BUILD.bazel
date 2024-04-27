@@ -2,12 +2,13 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "MobileBaseActuator",
+    srcs = ["MobileBaseActuator.cpp"],
     hdrs = ["MobileBaseActuator.hpp"],
     deps = [
         "//platform/errors",
-        "//platform/ros2/recording:McapRecorder",
-        "@ros2_common_interfaces//:cpp_geometry_msgs",
-        "@ros2_common_interfaces//:cpp_std_msgs",
-        "@ros2_rclcpp//:rclcpp",
+        "//platform/io:Status",
+        "@ros2//:geometry_msgs_cc",
+        "@ros2//:rclcpp_action_cc",
+        "@ros2//:rclcpp_cc",
     ],
 )

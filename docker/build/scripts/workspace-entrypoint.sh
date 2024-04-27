@@ -12,10 +12,35 @@
 echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
-sudo apt-get update
-rosdep update
+# sudo apt-get update
+# rosdep update
 
 # Restart udev daemon
 sudo service udev restart
+
+sudo chown -R admin:admin ~/.local ~/.java ~/.cache ~/.config
+
+sudo chown -R admin:admin /usr/local/zed /workspace
+
+mkdir -p /workspace/maps
+
+sudo cp /workspace/src/tareeq/config/zed.yaml /opt/ros/humble/share/isaac_ros_visual_slam/config/zed.yaml
+
+/usr/local/bin/scripts/install_zed_ros2_wrapper.sh
+
+colcon build --event-handlers console_cohesion+ \
+  --packages-select tareeq --symlink-install \
+  -G Ninja --parallel-workers `nproc`
+
+source /workspace/install/setup.bash
+
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
+
+ros2 launch tareeq tareeqav_launch.py
+
+#cd /workspace/src/tareeq \
+#    && curl -fsSL https://raw.githubusercontent.com/bazelbuild/bazel/$(cat .bazelversion)/scripts/bazel-complete-header.bash >> ~/.bashrc \
+#    && curl -fsSL https://raw.githubusercontent.com/bazelbuild/bazel/$(cat .bazelversion)/scripts/bazel-complete-template.bash >> ~/.bashrc \
+#    && bazel help completion >> ~/.bashrc
 
 $@

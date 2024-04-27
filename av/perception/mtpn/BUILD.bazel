@@ -1,0 +1,6 @@
+cc_library(
+    name = "MTPNInferenceComponent",
+    srcs = ["MTPNInferenceComponent.cc"],
+    hdrs = ["MTPNInferenceComponent.h"],
+    
+)
