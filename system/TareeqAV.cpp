@@ -40,15 +40,15 @@ int main(int argc, char* argv[])
     rclcpp::executors::SingleThreadedExecutor exec;
 
 //    auto actuatorNode = makeMobileBaseActuator();
-    auto slamActionClient = makeSLAMActionClient();
+//    auto slamActionClient = makeSLAMActionClient();
 
 //    std::cout << "Adding actuatorNode to executor" << std::endl;
 //    exec.add_node(actuatorNode);
 //    std::cout << "actuatorNode added to executor" << std::endl;
 
-    std::cout << "Adding slamActionClient to executor" << std::endl;
-    exec.add_node(slamActionClient);
-    std::cout << "slamActionClient added to executor" << std::endl;
+//    std::cout << "Adding slamActionClient to executor" << std::endl;
+//    exec.add_node(slamActionClient);
+//    std::cout << "slamActionClient added to executor" << std::endl;
 
     exec.spin();
 

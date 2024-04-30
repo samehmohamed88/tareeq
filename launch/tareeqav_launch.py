@@ -7,9 +7,12 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
 def generate_launch_description():
+
+    # os.environ['RCUTILS_LOGGING_SEVERITY'] = 'DEBUG'
+
     # Path to the external launch file (e.g., from the SLAM package)
     nvidia_vslam_launch_file = os.path.join(
-        get_package_share_directory('isaac_ros_visual_slam'),  # Update with actual package name
+        get_package_share_directory('tareeq'),  # Update with actual package name
         'launch',
         'isaac_ros_visual_slam_zed.launch.py'  # Update with actual launch file name
     )
@@ -18,7 +21,9 @@ def generate_launch_description():
     motor_actuation_node = Node(
         package='tareeq',
         executable='TareeqAV',
-        name='tareeqav'
+        name='tareeqav',
+        output='screen',
+        # arguments=['--ros-args', '--log-level', 'DEBUG']
     )
 
     return LaunchDescription([

@@ -29,8 +29,7 @@ sudo cp /workspace/src/tareeq/config/zed.yaml /opt/ros/humble/share/isaac_ros_vi
 /usr/local/bin/scripts/install_zed_ros2_wrapper.sh
 
 colcon build --event-handlers console_cohesion+ \
-  --packages-select tareeq --symlink-install \
-  -G Ninja --parallel-workers `nproc`
+  --packages-select tareeq --symlink-install --parallel-workers `nproc`
 
 source /workspace/install/setup.bash
 
