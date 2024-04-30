@@ -17,7 +17,7 @@
 ###############################################################################
 DOCKER_USER="admin"
 DEV_CONTAINER_PREFIX='tareeq_dev_'
-DEV_CONTAINER="${DEV_CONTAINER_PREFIX}admin"
+DEV_CONTAINER="nvidia-isaac-ros.x86_64.04.25.2024"
 
 function parse_arguments {
     local container_name=''

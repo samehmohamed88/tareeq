@@ -36,11 +36,10 @@ determine_gpu_use_host
 info "USE_GPU_HOST: ${USE_GPU_HOST}"
 
 volumes="${volumes} -v /media:/media \
-    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v /etc/localtime:/etc/localtime:ro \
     -v /usr/src:/usr/src \
     -v /lib/modules:/lib/modules \
-    -v ${HOME}/workspaces/isaac_ros-dev:/workspaces/isaac_ros-dev
+    -v ${HOME}/workspace:/workspace
     --volume=${HOME}/CLION/clion-2023.3.2:/home/$tareeqUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$tareeqUSER/.java/.userPrefs \
     --volume=${HOME}/.dockerConfig/jetbrains/cache:/home/$tareeqUSER/.cache/JetBrains \
@@ -66,32 +65,61 @@ set -x
 
 echo $USE_GPU_HOST
 
-${DOCKER_RUN_CMD} -it \
+# Map host's display socket to docker
+DOCKER_ARGS+=("-v /tmp/.X11-unix:/tmp/.X11-unix")
+DOCKER_ARGS+=("-v $HOME/.Xauthority:/home/admin/.Xauthority:rw")
+DOCKER_ARGS+=("-e DISPLAY")
+DOCKER_ARGS+=("-e NVIDIA_VISIBLE_DEVICES=all")
+DOCKER_ARGS+=("-e NVIDIA_DRIVER_CAPABILITIES=all")
+DOCKER_ARGS+=("-e FASTRTPS_DEFAULT_PROFILES_FILE=/usr/local/share/middleware_profiles/rtps_udp_profile.xml")
+DOCKER_ARGS+=("-e ROS_DOMAIN_ID")
+DOCKER_ARGS+=("-e USER")
+
+PLATFORM="$(uname -m)"
+
+if [[ $PLATFORM == "aarch64" ]]; then
+    DOCKER_ARGS+=("-v /usr/bin/tegrastats:/usr/bin/tegrastats")
+    DOCKER_ARGS+=("-v /tmp/argus_socket:/tmp/argus_socket")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcusolver.so.11:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcusolver.so.11")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcusparse.so.11:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcusparse.so.11")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcurand.so.10:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcurand.so.10")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcufft.so.10:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcufft.so.10")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libnvToolsExt.so:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libnvToolsExt.so")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcupti.so.11.4:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcupti.so.11.4")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/lib/libcudla.so.1:/usr/local/cuda-11.4/targets/aarch64-linux/lib/libcudla.so.1")
+    DOCKER_ARGS+=("-v /usr/local/cuda-11.4/targets/aarch64-linux/include/nvToolsExt.h:/usr/local/cuda-11.4/targets/aarch64-linux/include/nvToolsExt.h")
+    DOCKER_ARGS+=("-v /usr/lib/aarch64-linux-gnu/tegra:/usr/lib/aarch64-linux-gnu/tegra")
+    DOCKER_ARGS+=("-v /usr/src/jetson_multimedia_api:/usr/src/jetson_multimedia_api")
+    DOCKER_ARGS+=("-v /opt/nvidia/nsight-systems-cli:/opt/nvidia/nsight-systems-cli")
+    DOCKER_ARGS+=("--pid=host")
+    DOCKER_ARGS+=("-v /opt/nvidia/vpi2:/opt/nvidia/vpi2")
+    DOCKER_ARGS+=("-v /usr/share/vpi2:/usr/share/vpi2")
+
+    # If jtop present, give the container access
+    if [[ $(getent group jtop) ]]; then
+        DOCKER_ARGS+=("-v /run/jtop.sock:/run/jtop.sock:ro")
+        JETSON_STATS_GID="$(getent group jtop | cut -d: -f3)"
+        DOCKER_ARGS+=("--group-add $JETSON_STATS_GID")
+    fi
+fi
+
+
+
+BASE_NAME="sameh4/tareeq:nvidia-isaac-ros.x86_64.04.25.2024"
+CONTAINER_NAME="nvidia-isaac-ros.x86_64.04.25.2024"
+
+docker run -it --rm \
     --privileged \
-    --name "${DEV_CONTAINER}" \
-    --label "owner=${tareeqUSER}" \
-    -e DISPLAY="${display}" \
-    -e DOCKER_USER="${tareeqUSER}" \
-    -e USER="${tareeqUSER}" \
-    -e DOCKER_USER_ID="${uid}" \
-    -e DOCKER_GRP="${group}" \
-    -e DOCKER_GRP_ID="${gid}" \
-    -e DOCKER_IMG="${DEV_IMAGE}" \
-    -e USE_GPU_HOST="${USE_GPU_HOST}" \
-    -e NVIDIA_VISIBLE_DEVICES=all \
-    -e NVIDIA_DRIVER_CAPABILITIES=all \
+    --network host \
+    ${DOCKER_ARGS[@]} \
+    -v /dev/*:/dev/* \
+    -v /etc/localtime:/etc/localtime:ro \
+    --name "$CONTAINER_NAME" \
     ${volumes} \
-    --net host \
     --runtime nvidia \
     --user="admin" \
     --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
-    --workdir /workspaces/isaac_ros-dev \
-    --add-host "${DEV_INSIDE}:127.0.0.1" \
-    --add-host "${local_host}:127.0.0.1" \
-    --hostname "${DEV_INSIDE}" \
-    --shm-size "${SHM_SIZE}" \
-    --pid=host \
-    -v /dev/null:/dev/raw1394 \
-    "${DEV_IMAGE}" \
+    --workdir /workspace \
+    $@ \
+    $BASE_NAME \
     /bin/bash
-    # --gpus all \
