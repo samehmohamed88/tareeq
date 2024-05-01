@@ -114,7 +114,7 @@ def generate_launch_description():
     config_common = os.path.join(
         get_package_share_directory('isaac_ros_visual_slam'),
         'config',
-        'zed.yaml'
+        'zed2.yaml'
     )
 
     # Robot State Publisher node

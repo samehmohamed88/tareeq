@@ -33,9 +33,9 @@ colcon build --event-handlers console_cohesion+ \
 
 source /workspace/install/setup.bash
 
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
+#ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
 
-ros2 launch tareeq tareeqav_launch.py
+#ros2 launch tareeq tareeqav_launch.py.bak
 
 #cd /workspace/src/tareeq \
 #    && curl -fsSL https://raw.githubusercontent.com/bazelbuild/bazel/$(cat .bazelversion)/scripts/bazel-complete-header.bash >> ~/.bashrc \

@@ -58,6 +58,7 @@ RUN apt-get -y update \
         ros-humble-isaac-ros-visual-slam \
         ros-humble-isaac-ros-stereo-image-proc \
         ros-humble-isaac-ros-image-proc \
+        ros-humble-nvblox* \
         ros-humble-foxglove-bridge \
         ninja-build
 
