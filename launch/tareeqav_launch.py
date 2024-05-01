@@ -4,7 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
-from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import LaunchConfiguration, Command
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -32,12 +32,50 @@ def generate_launch_description():
         # arguments=['--ros-args', '--log-level', 'DEBUG']
     )
 
+    # URDF/xacro file to be loaded by the Robot State Publisher node
+    xacro_path = os.path.join(
+        get_package_share_directory('zed_wrapper'),
+        'urdf',
+        'zed_descr.urdf.xacro'
+    )
+
+    # Robot State Publisher node (publishing static tfs for the camera)
+    rsp_node = Node(
+        package='robot_state_publisher',
+        namespace='zed2',
+        executable='robot_state_publisher',
+        name='zed_state_publisher',
+        output='screen',
+        parameters=[{
+            'robot_description': Command(
+                [
+                    'xacro', ' ', xacro_path, ' ',
+                    'camera_name:=', 'zed2', ' ',
+                    'camera_model:=', 'zed2', ' ',
+                    'base_frame:=', 'base_link', ' ',
+                ])
+        }]
+    )
+
+
     zed_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             bringup_dir, 'launch', 'zed2.launch.py')]),
         launch_arguments={
             'component_container_name': shared_container_name}.items())
 
+    # Vslam
+    vslam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+            bringup_dir, 'launch', 'vslam.launch.py')]),
+        launch_arguments={'output_odom_frame_name': global_frame,
+                          'setup_for_isaac_sim': 'False',
+                          # Flatten VIO to 2D (assuming the robot only moves horizontally).
+                          # This is needed to prevent vertical odometry drift.
+                          'run_odometry_flattening': 'True',
+                          'component_container_name': shared_container_name}.items())
+
+    # Nvblox
     nvblox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('nvblox_examples_bringup'), 'launch', 'nvblox', 'nvblox.launch.py')]),
@@ -49,6 +87,8 @@ def generate_launch_description():
     return LaunchDescription([
         run_rviz_arg,
         shared_container,
+        rsp_node,
         zed_launch,
+        vslam_launch,
         nvblox_launch,
         ])

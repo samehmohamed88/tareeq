@@ -24,14 +24,12 @@ sudo chown -R admin:admin /usr/local/zed /workspace
 
 mkdir -p /workspace/maps
 
-sudo cp /workspace/src/tareeq/config/zed.yaml /opt/ros/humble/share/isaac_ros_visual_slam/config/zed.yaml
-
-/usr/local/bin/scripts/install_zed_ros2_wrapper.sh
-
 colcon build --event-handlers console_cohesion+ \
   --packages-select tareeq --symlink-install --parallel-workers `nproc`
 
 source /workspace/install/setup.bash
+
+#/usr/local/bin/scripts/install_zed_ros2_wrapper.sh
 
 #ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
 
