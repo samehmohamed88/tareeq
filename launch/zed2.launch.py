@@ -36,9 +36,6 @@ def generate_launch_description():
     component_container_name_arg = LaunchConfiguration(
         'component_container_name', default='tareeqav_container')
 
-
-
-
     load_composable_nodes = LoadComposableNodes(
         target_container=component_container_name_arg,
         composable_node_descriptions=[

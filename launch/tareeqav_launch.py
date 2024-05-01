@@ -10,6 +10,8 @@ from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
 
+    os.environ['RCUTILS_LOGGING_SEVERITY'] = 'INFO'
+
     shared_container_name = "tareeqav_container"
 
     bringup_dir = get_package_share_directory('tareeq')
@@ -28,8 +30,8 @@ def generate_launch_description():
         name=shared_container_name,
         package='rclcpp_components',
         executable='component_container_mt',
-        output='screen'
-        # arguments=['--ros-args', '--log-level', 'DEBUG']
+        output='screen',
+        arguments=['--ros-args', '--log-level', 'INFO']
     )
 
     # URDF/xacro file to be loaded by the Robot State Publisher node
@@ -46,6 +48,7 @@ def generate_launch_description():
         executable='robot_state_publisher',
         name='zed_state_publisher',
         output='screen',
+        arguments=['--ros-args', '--log-level', 'INFO'],
         parameters=[{
             'robot_description': Command(
                 [
@@ -56,6 +59,12 @@ def generate_launch_description():
                 ])
         }]
     )
+
+    # Nav2
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(
+            bringup_dir, 'launch', 'nav2.launch.py')),
+        launch_arguments={'global_frame': global_frame}.items())
 
 
     zed_launch = IncludeLaunchDescription(
@@ -78,16 +87,16 @@ def generate_launch_description():
     # Nvblox
     nvblox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('nvblox_examples_bringup'), 'launch', 'nvblox', 'nvblox.launch.py')]),
+            bringup_dir, 'launch', 'nvblox.launch.py')]),
         launch_arguments={'global_frame': global_frame,
                           'setup_for_zed': 'True',
-                          'attach_to_shared_component_container': 'True',
                           'component_container_name': shared_container_name}.items())
 
     return LaunchDescription([
         run_rviz_arg,
         shared_container,
         rsp_node,
+        nav2_launch,
         zed_launch,
         vslam_launch,
         nvblox_launch,

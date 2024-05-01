@@ -56,7 +56,7 @@ def generate_launch_description():
         LaunchConfiguration('setup_for_isaac_sim', default='False'))
 
     setup_for_zed = IfCondition(
-        LaunchConfiguration('setup_for_realsense', default='True'))
+        LaunchConfiguration('setup_for_zed', default='True'))
 
     group_action = GroupAction([
         ##########################################
@@ -131,12 +131,12 @@ def generate_launch_description():
         SetParameter(name='input_parent_frame_id', value=odometry_frame_before_flattening_name),
         SetParameter(name='input_child_frame_id', value='base_link',
                      condition=setup_for_isaac_sim),
-        SetParameter(name='input_child_frame_id', value='camera_link',
+        SetParameter(name='input_child_frame_id', value='zed2_camera_link',
                      condition=setup_for_zed),
         SetParameter(name='output_parent_frame_id', value=LaunchConfiguration('output_odom_frame_name')),
         SetParameter(name='output_child_frame_id', value='base_link',
                      condition=setup_for_isaac_sim),
-        SetParameter(name='output_child_frame_id', value='camera_link',
+        SetParameter(name='output_child_frame_id', value='zed2_camera_link',
                      condition=setup_for_zed),
         SetParameter(name='invert_output_transform', value=True),
 
