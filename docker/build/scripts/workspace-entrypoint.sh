@@ -21,6 +21,7 @@ sudo service udev restart
 sudo chown -R admin:admin ~/.local ~/.java ~/.cache ~/.config
 
 sudo chown -R admin:admin /usr/local/zed /workspace
+sudo cp -r /workspace/zed_resources /usr/local/zed/resources
 
 mkdir -p /workspace/maps
 

@@ -92,6 +92,15 @@ def generate_launch_description():
                           'setup_for_zed': 'True',
                           'component_container_name': shared_container_name}.items())
 
+    # Your custom node for motor actuation
+    motor_actuation_node = Node(
+        package='tareeq',
+        executable='TareeqAV',
+        name='tareeqav',
+        output='screen',
+        # arguments=['--ros-args', '--log-level', 'DEBUG']
+    )
+
     return LaunchDescription([
         run_rviz_arg,
         shared_container,
@@ -100,4 +109,5 @@ def generate_launch_description():
         zed_launch,
         vslam_launch,
         nvblox_launch,
+        motor_actuation_node
         ])

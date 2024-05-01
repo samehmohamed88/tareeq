@@ -50,7 +50,7 @@ private:
         // Clamp the value to be between -1.0 and 1.0
         value = std::clamp(value, -1.0, 1.0);
         // Scale the clamped value to the range [-0.5, 0.5]
-        return 0.5 * value;
+        return 0.2 * value;
     }
 
     std::string formatDouble(double number)
