@@ -61,7 +61,6 @@ RUN apt-get -y update \
         ros-humble-foxglove-bridge \
         ninja-build
 
-#ros-humble-isaac-ros-visual-slam \
 #ros-humble-nvblox* \
 
 RUN wget https://github.com/fmtlib/fmt/archive/refs/tags/10.2.1.tar.gz \
