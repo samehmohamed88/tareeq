@@ -28,11 +28,12 @@ public:
     /// @brief Logs an informational message with formatting.
     /// @param format_string The format string.
     /// @param args Arguments to be formatted into the string.
-    template<typename... Args>
-    void logInfo(const std::string& format_string, Args&&... args)
+//    template<typename... Args>
+//    void logInfo(const std::string& format_string, Args&&... args)
+    void logInfo(const std::string& format_string)
     {
-        auto s = fmt::format(fmt::runtime(format_string), std::forward<Args>(args)...);
-        logInfoImpl(s);
+//        auto s = fmt::format(fmt::runtime(format_string), std::forward<Args>(args)...);
+        logInfoImpl(format_string);
     }
 
     /// @brief Logs a warning message with formatting.

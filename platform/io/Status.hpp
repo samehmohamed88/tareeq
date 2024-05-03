@@ -28,7 +28,8 @@ enum class ERROR
     COMMUNICATION_ERROR, ///< Communication failure during operation.
     SENSOR_FAILURE,       ///< Sensor malfunction or failure detected.
     ERROR_CREATING_DEVICE,
-    ERROR_OPENING_DEVICE
+    ERROR_OPENING_DEVICE,
+    INVALID_PARAMETER
 };
 
 /// @class Status

@@ -50,16 +50,16 @@ std::tuple<Status, std::optional<std::string>> BoostSerialDeviceManager::readFro
         logger_.logError("Device not created, cannot read.");
         return {Status(STATUS::ERROR, ERROR::COMMUNICATION_ERROR), {}};
     }
-    logger_.logDebug("Reading from device: {}", request);
+    logger_.logDebug("Reading from device: "+ request);
     return deviceMap_[port]->read(request);
 }
 
 Status BoostSerialDeviceManager::createDevice(const std::string& port, uint32_t baudRate)
 {
     std::lock_guard<std::mutex> lock(deviceMutex_);
-    logger_.logInfo("BoostSerialDeviceManager::createDevice {}", deviceMap_.contains(port));
+    logger_.logInfo("BoostSerialDeviceManager::createDevice ");
     if (!deviceMap_.contains(port)) {
-        logger_.logInfo("Creating device at port: {} with baud rate: {}", port, baudRate);
+        logger_.logInfo("Creating device at port: with baud rate: "+ port);
         try {
             deviceMap_[port] = std::make_unique<BoostSerialDevice>(port, baudRate);
             auto status = deviceMap_[port]->open();
@@ -88,14 +88,15 @@ Status BoostSerialDeviceManager::createDevice(const std::string& port, uint32_t 
     return {STATUS::SUCCESS}; // Device already created
 }
 
-Status BoostSerialDeviceManager::writeToDevice(const std::string& port, const std::string& data)
+Status BoostSerialDeviceManager::writeToDevice(const std::string& port, std::string&& data)
 {
     std::lock_guard<std::mutex> lock(deviceMutex_);
     if (!deviceMap_.contains(port)) {
         logger_.logError("Device not created, cannot write data.");
         return {STATUS::ERROR, ERROR::SENSOR_FAILURE};
     }
-    logger_.logInfo("Writing to device: {}", data);
+
+    logger_.logInfo("Writing to device: "+ data);
     return deviceMap_[port]->write(data);
 }
 

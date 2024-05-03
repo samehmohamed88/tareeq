@@ -21,8 +21,8 @@ ament_target_dependencies(MapServerClient
         isaac_ros_visual_slam_interfaces)
 
 target_link_libraries(${TAREEQ_AV}
-        ${ACTUATOR_LIBRARY_NAME}
         SLAMClient
+        ${ACTUATOR_LIBRARY_NAME}
         ${IO_LIBRARY_NAME}
 )
 

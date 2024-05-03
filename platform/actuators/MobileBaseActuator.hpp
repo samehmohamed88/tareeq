@@ -1,6 +1,6 @@
 #pragma once
 
-#include "platform/io/BoostSerialDeviceManager.hpp"
+#include "platform/actuators/SabertoothMotorController.hpp"
 #include "platform/io/Status.hpp"
 
 #include <geometry_msgs/msg/twist.hpp>
@@ -26,7 +26,6 @@ public:
     MobileBaseActuator(std::string topicName, const rclcpp::NodeOptions& node_options = rclcpp::NodeOptions())
         : Node("MobileBaseActuator", node_options)
     {
-        boostDeviceManager_.createDevice("/dev/ttyUSB0", 115200);
         // Subscribe to TwistStamped
 //        subscriberStamped_ = this->create_subscription<geometry_msgs::msg::TwistStamped>(
 //            topicName, queueSize_, [this](const geometry_msgs::msg::TwistStamped& msg) {
@@ -39,8 +38,16 @@ public:
             });
     };
 
+    ~MobileBaseActuator() {
+        stopMotors();
+    }
+
 private:
-    void velocityCallbackStamped(const geometry_msgs::msg::TwistStamped& msg);
+//    void velocityCallbackStamped(const geometry_msgs::msg::TwistStamped& msg);
+
+    void stopMotors() {
+        sabertoothMotorController_.mixedModeDrive(64, 64); // Stop both motors
+    }
 
     void velocityCallback(const geometry_msgs::msg::Twist& msg) ;
 
@@ -49,10 +56,11 @@ private:
     int queueSize_ = 10;
     rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr subscriberStamped_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr subscriber_;
-    platform::io::BoostSerialDeviceManager boostDeviceManager_;
+    SabertoothMotorController sabertoothMotorController_;
 
-    static constexpr double maxLinearSpeed_ = 0.5;
-    static constexpr double maxAngularSpeed_ = 0.5;
+
+    static constexpr double maxLinearSpeed_ = 1.0;
+    static constexpr double maxAngularSpeed_ = 1.0;
     static constexpr double rearWheelRadius_ = 0.0375;
     static constexpr double rearWheelSeparation_ = 0.13;
 
@@ -63,12 +71,6 @@ private:
         return 0.01 * value;
     }
 
-    std::string formatDouble(double number) {
-        std::stringstream stream;
-        // Apply fixed-point notation and set precision to 2 decimal places
-        stream << std::fixed << std::setprecision(2) << number;
-        return stream.str();
-    }
 };
 
 } // namespace platform::actuators

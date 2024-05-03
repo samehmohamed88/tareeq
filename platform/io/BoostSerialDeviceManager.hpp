@@ -59,7 +59,7 @@ public:
     /// @brief Writes data to the serial device.
     /// @param data The data or command to write to the device.
     /// @return Status indicating the success or failure of the write operation.
-    Status writeToDevice(const std::string& port, const std::string& data);
+    Status writeToDevice(const std::string& port, std::string&& data);
 
 private:
     platform::logging::Logger logger_{std::string("BoostSerialDeviceManager")};

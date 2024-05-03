@@ -14,9 +14,9 @@ class SabertoothMotorController
 {
 public:
     /// @brief Constructs a Sabertooth motor controller object.
-    /// @param port The serial port to connect to, e.g., "/dev/ttyS0".
+    /// @param port The serial port to connect to, e.g., "/dev/ttyTHS0".
     /// @param baudRate The baud rate for serial communication, defaults to 9600.
-    SabertoothMotorController(const std::string& port, uint32_t baudRate = 9600);
+    SabertoothMotorController(const std::string& port = "/dev/ttyTHS0", uint32_t baudRate = 9600);
 
     /// @brief Destroys the Sabertooth motor controller object, closing any open connections.
     ~SabertoothMotorController();

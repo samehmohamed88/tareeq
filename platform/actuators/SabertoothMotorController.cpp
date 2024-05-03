@@ -1,4 +1,5 @@
 #include "platform/actuators/SabertoothMotorController.hpp"
+#include "platform/io/Status.hpp"
 
 namespace platform::actuators {
 SabertoothMotorController::SabertoothMotorController(const std::string& port, uint32_t baudRate)
@@ -32,42 +33,45 @@ io::Status SabertoothMotorController::driveMotor(int motor, int speed, bool forw
     command += speed;
     command += checksum;
 
-    return manager_.writeToDevice(port_, command);
+    return manager_.writeToDevice(port_, std::move(command));
 }
 
-io::Status SabertoothMotorController::mixedModeDrive(int speed, int turn)
-{
-    // Speed and turn both range from 0-127
+io::Status SabertoothMotorController::mixedModeDrive(int speed, int turn) {
     if (speed < 0 || speed > 127 || turn < 0 || turn > 127) {
         return {io::Status{io::STATUS::ERROR, io::ERROR::INVALID_PARAMETER}};
     }
 
+    // Translate the incoming speed and turn values to the appropriate command data.
+    int driveCommand = (speed == 0) ? 64 : speed;
+    int turnCommandData = (turn == 0) ? 64 : turn;
+
     int speedCommand = 8;  // Drive forward mixed mode
     int turnCommand = 10;  // Turn right mixed mode
-    int addressByte = 128; // default address
+    int addressByte = 128; // Default address from the DIP switches
 
-    int speedChecksum = calculateChecksum(addressByte, speedCommand, speed);
-    int turnChecksum = calculateChecksum(addressByte, turnCommand, turn);
+    int speedChecksum = calculateChecksum(addressByte, speedCommand, driveCommand);
+    int turnChecksum = calculateChecksum(addressByte, turnCommand, turnCommandData);
 
     std::string speedPacket;
-    speedPacket += addressByte;
-    speedPacket += speedCommand;
-    speedPacket += speed;
-    speedPacket += speedChecksum;
+    speedPacket += static_cast<char>(addressByte);
+    speedPacket += static_cast<char>(speedCommand);
+    speedPacket += static_cast<char>(driveCommand);
+    speedPacket += static_cast<char>(speedChecksum);
 
     std::string turnPacket;
-    turnPacket += addressByte;
-    turnPacket += turnCommand;
-    turnPacket += turn;
-    turnPacket += turnChecksum;
+    turnPacket += static_cast<char>(addressByte);
+    turnPacket += static_cast<char>(turnCommand);
+    turnPacket += static_cast<char>(turnCommandData);
+    turnPacket += static_cast<char>(turnChecksum);
 
-    auto status = manager_.writeToDevice(port_, speedPacket);
+    auto status = manager_.writeToDevice(port_, std::move(speedPacket));
     if (!status.isSuccess()) {
         return status;
     }
 
-    return manager_.writeToDevice(port_, turnPacket);
+    return manager_.writeToDevice(port_, std::move(turnPacket));
 }
+
 
 char SabertoothMotorController::calculateChecksum(int address, int command, int data)
 {
