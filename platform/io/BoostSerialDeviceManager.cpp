@@ -96,7 +96,7 @@ Status BoostSerialDeviceManager::writeToDevice(const std::string& port, std::str
         return {STATUS::ERROR, ERROR::SENSOR_FAILURE};
     }
 
-    logger_.logInfo("Writing to device: "+ data);
+    logger_.logInfo("Writing to device: "+ toHexString(data));
     return deviceMap_[port]->write(data);
 }
 

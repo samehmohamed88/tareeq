@@ -65,6 +65,15 @@ private:
     platform::logging::Logger logger_{std::string("BoostSerialDeviceManager")};
     std::mutex deviceMutex_; ///< Mutex to synchronize access to the device.
     std::unordered_map<std::string, std::unique_ptr<BoostSerialDevice>> deviceMap_;
+
+    std::string toHexString(const std::string& data) {
+        std::stringstream ss;
+        for (unsigned char c : data) {
+            ss << static_cast<int>(c) << " "; // Print the integer value of each byte
+        }
+        return ss.str();
+    }
+
 };
 
 } // namespace platform::io

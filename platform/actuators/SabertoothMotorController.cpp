@@ -36,40 +36,39 @@ io::Status SabertoothMotorController::driveMotor(int motor, int speed, bool forw
     return manager_.writeToDevice(port_, std::move(command));
 }
 
+io::Status SabertoothMotorController::sendCommand(int address, int command, int value) {
+    char checksum = calculateChecksum(address, command, value);
+    std::string packet;
+    packet += static_cast<char>(address);
+    packet += static_cast<char>(command);
+    packet += static_cast<char>(value);
+    packet += checksum;
+    return manager_.writeToDevice(port_, std::move(packet));
+}
+
+
 io::Status SabertoothMotorController::mixedModeDrive(int speed, int turn) {
-    if (speed < 0 || speed > 127 || turn < 0 || turn > 127) {
+    // Ensure the values are within the acceptable range
+    if (speed < -127 || speed > 127 || turn < -127 || turn > 127) {
         return {io::Status{io::STATUS::ERROR, io::ERROR::INVALID_PARAMETER}};
     }
 
-    // Translate the incoming speed and turn values to the appropriate command data.
-    int driveCommand = (speed == 0) ? 64 : speed;
-    int turnCommandData = (turn == 0) ? 64 : turn;
+    // Determine the correct command and scale the absolute speed value to 0-127
+    int forwardCommand = (speed >= 0) ? 8 : 9;
+    int speedValue = std::abs(speed);  // No need to scale if already in the range 0-127
 
-    int speedCommand = 8;  // Drive forward mixed mode
-    int turnCommand = 10;  // Turn right mixed mode
-    int addressByte = 128; // Default address from the DIP switches
+    // Determine the correct command for turning and scale the absolute turn value to 0-127
+    int turnCommand = (turn >= 0) ? 10 : 11;
+    int turnValue = std::abs(turn);  // No need to scale if already in the range 0-127
 
-    int speedChecksum = calculateChecksum(addressByte, speedCommand, driveCommand);
-    int turnChecksum = calculateChecksum(addressByte, turnCommand, turnCommandData);
-
-    std::string speedPacket;
-    speedPacket += static_cast<char>(addressByte);
-    speedPacket += static_cast<char>(speedCommand);
-    speedPacket += static_cast<char>(driveCommand);
-    speedPacket += static_cast<char>(speedChecksum);
-
-    std::string turnPacket;
-    turnPacket += static_cast<char>(addressByte);
-    turnPacket += static_cast<char>(turnCommand);
-    turnPacket += static_cast<char>(turnCommandData);
-    turnPacket += static_cast<char>(turnChecksum);
-
-    auto status = manager_.writeToDevice(port_, std::move(speedPacket));
+    // Send speed command
+    auto status = sendCommand(128, forwardCommand, speedValue);
     if (!status.isSuccess()) {
         return status;
     }
 
-    return manager_.writeToDevice(port_, std::move(turnPacket));
+    // Send turn command
+    return sendCommand(128, turnCommand, turnValue);
 }
 
 

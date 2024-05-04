@@ -43,6 +43,7 @@ private:
     /// @param data The data byte.
     /// @return The calculated checksum.
     char calculateChecksum(int address, int command, int data);
+    io::Status sendCommand(int address, int command, int value);
 };
 
 } // namespace platform::actuators
