@@ -46,7 +46,7 @@ private:
 //    void velocityCallbackStamped(const geometry_msgs::msg::TwistStamped& msg);
 
     void stopMotors() {
-        sabertoothMotorController_.mixedModeDrive(64, 64); // Stop both motors
+        sabertoothMotorController_.mixedModeDrive(0, 0); // Stop both motors
     }
 
     void velocityCallback(const geometry_msgs::msg::Twist& msg) ;
