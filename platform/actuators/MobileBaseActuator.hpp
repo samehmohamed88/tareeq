@@ -59,8 +59,8 @@ private:
     SabertoothMotorController sabertoothMotorController_;
 
 
-    static constexpr double maxLinearSpeed_ = 2.0;
-    static constexpr double maxAngularSpeed_ = 3.0;
+    static constexpr double maxLinearSpeed_ = 1.0;
+    static constexpr double maxAngularSpeed_ = 1.0;
     static constexpr double rearWheelRadius_ = 0.0375;
     static constexpr double rearWheelSeparation_ = 0.13;
 
