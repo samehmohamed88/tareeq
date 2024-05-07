@@ -1,44 +1,28 @@
 #include "platform/actuators/MobileBaseActuator.hpp"
 
-void platform::actuators::MobileBaseActuator::velocityCallback(const geometry_msgs::msg::TwistStamped& msg)
-{
+//void platform::actuators::MobileBaseActuator::velocityCallbackStamped(const geometry_msgs::msg::TwistStamped& msg)
+//{
+//    processVelocity(msg.twist.linear.x, msg.twist.angular.z);
+//}
 
+void platform::actuators::MobileBaseActuator::velocityCallback(const geometry_msgs::msg::Twist& msg)
+{
+    processVelocity(msg.linear.x, msg.angular.z);
+}
+
+void platform::actuators::MobileBaseActuator::processVelocity(double linear, double angular) {
     RCLCPP_INFO(this->get_logger(),
                 "Received Twist: Linear X: '%.2f', Angular Z: '%.2f'",
-                msg.twist.linear.x,
-                msg.twist.angular.z);
+                linear, angular);
 
-    double linearVelocity = normalizeToHalfRange(msg.twist.linear.x);
-    double angularVelocity = normalizeToHalfRange(msg.twist.angular.z);
+    // Map linear and angular speeds directly to motor controller values
+    int speed = static_cast<int>((linear / maxLinearSpeed_) * 127);
+    int turn = static_cast<int>((angular / maxAngularSpeed_) * 127);
 
-    RCLCPP_INFO(this->get_logger(),
-                "Normalized Velocities.  Linear: '%.2f', Angular Z: '%.2f'",
-                linearVelocity,
-                angularVelocity);
+    // Ensure values are within the valid range
+    speed = std::clamp(speed, -127, 127);
+    turn = std::clamp(turn, -127, 127);
 
-    double leftWheelSpeed = ((linearVelocity - angularVelocity) * (rearWheelSeparation_ / 2)) / rearWheelRadius_;
-    double rightWheelSpeed = ((linearVelocity + angularVelocity) * (rearWheelSeparation_ / 2)) / rearWheelRadius_;
-
-    RCLCPP_INFO(this->get_logger(),
-                "Wheel Speeds.  Left: '%.2f', Right: '%.2f'",
-                leftWheelSpeed,
-                rightWheelSpeed);
-
-    leftWheelSpeed = std::clamp(leftWheelSpeed, -maxLinearSpeed_, maxLinearSpeed_);
-    rightWheelSpeed = std::clamp(rightWheelSpeed, -maxLinearSpeed_, maxLinearSpeed_);
-
-    auto request = std::string(R"({"T":1,"L":)" + formatDouble(leftWheelSpeed) +
-                               ",\"R\":" + formatDouble(rightWheelSpeed) + "}\n");
-
-    RCLCPP_INFO(this->get_logger(), "Created Request String: '%s'", request.c_str());
-
-    boostDeviceManager_.writeToDevice("/dev/ttyUSB0", request);
-
-    //    hardwareInterface_(msg.twist.linear.x, msg.twist.angular.z);
-    //    auto result = hardwareInterface_(msg.twist.linear.x, msg.twist.angular.z);
-    //    if (result.isError()) {
-    //        RCLCPP_ERROR(this->get_logger(),
-    //                     "Error occurred while setting velocity : %s",
-    //                     result.toString().c_str());
-    //    }
+    // Send the values to the motor controller
+    sabertoothMotorController_.mixedModeDrive(speed, turn);
 }

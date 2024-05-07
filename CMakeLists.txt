@@ -22,6 +22,7 @@ find_package(fmt)
 # Add modules
 add_subdirectory(platform)
 add_subdirectory(system)
+add_subdirectory(samples)
 
 
 # Install launch files, etc.

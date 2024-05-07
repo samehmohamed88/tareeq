@@ -35,10 +35,7 @@ info "Determine whether host GPU is available ..."
 determine_gpu_use_host
 info "USE_GPU_HOST: ${USE_GPU_HOST}"
 
-volumes="${volumes} -v /media:/media \
-    -v /etc/localtime:/etc/localtime:ro \
-    -v /usr/src:/usr/src \
-    -v /lib/modules:/lib/modules \
+volumes="${volumes} \
     -v ${HOME}/workspace:/workspace
     --volume=${HOME}/CLION/clion-2023.3.2:/home/$tareeqUSER/clion \
     --volume=${HOME}/.dockerConfig/jetbrains/.java/.userPrefs:/home/$tareeqUSER/.java/.userPrefs \

@@ -90,6 +90,7 @@ bool BoostSerialDevice::isValidRequest(const std::string& request, const std::st
 
 Status BoostSerialDevice::innerWrite(const std::string& request)
 {
+
     boost::asio::write(serialPort_, boost::asio::buffer(request.c_str(), request.size()));
     // some devices echo the request as a way
     // to indicate successful receipt of the request

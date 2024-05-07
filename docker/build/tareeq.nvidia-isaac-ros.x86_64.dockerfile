@@ -16,7 +16,7 @@ USER root
 RUN mkdir -p /opt/tareeq
 COPY installers /opt/tareeq/installers
 
-RUN /opt/tareeq/installers/install-gcc11.sh
+#RUN /opt/tareeq/installers/install-gcc11.sh
 
 RUN if [ "$(uname -m)" = "x86_64" ]; then \
         /opt/tareeq/installers/install-bazel-x86_64.sh; \
@@ -60,6 +60,8 @@ RUN apt-get -y update \
         ros-humble-isaac-ros-image-proc \
         ros-humble-foxglove-bridge \
         ninja-build
+
+#ros-humble-nvblox* \
 
 RUN wget https://github.com/fmtlib/fmt/archive/refs/tags/10.2.1.tar.gz \
         && tar -xf 10.2.1.tar.gz \

@@ -4,7 +4,8 @@ find_package(geometry_msgs REQUIRED)  # Add this line
 
 # Create the IO library
 add_library(${ACTUATOR_LIBRARY_NAME} SHARED
-    MobileBaseActuator.cpp
+        MobileBaseActuator.cpp
+        SabertoothMotorController.cpp
 )
 
 # Include directories and link libraries

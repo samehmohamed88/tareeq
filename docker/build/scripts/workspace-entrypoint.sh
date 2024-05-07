@@ -21,22 +21,20 @@ sudo service udev restart
 sudo chown -R admin:admin ~/.local ~/.java ~/.cache ~/.config
 
 sudo chown -R admin:admin /usr/local/zed /workspace
+sudo cp -r /workspace/zed_resources /usr/local/zed/resources
 
 mkdir -p /workspace/maps
 
-sudo cp /workspace/src/tareeq/config/zed.yaml /opt/ros/humble/share/isaac_ros_visual_slam/config/zed.yaml
-
-/usr/local/bin/scripts/install_zed_ros2_wrapper.sh
-
 colcon build --event-handlers console_cohesion+ \
-  --packages-select tareeq --symlink-install \
-  -G Ninja --parallel-workers `nproc`
+  --packages-select tareeq --symlink-install --parallel-workers `nproc`
 
 source /workspace/install/setup.bash
 
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
+#/usr/local/bin/scripts/install_zed_ros2_wrapper.sh
 
-ros2 launch tareeq tareeqav_launch.py
+#ros2 launch foxglove_bridge foxglove_bridge_launch.xml &
+
+#ros2 launch tareeq tareeqav_launch.py.bak
 
 #cd /workspace/src/tareeq \
 #    && curl -fsSL https://raw.githubusercontent.com/bazelbuild/bazel/$(cat .bazelversion)/scripts/bazel-complete-header.bash >> ~/.bashrc \
